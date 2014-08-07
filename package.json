@@ -1,0 +1,23 @@
+{
+  "name": "nsp",
+  "version": "0.0.0",
+  "description": "NewSpring build utility",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "mocha --bail --require should --reporter nyan"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbaxleyiii/nsp.git"
+  },
+  "author": "jbaxleyiii",
+  "license": [ {
+  "type": "MIT",
+  "url": "http://fibo.mit-license.org/"
+  } ],
+  "bugs": {
+    "url": "https://github.com/jbaxleyiii/nsp/issues"
+  },
+  "homepage": "https://github.com/jbaxleyiii/nsp"
+}
