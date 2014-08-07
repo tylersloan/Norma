@@ -2,22 +2,84 @@
   "name": "nsp",
   "version": "0.0.0",
   "description": "NewSpring build utility",
-  "main": "index.js",
   "private": true,
-  "scripts": {
-    "test": "mocha --bail --require should --reporter nyan"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jbaxleyiii/nsp.git"
   },
   "author": "jbaxleyiii",
-  "license": [ {
-  "type": "MIT",
-  "url": "http://fibo.mit-license.org/"
-  } ],
+  "license": [
+    {
+      "type": "MIT",
+      "url": "http://fibo.mit-license.org/"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/jbaxleyiii/nsp/issues"
   },
+  "tags": [
+    "build",
+    "stream",
+    "system",
+    "make",
+    "tool",
+    "asset",
+    "pipeline"
+  ],
+  "dependencies": {
+    "browser-sync": "^1.1.2",
+    "chalk": "^0.5.0",
+    "coffee-script": "^1.7.1",
+    "copy-paste": "^0.2.2",
+    "github-download": "^0.3.0",
+    "globule": "^0.2.0",
+    "gulp": "^3.8.5",
+    "gulp-autoprefixer": "0.0.8",
+    "gulp-bytediff": "^0.2.0",
+    "gulp-combine-media-queries": "0.1.0",
+    "gulp-compile-handlebars": "git://github.com/kaanon/gulp-compile-handlebars",
+    "gulp-concat": "^2.2.0",
+    "gulp-deporder": "^1.0.0",
+    "gulp-if": "^1.2.1",
+    "gulp-imagemin": "^0.6.1",
+    "gulp-inject": "^0.4.1",
+    "gulp-jshint": "^1.6.4",
+    "gulp-manifest": "0.0.5",
+    "gulp-minify-html": "^0.1.4",
+    "gulp-newer": "^0.3.0",
+    "gulp-plumber": "^0.6.3",
+    "gulp-rename": "^1.2.0",
+    "gulp-rev": "^0.4.1",
+    "gulp-rimraf": "^0.1.0",
+    "gulp-ruby-sass": "^0.5.0",
+    "gulp-sass-graph": "git://github.com/lox/gulp-sass-graph",
+    "gulp-strip-debug": "^0.3.0",
+    "gulp-tap": "^0.1.1",
+    "gulp-uglify": "^0.3.1",
+    "gulp-uncss": "^0.4.4",
+    "gulp-w3cjs": "^0.2.0",
+    "gulp-watch": "^0.6.8",
+    "inquirer": "^0.5.1",
+    "jshint-stylish": "^0.2.0",
+    "liftoff": "^0.12.0",
+    "lodash": "^2.4.1",
+    "minimist": "0.2.0",
+    "ncp": "^0.5.1",
+    "open": "0.0.5",
+    "require-dir": "^0.1.0",
+    "rimraf": "^2.2.8",
+    "run-sequence": "^0.3.6",
+    "update-notifier": "^0.1.10"
+  },
+  "devDependencies": {
+    "gulp-debug": "^0.3.0"
+  },
+  "engines": {
+    "node": ">= 0.9"
+  },
+  "bin": {
+    "nsp": "./bin/nsp.js"
+  },
+  "engineStrict": true,
   "homepage": "https://github.com/jbaxleyiii/nsp"
 }
