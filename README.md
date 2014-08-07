@@ -1,0 +1,4 @@
+nsp
+===
+
+NewSpring build environment 
