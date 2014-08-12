@@ -2,4 +2,4 @@
 'use strict';
 
 require('coffee-script/register');
-require('./nsp-main');
+require('../lib/nsp-main');

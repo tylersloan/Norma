@@ -5,7 +5,7 @@
 
 chalk = require 'chalk'
 Liftoff = require 'liftoff'
-
+argv = require('minimist')( process.argv.slice(2) )
 
 # CLI configuration ----------------------------------------------------------
 
@@ -26,6 +26,12 @@ cli = new Liftoff({
 
 
 # Launch CLI -----------------------------------------------------------------
-launcher = require('./methods/launcher')
+invoke = require('./methods/launcher')
 
-cli.launch({}, launcher)
+cli.launch({
+	cwd: argv.cwd
+	configPath: argv.nspfile
+	require: argv.require
+	completion: argv.completion
+	verbose: argv.verbose
+	}, invoke)

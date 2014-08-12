@@ -5,16 +5,22 @@ argv = require('minimist')( process.argv.slice(2) )
 gulp = require 'gulp'
 chalk = require 'chalk'
 
-gulpFile = require( path.join(path.dirname(fs.realpathSync(__filename)), '../../gulpfile.js'))
+# gulpFile = require( path.join(path.dirname(fs.realpathSync(__filename)), '../../gulpfile.js'))
 
 
 logger = require '../logging/logger'
 
 module.exports = (env) ->
 
+
+	if env.configPath
+		process.chdir(env.configBase);
+		config = require(env.configPath);
+
 	cliPackage = require '../../package'
 
 	versionFlag = argv.v or argv.version
+
 
 	allowedTasks = [
 		'init'
