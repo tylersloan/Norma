@@ -7,6 +7,7 @@ chalk = require 'chalk'
 Liftoff = require 'liftoff'
 argv = require('minimist')( process.argv.slice(2) )
 
+
 # CLI configuration ----------------------------------------------------------
 
 cli = new Liftoff({
