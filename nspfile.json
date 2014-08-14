@@ -1,6 +1,0 @@
-{
-	"stylesheets" : {
-		"src" : "./scaffolds/multisite/assets/_source/stylesheets",
-		"dest" : "./scaffolds/multisite/assets/css"
-	}
-}
