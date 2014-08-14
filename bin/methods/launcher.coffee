@@ -5,7 +5,8 @@ argv = require('minimist')( process.argv.slice(2) )
 gulp = require 'gulp'
 chalk = require 'chalk'
 
-gulpFile = require( path.join(path.dirname(fs.realpathSync(__filename)), '../../gulpfile.js'))
+# gulpFile = require( path.join(path.dirname(fs.realpathSync(__filename)), '../../gulpfile.js'))
+
 
 logger = require '../logging/logger'
 
@@ -20,13 +21,14 @@ module.exports = (env) ->
 
 	versionFlag = argv.v or argv.version
 
-	# allowedTasks = [
-	# 	'init'
-	# 	'build'
-	# 	'i'
-	# 	'info'
-	# 	'test'
-	# ]
+
+	allowedTasks = [
+		'init'
+		'build'
+		'i'
+		'info'
+		'test'
+	]
 
 	task = argv._
 
@@ -67,17 +69,17 @@ module.exports = (env) ->
 		process.exit 0
 
 
-	# # Check if task is valid
-	# if _.indexOf(allowedTasks, task) < 0
-	# 	console.log(
-	# 		chalk.red(
-	# 			'\nThe provided task "' + task + '" was not recognized. Aborting.\n'
-	# 		)
-	# 	)
-	#
-	# 	logger.logTasks()
-	#
-	# 	process.exit 0
+	# Check if task is valid
+	if _.indexOf(allowedTasks, task) < 0
+		console.log(
+			chalk.red(
+				'\nThe provided task "' + task + '" was not recognized. Aborting.\n'
+			)
+		)
+
+		logger.logTasks()
+
+		process.exit 0
 
 
 
@@ -91,6 +93,5 @@ module.exports = (env) ->
 
 	# Start the task through Gulp
 	process.nextTick( ->
-		# gulp.start.apply gulp, [task]
-		gulp.tasks[task].fn(config)
+		gulp.start.apply gulp, [task]
 	)
