@@ -2,13 +2,18 @@
 	"sass" : {
 		"src" : "./assets/_source/stylesheets/",
 		"dest" : "./assets/css/",
-		"minify" : false,
-		"prefix" : false,
-		"combine" : false
+		"minify" : true
 	},
 	"javascript" : {
 		"src" : "./assets/_source/javascripts/",
 		"dest" : "./assets/js",
+		"minify" : true,
+		"lint" : false,
+		"test" : false
+	},
+	"templates" : {
+		"src" : "./assets/_source/templates/",
+		"dest" : "./assets/templates",
 		"minify" : true,
 		"lint" : false,
 		"test" : false
