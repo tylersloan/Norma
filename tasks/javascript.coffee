@@ -1,8 +1,8 @@
-path       = require("path")
-globule    = require("globule")
-chalk      = require("chalk")
-sequence   = require("run-sequence")
-gulp       = require("gulp")
+path       = require "path"
+globule    = require "globule"
+chalk      = require "chalk"
+sequence   = require "run-sequence"
+gulp       = require "gulp"
 plugins    = require('gulp-load-plugins')()
 flags      = require("minimist")(process.argv.slice(2))
 gutil      = require 'gulp-util'
@@ -11,6 +11,8 @@ watch      = require 'gulp-watch'
 
 cwd = process.cwd()
 
+config     = require('../lib/config/config')(cwd)
+
 
 # FLAGS ----------------------------------------------------------------------
 
@@ -18,21 +20,23 @@ lrDisable = flags.nolr or false
 isProduction = flags.production or flags.prod or false
 env = if flags.production or flags.prod then 'production' else 'development'
 
-config = {}
-
-gulp.task 'javascript', (configFile) ->
 
 
-  config = configFile
+
+gulp.task 'javascript', () ->
+
   config.src = path.normalize(config.javascript.src)
   config.dest = path.normalize(config.javascript.dest)
 
 
   sequence "javascript-clean", "javascript-compile",  ->
 
-    console.log chalk.green("✔ All done!")
+    console.log chalk.green("Javascript: ✔ All done!")
 
     return
+
+gulp.tasks['javascript'].ext = ['.js', '.coffee']
+
 
 # CLEAN ----------------------------------------------------------------------
 
@@ -102,5 +106,5 @@ gulp.task 'javascript-compile', ['javascript-hint'], (cb) ->
     .pipe( plugins.if(isProduction, plugins.replace(/(\/\/)?(console\.)?log\((.*?)\);?/g, '')))
     .pipe plugins.if(isProduction, plugins.uglify(), plugins.beautify())
     .pipe gulp.dest(config.dest)
-    .pipe plugins.filesize()
+    # .pipe plugins.filesize()
     .on('error', gutil.log)

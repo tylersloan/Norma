@@ -1,36 +1,16 @@
-path = require 'path'
-fs = require 'fs'
-_ = require 'lodash'
-argv = require('minimist')( process.argv.slice(2) )
-gulp = require 'gulp'
-chalk = require 'chalk'
 
-gulpFile = require( path.join(path.dirname(fs.realpathSync(__filename)), '../../gulpfile.js'))
+argv = require('minimist')( process.argv.slice(2) )
+chalk = require 'chalk'
 
 logger = require '../logging/logger'
 
+
 module.exports = (env) ->
-
-
-	if env.configPath
-		process.chdir(env.configBase);
-		config = require(env.configPath);
 
 	cliPackage = require '../../package'
 
 	versionFlag = argv.v or argv.version
-
-	# allowedTasks = [
-	# 	'init'
-	# 	'build'
-	# 	'i'
-	# 	'info'
-	# 	'test'
-	# ]
-
 	task = argv._
-
-	numTasks = task.length
 
 
 	# Check for version flag
@@ -41,20 +21,12 @@ module.exports = (env) ->
 		process.exit 0
 
 
-	# Log info if no tasks are passed in
-	if !numTasks
+	if task.length is 1
+		task = task[0]
+
+	else if task.length is 0
 
 		logger.logInfo(cliPackage)
-
-		process.exit 0
-
-
-	# Warn if more than one tasks has been passed in
-	if numTasks > 1 and numTasks[0] isnt "init"
-
-		console.log chalk.red('\nOnly one task can be provided. Aborting.\n')
-
-		logger.logTasks()
 
 		process.exit 0
 
@@ -67,20 +39,6 @@ module.exports = (env) ->
 		process.exit 0
 
 
-	# # Check if task is valid
-	# if _.indexOf(allowedTasks, task) < 0
-	# 	console.log(
-	# 		chalk.red(
-	# 			'\nThe provided task "' + task + '" was not recognized. Aborting.\n'
-	# 		)
-	# 	)
-	#
-	# 	logger.logTasks()
-	#
-	# 	process.exit 0
-
-
-
 	# Change directory to where nsp was called from
 	if process.cwd() isnt env.cwd
 		process.chdir env.cwd
@@ -89,8 +47,11 @@ module.exports = (env) ->
 		)
 
 
-	# Start the task through Gulp
-	process.nextTick( ->
-		# gulp.start.apply gulp, [task]
-		gulp.tasks[task].fn(config)
-	)
+	if task is 'build'
+		runTasks = require './tasks'
+
+		runTasks(task, env)
+
+	if task is 'init' or task[0] is 'init'
+		scaffold = require './scaffold'
+		scaffold(task, env)

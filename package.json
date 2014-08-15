@@ -81,6 +81,7 @@
     "open": "0.0.5",
     "require-dir": "^0.1.0",
     "rimraf": "^2.2.8",
+    "rmdir": "^1.0.4",
     "run-sequence": "^0.3.6",
     "update-notifier": "^0.1.10"
   },

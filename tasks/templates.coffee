@@ -11,6 +11,8 @@ watch      = require 'gulp-watch'
 
 cwd = process.cwd()
 
+config     = require('../lib/config/config')(cwd)
+
 
 # FLAGS ----------------------------------------------------------------------
 
@@ -19,22 +21,21 @@ isProduction = flags.production or flags.prod or false
 env = if flags.production or flags.prod then 'production' else 'development'
 
 
-config = {}
-
-gulp.task 'templates', (configFile) ->
 
 
-  config = configFile
+gulp.task 'templates', () ->
+
   config.src = path.normalize(config.templates.src)
   config.dest = path.normalize(config.templates.dest)
 
 
   sequence "templates-clean", "templates-compile",  ->
 
-    console.log chalk.green("✔ All done!")
+    console.log chalk.green("Templates: ✔ All done!")
 
     return
 
+gulp.tasks['templates'].ext = ['.html', '.ejs', '.handlebars']
 
 # CLEAN ----------------------------------------------------------------------
 

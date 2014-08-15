@@ -1,0 +1,70 @@
+
+path = require 'path'
+fs = require 'fs'
+_ = require 'lodash'
+gulp = require 'gulp'
+gulpFile = require( path.join(path.dirname(fs.realpathSync(__filename)), '../../gulpfile.js'))
+dirTree = require './dirTree'
+
+
+
+
+
+module.exports = (tasks, env) ->
+
+  if env.configPath
+    process.chdir(env.configBase)
+    config = require(env.configPath)
+
+  fileTypes = new Array
+
+
+  generateTaskList = (types, cb) ->
+
+    taskList = new Array
+    for task of gulp.tasks
+      if gulp.tasks[task].ext
+
+        for type in types
+
+          if gulp.tasks[task].ext.indexOf(type) > -1
+
+            taskList.push(task)
+
+    cb(taskList)
+
+
+  getFileTypes = (files) ->
+
+    for child in files.children
+
+      if child.type is 'folder'
+        getFileTypes(child)
+      else
+        ext = path.extname(child.name)
+        unless fileTypes.indexOf(ext) > -1
+          fileTypes.push(ext)
+
+
+
+  getExistingFileTypes = (config) ->
+
+    for key of config
+      configItem = config[key]
+      folders = dirTree configItem.src
+      getFileTypes(folders)
+
+
+	# structure = dirTree(env.configBase)
+
+  getExistingFileTypes(config)
+
+
+  cb = (list)->
+    gulp.task( 'default', list)
+
+    process.nextTick( ->
+      gulp.start(['default'])
+    )
+
+  generateTaskList(fileTypes, cb)
