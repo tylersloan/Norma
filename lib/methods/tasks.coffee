@@ -4,7 +4,7 @@ fs = require 'fs'
 _ = require 'lodash'
 gulp = require 'gulp'
 gulpFile = require( path.join(path.dirname(fs.realpathSync(__filename)), '../../gulpfile.js'))
-dirTree = require './dirTree'
+mapTree = require('./dirTree').mapTree
 
 
 
@@ -51,11 +51,9 @@ module.exports = (tasks, env) ->
 
     for key of config
       configItem = config[key]
-      folders = dirTree configItem.src
+      folders = mapTree configItem.src
       getFileTypes(folders)
 
-
-	# structure = dirTree(env.configBase)
 
   getExistingFileTypes(config)
 
