@@ -53,5 +53,5 @@ module.exports = (env) ->
 		runTasks(task, env)
 
 	if task is 'init' or task[0] is 'init'
-		scaffold = require './scaffold'
+		scaffold = require './scaffold/init'
 		scaffold(task, env)

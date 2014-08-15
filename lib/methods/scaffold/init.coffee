@@ -2,41 +2,47 @@ _				= require("lodash")
 inquirer = require("inquirer")
 fs			 = require("fs")
 chalk		= require("chalk")
-dirTree = require("./dirTree")
+mapTree = require("../dirTree").mapTree
 path = require("path")
+build = require("./build")
+removeTree = require("../dirTree").removeTree
 
 
-rmDir = (dirPath, keep) ->
-	try
-		files = fs.readdirSync(dirPath)
-	catch e
-		return
-
-	if files.length > 0
-		i = 0
-
-		while i < files.length
-
-			filePath = dirPath + "/" + files[i]
-
-			if fs.statSync(filePath).isFile()
-				fs.unlinkSync filePath
-			else
-				rmDir filePath
-
-			i++
-
-	unless keep then fs.rmdirSync dirPath
-	return
 
 module.exports = (tasks, env) ->
 
-	scaffolds = path.join(path.dirname(fs.realpathSync(__filename))) + "/../../scaffolds"
-	scaffolds = dirTree scaffolds
+	scaffolds = path.join(path.dirname(fs.realpathSync(__filename))) + "/../../../scaffolds"
+	scaffolds = mapTree scaffolds
+	scaffoldNames = new Array
+
+	for scaffold in scaffolds.children
+		scaffoldNames.push(scaffold.name)
+
 
 	cwdFiles = _.remove(fs.readdirSync(env.cwd), (file) ->
 		file.substring(0, 1) isnt "."
 	)
+
+	chooseProject = (project) ->
+		projects = scaffolds.children.filter( (val) ->
+			return val.name is project;
+		)
+
+		if projects.length is 1
+			build(projects[0])
+		else
+			console.log(
+				chalk.red('That scaffold template is not found, try these:')
+			)
+			for name in scaffoldNames
+
+				if _i is scaffoldNames.length
+					console.log(chalk.cyan(name) )
+				else
+					console.log(chalk.cyan(name + '\n') )
+			console.log(chalk.grey('or'))
+			console.log(chalk.red('run `nsp init`'))
+
 
 	startInit = () ->
 
@@ -44,13 +50,10 @@ module.exports = (tasks, env) ->
 			type: "list"
 			message: "What type of project do you want to build?"
 			name: "projectType"
-			choices: ['multisite', 'core-js plugin', 'core-css object', 'ee plugin']
+			choices: scaffoldNames
 			default: false
 		, (answer) ->
-			console.log answer.projectType
-			for scaffold in scaffolds.children
-				if scaffold.name is answer.projectType
-					console.log scaffold
+			chooseProject answer.projectType
 
 
 
@@ -76,7 +79,7 @@ module.exports = (tasks, env) ->
 
 						# Clean up directory
 						console.log chalk.grey("Emptying current directory")
-						rmDir(env.cwd, true)
+						removeTree(env.cwd, true)
 						startInit()
 
 					else
@@ -84,5 +87,7 @@ module.exports = (tasks, env) ->
 
 			else
 				process.exit 0
-	else
+	else if typeof tasks is 'string'
 		startInit()
+	else
+		chooseProject(tasks[1])
