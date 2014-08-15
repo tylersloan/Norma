@@ -42,6 +42,7 @@ mapTree = (filename) ->
 	info
 
 copyTree = (src, dest) ->
+
 	mkdir dest
 	files = fs.readdirSync(src)
 	i = 0

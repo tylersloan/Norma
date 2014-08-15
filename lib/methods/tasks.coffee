@@ -3,7 +3,7 @@ path = require 'path'
 fs = require 'fs'
 _ = require 'lodash'
 gulp = require 'gulp'
-gulpFile = require( path.join(path.dirname(fs.realpathSync(__filename)), '../../gulpfile.js'))
+gulpFile = require('../../gulpfile')
 mapTree = require('./dirTree').mapTree
 
 
@@ -13,7 +13,6 @@ mapTree = require('./dirTree').mapTree
 module.exports = (tasks, env) ->
 
   if env.configPath
-    process.chdir(env.configBase)
     config = require(env.configPath)
 
   fileTypes = new Array
