@@ -3,10 +3,14 @@ globule    = require("globule")
 chalk      = require("chalk")
 sequence   = require("run-sequence")
 gulp       = require("gulp")
-plugins    = require('gulp-load-plugins')()
+
 flags      = require("minimist")(process.argv.slice(2))
 gutil      = require 'gulp-util'
 watch      = require 'gulp-watch'
+
+fs         = require "fs"
+packageLoc = path.dirname(fs.realpathSync(__filename)) + '/../package.json'
+plugins    = require('gulp-load-plugins')({config: packageLoc})
 
 
 cwd = process.cwd()

@@ -10,7 +10,8 @@ build = require("./build")
 module.exports = (project) ->
 
 	for child in project.children
+
 		if child.type is 'folder'
-			copyTree(child.path, process.cwd())
+			copyTree(child.path, path.join(process.cwd(), child.name))
 		if child.type is 'file'
 			copy(child.path, path.join(process.cwd(), child.name) )
