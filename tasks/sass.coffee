@@ -11,6 +11,8 @@ watch      = require 'gulp-watch'
 
 cwd = process.cwd()
 
+config     = require('../lib/config/config')(cwd)
+
 
 # FLAGS ----------------------------------------------------------------------
 
@@ -20,22 +22,20 @@ env = if flags.production or flags.prod then 'production' else 'development'
 
 lrStarted = false
 
-config = {}
 
-gulp.task 'sass', (configFile) ->
+gulp.task 'sass', () ->
 
-
-  config = configFile
   config.src = path.normalize(config.sass.src)
   config.dest = path.normalize(config.sass.dest)
 
 
   sequence "sass-clean", "sass-compile",  ->
 
-    console.log chalk.green("✔ All done!")
+    console.log chalk.green("Sass: ✔ All done!")
 
     return
 
+gulp.tasks['sass'].ext = ['.css', '.sass', '.scss']
 
 # CLEAN ----------------------------------------------------------------------
 
