@@ -23,19 +23,22 @@ isProduction = flags.production or flags.prod or false
 env = if flags.production or flags.prod then 'production' else 'development'
 
 
-
+config.src = path.normalize(config.javascript.src)
+config.dest = path.normalize(config.javascript.dest)
 
 gulp.task 'javascript', () ->
 
-  config.src = path.normalize(config.javascript.src)
-  config.dest = path.normalize(config.javascript.dest)
 
+  unless gulp.lrStarted
+    sequence "javascript-clean", "javascript-compile",	->
 
-  sequence "javascript-clean", "javascript-compile",  ->
+      console.log chalk.green("Javascript: ✔ All done!")
 
-    console.log chalk.green("Javascript: ✔ All done!")
+      return
+  else
+    sequence 'javascript-compile', ->
 
-    return
+      console.log chalk.green("Javascript: ✔ All done!")
 
 gulp.tasks['javascript'].ext = ['.js', '.coffee']
 

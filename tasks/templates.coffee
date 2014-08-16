@@ -3,11 +3,10 @@ globule    = require("globule")
 chalk      = require("chalk")
 sequence   = require("run-sequence")
 gulp       = require("gulp")
-
 flags      = require("minimist")(process.argv.slice(2))
 gutil      = require 'gulp-util'
 watch      = require 'gulp-watch'
-
+browserSync = require 'browser-sync'
 fs         = require "fs"
 packageLoc = path.dirname(fs.realpathSync(__filename)) + '/../package.json'
 plugins    = require('gulp-load-plugins')({config: packageLoc})
@@ -23,21 +22,26 @@ config     = require('../lib/config/config')(cwd)
 lrDisable = flags.nolr or false
 isProduction = flags.production or flags.prod or false
 env = if flags.production or flags.prod then 'production' else 'development'
+config.src = path.normalize(config.templates.src)
+config.dest = path.normalize(config.templates.dest)
 
 
 
 
 gulp.task 'templates', () ->
 
-  config.src = path.normalize(config.templates.src)
-  config.dest = path.normalize(config.templates.dest)
 
+  unless gulp.lrStarted
+    sequence "templates-clean", "templates-compile",	->
 
-  sequence "templates-clean", "templates-compile",  ->
+      console.log chalk.green("Templates: ✔ All done!")
 
-    console.log chalk.green("Templates: ✔ All done!")
+      return
+  else
+    sequence 'templates-compile', ->
 
-    return
+      console.log chalk.green("Templates: ✔ All done!")
+
 
 gulp.tasks['templates'].ext = ['.html', '.ejs', '.handlebars']
 
@@ -59,6 +63,8 @@ gulp.task "templates-clean", (cb) ->
 
 gulp.task('templates-compile', (cb) ->
 
+  console.log browserSync.active
+
   gulp.src([
     config.src + '/**/*.{html, ejs, handlebars}'
     ])
@@ -72,5 +78,6 @@ gulp.task('templates-compile', (cb) ->
     })
     .pipe plugins.clipboard()
     .pipe gulp.dest(config.dest)
+    .pipe plugins.if(gulp.lrStarted, browserSync.reload({stream:true}))
 
 )

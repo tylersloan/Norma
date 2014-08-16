@@ -47,12 +47,16 @@ module.exports = (env) ->
 		)
 
 
-	if task is 'build'
+	if task is 'build' or task[0] is 'build'
 		runTasks = require './tasks'
-
 		runTasks(task, env)
 
 
 	if task is 'init' or task[0] is 'init'
 		scaffold = require './scaffold/init'
 		scaffold(task, env)
+
+	if task is 'watch' or task[0] is 'watch'
+		serve = require './serve'
+		serve(task, env)
+		
