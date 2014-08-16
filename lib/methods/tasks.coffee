@@ -50,8 +50,9 @@ module.exports = (tasks, env) ->
 
     for key of config
       configItem = config[key]
-      folders = mapTree configItem.src
-      getFileTypes(folders)
+      if configItem.src?
+        folders = mapTree path.normalize(configItem.src)
+        getFileTypes(folders)
 
 
   getExistingFileTypes(config)

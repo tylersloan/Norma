@@ -18,10 +18,6 @@ logTasks = ->
 		'\tOpen up a browser for you (default Google Chrome)\n',
 		chalk.grey('--edit'),
 		'\tOpen the files in your editor (default Atom)\n',
-		chalk.grey('--nolr'),
-		'\tDisables the livereload snippet\n',
-		chalk.grey('--onlyassets'),
-		'\tOnly build the assets\n'
 	)
 	console.log(
 		chalk.magenta('i'),
