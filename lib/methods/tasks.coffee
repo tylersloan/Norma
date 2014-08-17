@@ -76,44 +76,28 @@ module.exports = (tasks, env) ->
 
     for taskOrder of list
       for task of list[taskOrder]
-        if list[taskOrder][task].length > 0
-          # Sync task, needs to be split into strings on build
-          if task is 'sync'
-            builtList.push list[taskOrder][task].join(',')
-          # Async task, needs to be kept as array
-          if task is 'async'
-            builtList.push list[taskOrder][task]
+        unless list[taskOrder][task].length > 0
+          list[taskOrder][task][0] = "through"
 
-    stringList = ''
+        builtList.push list[taskOrder][task]
 
-    # overlay complex way to make a list with array values in it
-    # would love a better solution here [todo]
-    for list in builtList
-
-      if typeof list isnt 'String'
-        stringList += "["
-        for item in list
-          stringList += '"' + item + '"'
-          unless _j is (list.length - 1)
-            stringList += ","
-
-        stringList += "]"
-      else stringList += list
-
-      unless _i is (builtList.length - 1)
-        stringList += ","
-
-
-    return stringList
+    return builtList
 
   cb = (list)->
 
     builtList = buildList(list)
 
-    console.log builtList
-    gulp.task 'default', () ->
-      sequence ["javascript","sass","templates"],["copy"], ->
-        console.log chalk.green("Build: ✔ All done!")
+
+    gulp.task 'through', (cb) ->
+      cb null
+
+
+    gulp.task 'default', builtList[0], () ->
+      sequence(
+        builtList[1], builtList[2], builtList[3], builtList[4], builtList[5],
+      ->
+        console.log chalk.magenta("Build Complete")
+      )
 
     process.nextTick( ->
       gulp.start(['default'])
