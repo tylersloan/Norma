@@ -22,11 +22,16 @@ lrDisable = flags.nolr or false
 isProduction = flags.production or flags.prod or false
 env = if flags.production or flags.prod then 'production' else 'development'
 
+unless config.javascript?
+  console.log(
+    chalk.red("No javascript task found in nspfile...aborting")
+  )
+  process.exit 0
 
 config.src = path.normalize(config.javascript.src)
 config.dest = path.normalize(config.javascript.dest)
 
-gulp.task 'javascript', () ->
+gulp.task 'javascript', (cb) ->
 
 
   unless gulp.lrStarted
@@ -40,7 +45,11 @@ gulp.task 'javascript', () ->
 
       console.log chalk.green("Javascript: ✔ All done!")
 
+  cb null
+
 gulp.tasks['javascript'].ext = ['.js', '.coffee']
+gulp.tasks['javascript'].type = 'async'
+gulp.tasks['javascript'].order = 'main'
 
 
 # CLEAN ----------------------------------------------------------------------
@@ -76,7 +85,7 @@ gulp.task 'javascript-test', (cb) ->
     # .on( 'error', plugins.notify.onError( title: 'Mocha ☕', message: 'HAS ERRORS' ))
     .on('error', handleError)
 
-
+  cb null
 
 gulp.task 'javascript-hint',  (cb) ->
 
@@ -90,7 +99,7 @@ gulp.task 'javascript-hint',  (cb) ->
     .on( 'error', plugins.notify.onError( title: 'CoffeeLint', message: 'HAS ERRORS' ))
     .on('error', gutil.log)
 
-
+  cb null
 
 
 gulp.task 'javascript-compile', ['javascript-hint'], (cb) ->
@@ -113,3 +122,5 @@ gulp.task 'javascript-compile', ['javascript-hint'], (cb) ->
     .pipe gulp.dest(config.dest)
     # .pipe plugins.filesize()
     .on('error', gutil.log)
+
+  cb null

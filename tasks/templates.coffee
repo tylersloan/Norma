@@ -22,13 +22,19 @@ config     = require('../lib/config/config')(cwd)
 lrDisable = flags.nolr or false
 isProduction = flags.production or flags.prod or false
 env = if flags.production or flags.prod then 'production' else 'development'
+
+unless config.templates?
+  console.log(
+    chalk.red("No templates task found in nspfile...aborting")
+  )
+  process.exit 0
+
 config.src = path.normalize(config.templates.src)
 config.dest = path.normalize(config.templates.dest)
 
 
 
-
-gulp.task 'templates', () ->
+gulp.task 'templates', (cb) ->
 
 
   unless gulp.lrStarted
@@ -42,8 +48,13 @@ gulp.task 'templates', () ->
 
       console.log chalk.green("Templates: ✔ All done!")
 
+  cb null
+
 
 gulp.tasks['templates'].ext = ['.html', '.ejs', '.handlebars']
+gulp.tasks['templates'].type = 'async'
+gulp.tasks['templates'].order = 'main'
+
 
 # CLEAN ----------------------------------------------------------------------
 
@@ -56,14 +67,14 @@ gulp.task "templates-clean", (cb) ->
     read: false
   ).pipe plugins.rimraf(force: true)
 
+  cb null
+
 
 
 # TEMPLATES -------------------------------------------------------------------
 
 
 gulp.task('templates-compile', (cb) ->
-
-  console.log browserSync.active
 
   gulp.src([
     config.src + '/**/*.{html, ejs, handlebars}'
@@ -79,5 +90,7 @@ gulp.task('templates-compile', (cb) ->
     .pipe plugins.clipboard()
     .pipe gulp.dest(config.dest)
     .pipe plugins.if(gulp.lrStarted, browserSync.reload({stream:true}))
+
+  cb null
 
 )

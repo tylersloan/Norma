@@ -17,6 +17,13 @@
 		"minify" : true,
 		"lint" : false,
 		"test" : false
+	},
+	"copy" : {
+		"src" : "./assets/_source/templates/",
+		"dest" : "./assets/templates/",
+		"ext" : [
+			"feed", "json", "img"
+		]
 	}
 
 }

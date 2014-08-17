@@ -22,10 +22,17 @@ lrDisable = flags.nolr or false
 isProduction = flags.production or flags.prod or false
 env = if flags.production or flags.prod then 'production' else 'development'
 
+
+unless config.sass?
+	console.log(
+		chalk.red("No sass task found in nspfile...aborting")
+	)
+	process.exit 0
+
 config.src = path.normalize(config.sass.src)
 config.dest = path.normalize(config.sass.dest)
 
-gulp.task 'sass', () ->
+gulp.task 'sass', (cb) ->
 
 	unless gulp.lrStarted
 		sequence "sass-clean", "sass-compile",	->
@@ -38,7 +45,11 @@ gulp.task 'sass', () ->
 
       console.log chalk.green("Sass: ✔ All done!")
 
+	cb null
+
 gulp.tasks['sass'].ext = ['.css', '.sass', '.scss']
+gulp.tasks['sass'].type = 'async'
+gulp.tasks['sass'].order = 'main'
 
 # CLEAN ----------------------------------------------------------------------
 
@@ -50,6 +61,8 @@ gulp.task "sass-clean", (cb) ->
 	],
 		read: false
 	).pipe plugins.rimraf(force: true)
+
+	cb null
 
 
 
@@ -83,3 +96,5 @@ gulp.task "sass-compile", ( cb) ->
 		.pipe gulp.dest(config.dest)
     .pipe plugins.if(gulp.lrStarted, browserSync.reload({stream:true}))
 		.on('error', gutil.log)
+
+	cb null
