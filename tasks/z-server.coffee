@@ -87,9 +87,9 @@ gulp.task "browsersync", (cb) ->
 					# console.log(req, res)
 					next()
 			]
-		logConnections: true
-		logLevel: 'debug'
-		browser: "google chrome"
+		logConnections: false
+		logLevel: 'slient'
+		browser: "none"
 	, (err, data) ->
 		if err isnt null
 			console.log chalk.red("✘	Setting up a local server failed... Please try again. Aborting.\n") + chalk.red(err)
@@ -101,9 +101,6 @@ gulp.task "browsersync", (cb) ->
 
 		# Store lr in Gulp to span files
 		gulp.lrStarted = true
-
-		# Sass is weird for watching so manually start it here
-		# gulp.start "sass-compile"
 
 		# Show some logs
 		console.log chalk.cyan("🌐	Local access at"), chalk.magenta("http://localhost:" + connection.port)
@@ -124,78 +121,78 @@ gulp.task "browsersync", (cb) ->
 # NGROK ----------------------------------------------------------------------
 #
 # https://ngrok.com
-gulp.task "tunnel", (cb) ->
-
-	# Quit this task if no flag was set or if the url is already set to
-	# prevent a "task completion callback called too many times" error
-	if not isTunnel or tunnelUrl isnt null
-		cb null
-		return
-	console.log chalk.grey("☞	Tunneling local server to the web...")
-	verbose chalk.grey("☞	Running task \"tunnel\"")
-
-	# Expose local server to web through tunnel
-	# with Ngrok
-	ngrok.connect connection.port, (err, url) ->
-
-		# If there was an error, log it and exit
-		if err isnt null
-			console.log chalk.red("✘	Tunneling failed, please try again. Aborting.\n") + chalk.red(err)
-			process.exit 0
-		tunnelUrl = url
-		console.log chalk.cyan("🌐	Public access at"), chalk.magenta(tunnelUrl)
-		cb null
-		return
-
-	return
-
-
-# PAGESPEED INSIGHTS ---------------------------------------------------------
+# gulp.task "tunnel", (cb) ->
 #
-gulp.task "psi", ["tunnel"], (cb) ->
-
-	# Quit this task if no flag was set
-	unless isPSI
-		cb null
-		return
-
-	# Quit this task if ngrok somehow didn't run correctly
-	if tunnelUrl is null
-		console.log chalk.red("✘	Running PSI cancelled because Ngrok didn't initiate correctly...")
-		cb null
-		return
-	verbose chalk.grey("☞	Running task \"psi\"")
-	console.log chalk.grey("☞	Running PageSpeed Insights...")
-
-	# Define PSI options
-	opts =
-		url: tunnelUrl
-		strategy: flags.strategy or "desktop"
-		threshold: 80
-
-
-	# Set the key if one was passed in
-	console.log chalk.yellow.inverse("Using a key is not yet supported as it just crashes the process. For now, continue using `--psi` without a key.")	if !!flags.key and _.isString(flags.key)
-
-	# TODO: Fix key
-	#opts.key = flags.key;
-
-	# Run PSI
-	psi opts, (err, data) ->
-
-		# If there was an error, log it and exit
-		if err isnt null
-			console.log chalk.red("✘	Threshold of " + opts.threshold + " not met with score of " + data.score)
-		else
-			console.log chalk.green("✔	Threshold of " + opts.threshold + " exceeded with score of " + data.score)
-		cb null
-		return
-
-
-	# Since psi throw's the threshold error,
-	# we have to listen for it process-wide (bad!) — ONCE
-	process.once "uncaughtException", (err) ->
-		console.log chalk.red(err)
-		return
-
-	return
+# 	# Quit this task if no flag was set or if the url is already set to
+# 	# prevent a "task completion callback called too many times" error
+# 	if not isTunnel or tunnelUrl isnt null
+# 		cb null
+# 		return
+# 	console.log chalk.grey("☞	Tunneling local server to the web...")
+# 	verbose chalk.grey("☞	Running task \"tunnel\"")
+#
+# 	# Expose local server to web through tunnel
+# 	# with Ngrok
+# 	ngrok.connect connection.port, (err, url) ->
+#
+# 		# If there was an error, log it and exit
+# 		if err isnt null
+# 			console.log chalk.red("✘	Tunneling failed, please try again. Aborting.\n") + chalk.red(err)
+# 			process.exit 0
+# 		tunnelUrl = url
+# 		console.log chalk.cyan("🌐	Public access at"), chalk.magenta(tunnelUrl)
+# 		cb null
+# 		return
+#
+# 	return
+#
+#
+# # PAGESPEED INSIGHTS ---------------------------------------------------------
+# #
+# gulp.task "psi", ["tunnel"], (cb) ->
+#
+# 	# Quit this task if no flag was set
+# 	unless isPSI
+# 		cb null
+# 		return
+#
+# 	# Quit this task if ngrok somehow didn't run correctly
+# 	if tunnelUrl is null
+# 		console.log chalk.red("✘	Running PSI cancelled because Ngrok didn't initiate correctly...")
+# 		cb null
+# 		return
+# 	verbose chalk.grey("☞	Running task \"psi\"")
+# 	console.log chalk.grey("☞	Running PageSpeed Insights...")
+#
+# 	# Define PSI options
+# 	opts =
+# 		url: tunnelUrl
+# 		strategy: flags.strategy or "desktop"
+# 		threshold: 80
+#
+#
+# 	# Set the key if one was passed in
+# 	console.log chalk.yellow.inverse("Using a key is not yet supported as it just crashes the process. For now, continue using `--psi` without a key.")	if !!flags.key and _.isString(flags.key)
+#
+# 	# TODO: Fix key
+# 	#opts.key = flags.key;
+#
+# 	# Run PSI
+# 	psi opts, (err, data) ->
+#
+# 		# If there was an error, log it and exit
+# 		if err isnt null
+# 			console.log chalk.red("✘	Threshold of " + opts.threshold + " not met with score of " + data.score)
+# 		else
+# 			console.log chalk.green("✔	Threshold of " + opts.threshold + " exceeded with score of " + data.score)
+# 		cb null
+# 		return
+#
+#
+# 	# Since psi throw's the threshold error,
+# 	# we have to listen for it process-wide (bad!) — ONCE
+# 	process.once "uncaughtException", (err) ->
+# 		console.log chalk.red(err)
+# 		return
+#
+# 	return
