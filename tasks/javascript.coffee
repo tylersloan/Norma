@@ -63,6 +63,7 @@ gulp.task "javascript-clean", (cb) ->
     read: false
   ).pipe plugins.rimraf(force: true)
 
+  cb null
 
 # SCRIPTS ---------------------------------------------------------------------
 

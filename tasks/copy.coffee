@@ -67,6 +67,7 @@ gulp.task('copy-compile', (cb) ->
     config.src + "/**/*.{" + extType + "}"
   ])
     .pipe plugins.plumber()
+    .pipe plugins.clipboard()
     .pipe gulp.dest(config.dest)
 
   cb null
