@@ -7,19 +7,42 @@ copy = require("../dirTree").copy
 path = require("path")
 config = require "../../config/config"
 exec = require('child_process').exec
-
-
-
-
-
+argv = require('minimist')( process.argv.slice(2) )
 
 module.exports = (project) ->
+
+
+	scaffoldConfig = config path.join(project.path)
+
+
+	runConfigCommand = (action, cwd) ->
+
+		file = fs.existsSync(
+			path.join(cwd, action)
+		)
+
+		if file
+			require path.join(cwd, action)
+
+		else
+			child = exec(action, (err, stdout, stderr) ->
+				throw err if err
+
+			)
+
+
 
 	compile = ->
 
 
 		buildTasks = require('../tasks')
-		buildTasks('build', process.cwd())
+		tasks = argv._
+		tasks[0] = "build"
+
+		buildTasks(tasks, process.cwd())
+
+		if scaffoldConfig.scripts.postinstall?
+			runConfigCommand(scaffoldConfig.scripts.postinstall, project.path)
 
 
 
@@ -28,37 +51,32 @@ module.exports = (project) ->
 		nspFile = config(process.cwd())
 		if nspFile.scripts?
 			for action of nspFile.scripts
-				file = fs.existsSync(
-					path.join(process.cwd(), nspFile.scripts[action])
-				)
-
-				if file
-					console.log 'this is a file', nspFile.scripts[action]
-					require path.join(process.cwd(), nspFile.scripts[action])
-				else
-					child = exec(nspFile.scripts[action], (err, stdout, stderr) ->
-						throw err if err
-
-					)
+				unless action is 'preinstall' or action is 'postinstall'
+					runConfigCommand(nspFile.scripts[action], process.cwd())
 
 
-		# prepublish: Run BEFORE the package is published. (Also run on local npm install without any arguments.)
-		# publish, postpublish: Run AFTER the package is published.
-		# preinstall: Run BEFORE the package is installed
-		# install, postinstall: Run AFTER the package is installed.
-		# preuninstall, uninstall: Run BEFORE the package is uninstalled.
-		# postuninstall: Run AFTER the package is uninstalled.
-		# preupdate: Run BEFORE the package is updated with the update command.
-		# update, postupdate: Run AFTER the package is updated with the update command.
-		# pretest, test, posttest: Run by the npm test command.
-		# prestop, stop, poststop: Run by the npm stop command.
-		# prestart, start, poststart: Run by the npm start command.
 
 		# Before compiling, remove the nspignore folder
 		fs.remove(path.join(process.cwd() + '/nspignore') )
 
 		# compile
 		compile()
+
+
+
+	###
+
+		Run preinstall command
+
+		Thoughts on being able to make this an async task with a callback?
+		Or perhaps promise based
+
+		[todo]
+
+	###
+	if scaffoldConfig.scripts.preinstall?
+		runConfigCommand(scaffoldConfig.scripts.preinstall, project.path)
+
 
 	# Copy over all of the things
 	fs.copySync(project.path, process.cwd())
