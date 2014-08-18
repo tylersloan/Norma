@@ -48,8 +48,8 @@ gulp.task 'sass', (cb) ->
 	cb null
 
 gulp.tasks['sass'].ext = ['.css', '.sass', '.scss']
-gulp.tasks['sass'].type = 'async'
-gulp.tasks['sass'].order = 'main'
+
+
 
 # CLEAN ----------------------------------------------------------------------
 

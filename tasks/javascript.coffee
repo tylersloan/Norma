@@ -48,8 +48,7 @@ gulp.task 'javascript', (cb) ->
   cb null
 
 gulp.tasks['javascript'].ext = ['.js', '.coffee']
-gulp.tasks['javascript'].type = 'async'
-gulp.tasks['javascript'].order = 'main'
+
 
 
 # CLEAN ----------------------------------------------------------------------

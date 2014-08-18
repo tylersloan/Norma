@@ -2,23 +2,22 @@
 path = require 'path'
 fs = require 'fs'
 _ = require 'lodash'
-gulp = require 'gulp'
-gulpFile = require('../../gulpfile')
+
 mapTree = require('./dirTree').mapTree
 sequence   = require "run-sequence"
 chalk = require 'chalk'
+config = require '../config/config'
 
 
 
 
 
-module.exports = (tasks, env) ->
 
-  if env.configPath
-    config = require(env.configPath)
+module.exports = (tasks, configPath) ->
+
+  config = config(configPath)
 
   fileTypes = new Array
-
 
   generateTaskList = (types, cb) ->
 
@@ -33,6 +32,7 @@ module.exports = (tasks, env) ->
         sync: []
         async: []
 
+
     for task of gulp.tasks
 
       if gulp.tasks[task].ext
@@ -40,8 +40,14 @@ module.exports = (tasks, env) ->
         for type in types
 
           if gulp.tasks[task].ext.indexOf(type) > -1
-            taskList[gulp.tasks[task].order][gulp.tasks[task].type].push(task)
-            # taskList.push(task)
+
+            if gulp.tasks[task].order isnt `undefined`
+
+              if gulp.tasks[task].type is `undefined`
+                gulp.tasks[task].type = 'async'
+
+              taskList[gulp.tasks[task].order][gulp.tasks[task].type].push(task)
+            else taskList.main.async.push(task)
 
     cb(taskList)
 
@@ -78,23 +84,28 @@ module.exports = (tasks, env) ->
       for task of list[taskOrder]
         unless list[taskOrder][task].length > 0
           list[taskOrder][task][0] = "through"
-
         builtList.push list[taskOrder][task]
 
     return builtList
+
+
+  gulp = require 'gulp'
+  gulpFile = require('../../gulpfile')
+
+  gulp.task "through", (cb) ->
+    cb null
 
   cb = (list)->
 
     builtList = buildList(list)
 
 
-    gulp.task 'through', (cb) ->
-      cb null
+    gulp.task 'default', () ->
 
-
-    gulp.task 'default', builtList[0], () ->
       sequence(
-        builtList[1], builtList[2], builtList[3], builtList[4], builtList[5],
+        builtList[0], builtList[1],
+        builtList[2], builtList[3],
+        builtList[4], builtList[5],
       ->
         console.log chalk.magenta("Build Complete")
       )

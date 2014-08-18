@@ -4,9 +4,6 @@ fs = require 'fs'
 _ = require 'lodash'
 gulp = require 'gulp'
 gulpFile = require('../../gulpfile')
-mapTree = require('./dirTree').mapTree
-
-
 
 
 

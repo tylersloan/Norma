@@ -1,6 +1,6 @@
 _				= require("lodash")
 inquirer = require("inquirer")
-fs			 = require("fs")
+fs			 = require("fs-extra")
 chalk		= require("chalk")
 mapTree = require("../dirTree").mapTree
 path = require("path")
