@@ -45,15 +45,17 @@ module.exports = (tasks, env) ->
 
 
 	startInit = () ->
-
-		inquirer.prompt
-			type: "list"
-			message: "What type of project do you want to build?"
-			name: "projectType"
-			choices: scaffoldNames
-			default: false
-		, (answer) ->
-			chooseProject answer.projectType
+		unless tasks.length > 1
+			inquirer.prompt
+				type: "list"
+				message: "What type of project do you want to build?"
+				name: "projectType"
+				choices: scaffoldNames
+				default: false
+			, (answer) ->
+				chooseProject answer.projectType
+		else
+			chooseProject tasks[1]
 
 
 
