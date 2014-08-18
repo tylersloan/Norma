@@ -44,10 +44,9 @@ gulp.task 'copy', (cb) ->
   return
 
 
-
 gulp.tasks['copy'].ext = config.copy.ext
-gulp.tasks['copy'].type = 'async'
 gulp.tasks['copy'].order = 'post'
+
 
 
 

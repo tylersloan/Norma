@@ -52,8 +52,6 @@ gulp.task 'templates', (cb) ->
 
 
 gulp.tasks['templates'].ext = ['.html', '.ejs', '.handlebars']
-gulp.tasks['templates'].type = 'async'
-gulp.tasks['templates'].order = 'main'
 
 
 # CLEAN ----------------------------------------------------------------------

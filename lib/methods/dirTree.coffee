@@ -13,10 +13,15 @@ mkdir = (dir) ->
 	return
 
 
-copy = (src, dest) ->
+copy = (src, dest, cb) ->
 	oldFile = fs.createReadStream(src)
 	newFile = fs.createWriteStream(dest)
-	oldFile.pipe(newFile)
+	oldFile.pipe(newFile).on('close', (err) ->
+		throw err if err
+
+		if cb then cb dest
+	)
+
 	return
 
 
@@ -41,7 +46,7 @@ mapTree = (filename) ->
 
 	info
 
-copyTree = (src, dest) ->
+copyTree = (src, dest, cb) ->
 
 	mkdir dest
 	files = fs.readdirSync(src)
@@ -55,9 +60,16 @@ copyTree = (src, dest) ->
 			symlink = fs.readlinkSync(path.join(src, files[i]))
 			fs.symlinkSync symlink, path.join(dest, files[i])
 		else
-			copy path.join(src, files[i]), path.join(dest, files[i])
+			copy(path.join(src, files[i]), path.join(dest, files[i]), (dest) ->
+				console.log dest + 'has been moved over '
+			)
+
+		console.log i, files.length
 		i++
+
+	if cb then cb null
 	return
+
 
 removeTree = (dirPath, keep) ->
 	try

@@ -24,6 +24,10 @@
 		"ext" : [
 			"feed", "json", "img"
 		]
+	},
+	"scripts" : {
+		"start" : "ls",
+		"postinstall" : "nspignore/test.js"
 	}
 
 }
