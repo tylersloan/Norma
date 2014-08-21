@@ -1,13 +1,10 @@
-_				= require("lodash")
 inquirer = require("inquirer")
-fs			 = require("fs-extra")
-chalk		= require("chalk")
-copyTree = require("../dirTree").copyTree
-copy = require("../dirTree").copy
-path = require("path")
-config = require "../../config/config"
-exec = require('child_process').exec
-argv = require('minimist')( process.argv.slice(2) )
+fs       = require("fs-extra")
+chalk    = require("chalk")
+path     = require("path")
+config   = require "../../config/config"
+exec     = require('child_process').exec
+argv     = require('minimist')( process.argv.slice(2) )
 
 module.exports = (project) ->
 
@@ -76,6 +73,7 @@ module.exports = (project) ->
 	###
 	if scaffoldConfig.scripts.preinstall?
 		runConfigCommand(scaffoldConfig.scripts.preinstall, project.path)
+
 
 
 	# Copy over all of the things

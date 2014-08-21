@@ -1,11 +1,13 @@
 
 argv = require('minimist')( process.argv.slice(2) )
 chalk = require 'chalk'
+nconf = require 'nconf'
 
 logger = require '../logging/logger'
 
 
 module.exports = (env) ->
+
 
 	cliPackage = require '../../package'
 
@@ -59,3 +61,7 @@ module.exports = (env) ->
 	if task is 'watch' or task[0] is 'watch'
 		serve = require './serve'
 		serve(task, env)
+
+	if task is 'config' or task[0] is 'config'
+		manage = require '../config/manage'
+		manage(task, env)

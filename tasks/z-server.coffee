@@ -1,32 +1,24 @@
-path			 = require "path"
-globule		= require "globule"
-chalk			= require "chalk"
-sequence	 = require "run-sequence"
-gulp			 = require "gulp"
-flags			= require("minimist")(process.argv.slice(2))
-gutil			= require 'gulp-util'
+path        = require "path"
+globule     = require "globule"
+chalk       = require "chalk"
+sequence    = require "run-sequence"
+gulp        = require "gulp"
+flags       = require("minimist")(process.argv.slice(2))
+gutil       = require 'gulp-util'
 browserSync = require 'browser-sync'
-fs				 = require "fs"
-packageLoc = path.dirname(fs.realpathSync(__filename)) + '/../package.json'
-plugins		= require('gulp-load-plugins')({config: packageLoc})
+fs          = require "fs"
+packageLoc  = path.dirname(fs.realpathSync(__filename)) + '/../package.json'
+plugins     = require('gulp-load-plugins')({config: packageLoc})
+util        = require './util'
+nconf       = require 'nconf'
 
 
 
 
 # VARS -----------------------------------------------------------------------
 
-# gitConfig =
-#	 user: "flovan"
-#	 repo: "headstart-boilerplate"
-#	 ref: "1.1.0"
-
 cwd = process.cwd()
 lrStarted = false
-connection =
-	local: "localhost"
-	external: null
-	port: null
-
 isProduction = (flags.production or flags.p) or false
 isServe = (flags.serve or flags.s) or false
 isOpen = (flags.open or flags.o) or false
@@ -36,7 +28,33 @@ isTunnel = (flags.tunnel or flags.t) or false
 tunnelUrl = null
 isPSI = flags.psi or false
 config		 = require('../lib/config/config')(cwd)
+isProxy = if config.proxy then true else false
+connection = {}
 
+# .NSPCONFIG -----------------------------------------------------------------
+
+# Lets see if there are custom local configs overwrites
+configExists = fs.existsSync path.join(process.cwd(), '.nspconfig')
+
+useDir = if configExists then process.cwd() else path.resolve(__dirname, '../')
+
+# load master config in case local doesn't have the data we need
+masterConfig = JSON.parse(fs.readFileSync(
+	path.join(path.resolve(__dirname, '../'), '.nspconfig'), {encoding: 'utf8'}
+))
+
+# Use nconf to load the data
+nconf
+	.file('project', {
+		file: '.nspconfig',
+		dir: useDir,
+		search: true
+	})
+
+if nconf.get('project:host')?
+	host = nconf.get('project:host')
+else
+	host = path.basename(process.cwd())
 
 
 
@@ -44,7 +62,6 @@ config		 = require('../lib/config/config')(cwd)
 #
 gulp.task "server", ["browsersync"],	(cb) ->
 
-	console.log chalk.grey("☞	Running task \"server\"")
 
 	# Dynamically generate watch tasks off of runnable tasks
 	createWatch = (task) ->
@@ -75,11 +92,7 @@ gulp.task "server", ["browsersync"],	(cb) ->
 
 gulp.task "browsersync", (cb) ->
 
-	console.log path.normalize(config.root)
-
-	console.log chalk.grey("☞	Running task \"browsersync\"")
-	# Serve files and connect browsers
-	browserSync.init null,
+	serverOpts =
 		server:
 			baseDir: if config.root? then path.normalize(config.root) else process.cwd()
 			middleware: [
@@ -87,32 +100,38 @@ gulp.task "browsersync", (cb) ->
 					# console.log(req, res)
 					next()
 			]
-		logConnections: false
-		logLevel: 'slient'
-		browser: "none"
-	, (err, data) ->
+		logLevel : "silent"
+
+
+	if isProxy
+		serverOpts["host"] = host
+
+	# Serve files and connect browsers
+	browserSync.init null, serverOpts, (err, data) ->
 		if err isnt null
 			console.log chalk.red("✘	Setting up a local server failed... Please try again. Aborting.\n") + chalk.red(err)
 			process.exit 0
 
-		# Store started state globally
+
 		connection.external = data.options.external
 		connection.port = data.options.port
+
 
 		# Store lr in Gulp to span files
 		gulp.lrStarted = true
 
 		# Show some logs
-		console.log chalk.cyan("🌐	Local access at"), chalk.magenta("http://localhost:" + connection.port)
-		console.log chalk.cyan("🌐	Network access at"), chalk.magenta("http://" + connection.external + ":" + connection.port)
+		console.log chalk.cyan("🌐	Local access at"), chalk.magenta(data.options.urls.local)
+		console.log chalk.cyan("🌐	Network access at"), chalk.magenta(data.options.urls.external)
 
-		# Process flags
-		# openBrowser()	if isOpen
-		# openEditor()	if isEdit
+
+		#Process flags
+		util.openBrowser(data.options.urls.local)	if isOpen
+		util.openEditor(process.cwd())	if isEdit
 		# gulp.start "tunnel"	if isTunnel
 		# if isPSI
-		#	 isTunnel = true
-		#	 gulp.start "psi"
+		# 	 isTunnel = true
+		# 	 gulp.start "psi"
 		# return
 
 	cb null
