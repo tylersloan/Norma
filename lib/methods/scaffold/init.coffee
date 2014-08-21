@@ -45,7 +45,8 @@ module.exports = (tasks, env) ->
 
 
 	startInit = () ->
-		unless tasks.length > 1
+		console.log  typeof tasks is 'string', tasks.length
+		if typeof tasks is 'string'
 			inquirer.prompt
 				type: "list"
 				message: "What type of project do you want to build?"

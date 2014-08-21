@@ -27,6 +27,7 @@
 	},
 	"scripts" : {
 		"start" : "nspignore/test.coffee"
-	}
+	},
+	"root" : "./assets/templates/"
 
 }
