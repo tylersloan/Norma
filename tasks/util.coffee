@@ -50,7 +50,9 @@ openBrowser = (location)->
 		console.log(chalk.red('No browser configured. Add browser to nsp config'))
 		console.log(chalk.red('`nsp config user:browser yourbrowserhere`'))
 	else
-	  open location, browser
+		browser = browser.split(',')
+		for brow in browser
+	  	open location, brow.trim()
 
 
 # Open files in editor

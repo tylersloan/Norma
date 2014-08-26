@@ -21,6 +21,11 @@ module.exports = (tasks, configPath) ->
 
   generateTaskList = (types, cb) ->
 
+    saveTask = (location, task) ->
+
+      unless location.indexOf(task) > -1
+        location.push task
+
     taskList =
       pre :
         sync: []
@@ -46,8 +51,10 @@ module.exports = (tasks, configPath) ->
               if gulp.tasks[task].type is `undefined`
                 gulp.tasks[task].type = 'async'
 
-              taskList[gulp.tasks[task].order][gulp.tasks[task].type].push(task)
-            else taskList.main.async.push(task)
+              saveTask taskList[gulp.tasks[task].order][gulp.tasks[task].type], task
+              # taskList[gulp.tasks[task].order][gulp.tasks[task].type].push(task)
+            else saveTask taskList.main.async, task
+              # taskList.main.async.push(task)
 
     cb(taskList)
 
@@ -65,16 +72,19 @@ module.exports = (tasks, configPath) ->
 
 
 
-  getExistingFileTypes = (config) ->
+  getConfigFileTypes = (config) ->
 
     for key of config
       configItem = config[key]
-      if configItem.src?
-        folders = mapTree path.normalize(configItem.src)
-        getFileTypes(folders)
+      if configItem.ext?
+        for ext in configItem.ext
+          fileTypes.push( ext )
 
 
-  getExistingFileTypes(config)
+  getConfigFileTypes(config)
+
+  folders = mapTree path.normalize(process.cwd())
+  getFileTypes(folders)
 
   buildList = (list) ->
 
