@@ -1,6 +1,24 @@
-# Helper logging functions ---------------------------------------------------
+###
+
+	Helper logging functions.
+	This file contains basic information about the build tool
+	It might be better off breaking it up into seperate logging functions
+	Need to watch and see how the tool grows first
+	~ @jbaxleyiii
+
+###
+
+# require packages
 chalk = require 'chalk'
 
+
+###
+
+	@DEPRECEATED
+
+	New API's need to be finalized and then this file needs to be updated
+
+###
 logTasks = ->
 	console.log('Please use one of the following tasks:\n')
 	console.log(
@@ -32,6 +50,8 @@ logTasks = ->
 		'to print out the version of your nsp CLI\n'
 	)
 
+
+# PrettyPrint the NewSpring Church Logo -> https://newspring.cc
 logInfo = (cliPackage) ->
 	console.log(chalk.green(
 		'\n' +
@@ -54,7 +74,6 @@ logInfo = (cliPackage) ->
 	logTasks()
 
 
-
-
+# Expose the logging functions
 module.exports.logInfo = logInfo
 module.exports.logTasks = logTasks
