@@ -65,7 +65,10 @@ gulp.task "server", ["browsersync"],	(cb) ->
 
 	# Dynamically generate watch tasks off of runnable tasks
 	createWatch = (task) ->
-		src = config[task].src
+		if config[task]
+			src = config[task].src
+		else
+			src = './'
 		taskName = task
 		exts = gulp.tasks[task].ext.map( (ext) ->
 			return ext.replace('.', '')
@@ -83,7 +86,7 @@ gulp.task "server", ["browsersync"],	(cb) ->
 
 	for task of gulp.tasks
 		if gulp.tasks[task].ext?
-			# unless task is 'sass'
+
 			createWatch(task)
 
 
@@ -91,7 +94,7 @@ gulp.task "server", ["browsersync"],	(cb) ->
 
 
 gulp.task "browsersync", (cb) ->
-
+	
 	serverOpts =
 		server:
 			baseDir: if config.root? then path.normalize(config.root) else process.cwd()
