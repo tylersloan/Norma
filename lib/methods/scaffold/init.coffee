@@ -45,7 +45,7 @@ module.exports = (tasks, env) ->
 
 
 	startInit = () ->
-		console.log  typeof tasks is 'string', tasks.length
+
 		if typeof tasks is 'string'
 			inquirer.prompt
 				type: "list"
