@@ -15,14 +15,14 @@ $           = require("gulp-load-plugins")({config: packageLoc})
 
 config = require("../lib/config/config")(process.cwd())
 
-unless config.copy?
-  console.log(
-    chalk.red("No copy task found in nspfile...aborting")
-  )
-  process.exit 0
+if !config.copy
+  return
+else
+  configFound = true
+  config.src = path.normalize(config.copy.src)
+  config.dest = path.normalize(config.copy.dest)
 
-config.src = path.normalize(config.copy.src)
-config.dest = path.normalize(config.copy.dest)
+
 
 
 
@@ -52,9 +52,10 @@ gulp.task "copy-compile", (cb) ->
 
 gulp.task "copy", (cb) ->
 
-  sequence "copy-compile", ->
+  if configFound
+    sequence "copy-compile", ->
 
-    console.log chalk.green("Copy: ✔ All done!")
+      console.log chalk.green("Copy: ✔ All done!")
 
   cb null
   return
