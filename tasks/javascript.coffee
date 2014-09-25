@@ -116,7 +116,7 @@ gulp.task "javascript-compile", ["javascript-hint"], (cb) ->
 
 
 
-# JAVASCRIPT -----------------------------------------------------------------
+# FOOBAR ---------------------------------------------------------------------
 
 gulp.task "javascript", (cb) ->
 

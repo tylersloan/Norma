@@ -11,56 +11,89 @@ removeTree = require("../dirTree").removeTree
 
 module.exports = (tasks, env) ->
 
-	scaffolds = path.join(path.dirname(fs.realpathSync(__filename))) + "/../../../scaffolds"
+	###
+
+		Get all available scaffolds
+
+		@todo - need to build out api to add custom scaffolds
+			should be similar to nsp add --scaffold <git repo>
+
+	###
+	nspLoc = path.dirname(fs.realpathSync(__filename))
+	scaffolds = path.join nspLoc, "/../../../scaffolds"
 	scaffolds = mapTree scaffolds
+
+	# Add in custom option
+	scaffolds.children.push custom =
+		path: './'
+		name: 'custom'
+		type: 'folder'
+		children: []
+
+	# Create list of scaffold names for prompt
 	scaffoldNames = new Array
+	scaffoldNames = (scaffold.name for scaffold in scaffolds.children)
 
-	for scaffold in scaffolds.children
-		scaffoldNames.push(scaffold.name)
-
-
-	cwdFiles = _.remove(fs.readdirSync(env.cwd), (file) ->
+	# Generate list of current files in directory
+	cwdFiles = _.remove fs.readdirSync(env.cwd), (file) ->
 		file.substring(0, 1) isnt "."
-	)
 
-	chooseProject = (project) ->
-		projects = scaffolds.children.filter( (val) ->
-			return val.name is project;
-		)
 
+	chooseProject = (project, projectName) ->
+
+		# Faster filter method
+		projects = (proj for proj in scaffolds.children when proj.name is project)
+
+		# If we found a project, build it
 		if projects.length is 1
-			build(projects[0])
+			build(projects[0], projectName)
 		else
 			console.log(
 				chalk.red('That scaffold template is not found, try these:')
 			)
 			for name in scaffoldNames
-
-				if _i is scaffoldNames.length
+				# Don't add an extra space after the last list
+				if (_i + 1) isnt scaffoldNames.length
 					console.log(chalk.cyan(name) )
 				else
 					console.log(chalk.cyan(name + '\n') )
-			console.log(chalk.grey('or'))
-			console.log(chalk.red('run `nsp init`'))
 
 
-	startInit = () ->
+	startInit = ->
 
 		if typeof tasks is 'string'
-			inquirer.prompt
-				type: "list"
-				message: "What type of project do you want to build?"
-				name: "projectType"
-				choices: scaffoldNames
-				default: false
-			, (answer) ->
-				chooseProject answer.projectType
+			inquirer.prompt([
+				{
+					type: "list"
+					message: "What type of project do you want to build?"
+					name: "projectType"
+					choices: scaffoldNames
+				}
+				{
+					type: "input"
+					message: "What do you want your project to be named?"
+					name: "projectName"
+					default: "My Awesome Project"
+				}
+			],
+				(answer) ->
+					chooseProject answer.projectType, answer.projectName
+			)
+			
 		else
-			chooseProject tasks[1]
+			inquirer.prompt
+				type: "input"
+				message: "What do you want your project to be named?"
+				name: "projectName"
+				default: "My Awesome Project"
+			,
+				(answer) ->
+
+					chooseProject tasks[1], answer.projectName
 
 
-
-	if cwdFiles.length > 0
+	# Failsafe to make sure project is empty on creation of new folder
+	if cwdFiles.length and tasks is 'create'
 		inquirer.prompt
 			type: "confirm"
 			message: "Initializing will empty the current directory. Continue?"
@@ -90,7 +123,9 @@ module.exports = (tasks, env) ->
 
 			else
 				process.exit 0
+
 	else if typeof tasks is 'string'
 		startInit()
+
 	else
 		chooseProject(tasks[1])
