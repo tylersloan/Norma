@@ -3,6 +3,13 @@ fs = require 'fs'
 path = require 'path'
 
 
+# Set up a basic whitelist
+whitelist = [
+	'.git'
+	'node_modules'
+	'gulpfile.js'
+]
+
 mkdir = (dir) ->
 
 	# making directory without exception if exists
@@ -25,26 +32,37 @@ copy = (src, dest, cb) ->
 	return
 
 
-mapTree = (filename) ->
+mapTree = (filename, ignore) ->
 
-	stats = fs.lstatSync(filename)
+	if ignore and ignore.length
+		for ignored in ignore
+			if whitelist.indexOf(ignored) is -1
+				whitelist.push ignored
 
-	info =
-		path: filename
-		name: path.basename(filename)
+	if whitelist.indexOf(path.basename(filename)) is -1
+		stats = fs.lstatSync(filename)
 
-	if stats.isDirectory()
-		info.type = "folder"
-		info.children = fs.readdirSync(filename).map((child) ->
-			mapTree filename + "/" + child
-		)
+		info =
+			path: filename
+			name: path.basename(filename)
 
-	else
-		# Assuming it's a file. In real life it could be a symlink or
-		# something else!
-		info.type = "file"
+		if stats.isDirectory()
+			info.type = "folder"
 
-	info
+			files = fs.readdirSync(filename)
+
+			info.children = (
+				mapTree(filename + "/" + child, ignore) for child in files
+			)
+
+
+		else
+			# Assuming it's a file. In real life it could be a symlink or
+			# something else!
+			info.type = "file"
+
+		info
+	else return false
 
 copyTree = (src, dest, cb) ->
 
