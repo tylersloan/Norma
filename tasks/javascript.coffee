@@ -121,7 +121,7 @@ gulp.task "javascript-compile", ["javascript-hint"], (cb) ->
 gulp.task "javascript", (cb) ->
 
 
-  unless gulp.lrStarted or !configFound
+  if !gulp.lrStarted or !configFound
     sequence "javascript-clean", "javascript-compile",	->
 
       console.log chalk.green("Javascript: ✔ All done!")
