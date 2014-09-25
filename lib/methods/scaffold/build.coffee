@@ -112,9 +112,9 @@ module.exports = (project, name) ->
 	# if scaffoldConfig.scripts and scaffoldConfig.scripts.preinstall?
 	# 	runConfigCommand(scaffoldConfig.scripts.preinstall, project.path)
 
-
-	# Copy over all of the things
-	fs.copySync(project.path, process.cwd())
+	if project.path isnt process.cwd()
+		# Copy over all of the things
+		fs.copySync(project.path, process.cwd())
 
 
 	# Save config
