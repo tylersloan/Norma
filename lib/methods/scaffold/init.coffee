@@ -25,7 +25,7 @@ module.exports = (tasks, env) ->
 
 	# Add in custom option
 	scaffolds.children.push custom =
-		path: './'
+		path: process.cwd()
 		name: 'custom'
 		type: 'folder'
 		children: []
@@ -79,7 +79,7 @@ module.exports = (tasks, env) ->
 				(answer) ->
 					chooseProject answer.projectType, answer.projectName
 			)
-			
+
 		else
 			inquirer.prompt
 				type: "input"
