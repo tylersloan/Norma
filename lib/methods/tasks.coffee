@@ -106,7 +106,8 @@ module.exports = (tasks, configPath) ->
     This will determine what needs to be built
 
   ###
-  folders = mapTree path.normalize(process.cwd())
+  ignore = config.ignore or []
+  folders = mapTree path.normalize(process.cwd()), ignore
 
   getFileTypes = (files) ->
 
@@ -130,8 +131,10 @@ module.exports = (tasks, configPath) ->
 
     for taskOrder of list
       for task of list[taskOrder]
-        unless list[taskOrder][task].length > 0
+
+        if list[taskOrder][task].length <= 0
           list[taskOrder][task][0] = "through"
+
         builtList.push list[taskOrder][task]
 
     return builtList
@@ -157,7 +160,16 @@ module.exports = (tasks, configPath) ->
 
   gulp = require 'gulp'
   gulpFile = require '../../gulpfile'
+  localGulpFile = require( path.join(process.cwd(), 'gulpfile.js'))
 
+  ###
+
+    The through task is a way to run a full sequence even
+    when sequence tasks aren't defined. It feels kinda hacky but gulp
+    isn't really meant to be used in this way. When gulp moves to full
+    orchestrator support, this tool will need a serious revist.
+
+  ###
   gulp.task "through", (cb) ->
     cb null
 

@@ -40,6 +40,8 @@ gulp.task "javascript-clean", (cb) ->
   # Remove export folder and files
   gulp.src([
     config.dest
+    '!./node_modules/'
+    '!gulpfile.js'
   ],
     read: false
   ).pipe $.rimraf(force: true)
