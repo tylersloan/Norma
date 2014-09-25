@@ -4,6 +4,7 @@ fs = require 'fs'
 _ = require 'lodash'
 sequence   = require "run-sequence"
 chalk = require 'chalk'
+exec     = require('child_process').exec
 
 mapTree = require('./dirTree').mapTree
 config = require '../config/config'
@@ -107,6 +108,8 @@ module.exports = (tasks, configPath) ->
 
   ###
   ignore = config.ignore or []
+
+
   folders = mapTree path.normalize(process.cwd()), ignore
 
   getFileTypes = (files) ->
@@ -139,6 +142,42 @@ module.exports = (tasks, configPath) ->
 
     return builtList
 
+  runConfigCommand = (action, cwd, cb) ->
+
+    file = fs.existsSync(
+      path.join(cwd, action)
+    )
+
+    if file
+      require path.join(cwd, action)
+
+    else
+      child = exec(action, {cwd: cwd}, (err, stdout, stderr) ->
+
+        throw err if err
+
+        cb()
+      )
+      child.stdout.setEncoding('utf8')
+      child.stdout.on "data", (data) ->
+        str = data.toString()
+        lines = str.split(/(\r?\n)/g)
+
+        i = 0
+        while i < lines.length
+          if !lines[i].match '\n'
+            message = lines[i].split('] ')
+
+            if message.length > 1
+              message.splice(0, 1)
+
+            message = message.join(' ')
+
+            console.log message
+          i++
+
+        return
+
   cb = (list)->
 
     builtList = buildList(list)
@@ -150,7 +189,9 @@ module.exports = (tasks, configPath) ->
         builtList[2], builtList[3],
         builtList[4], builtList[5],
       ->
-        console.log chalk.magenta("Build Complete")
+        if config.scripts and config.scripts.custom?
+          runConfigCommand config.scripts.custom, process.cwd(), ->
+            console.log chalk.magenta("Build Complete")
       )
 
     process.nextTick( ->
@@ -160,7 +201,7 @@ module.exports = (tasks, configPath) ->
 
   gulp = require 'gulp'
   gulpFile = require '../../gulpfile'
-  localGulpFile = require( path.join(process.cwd(), 'gulpfile.js'))
+
 
   ###
 

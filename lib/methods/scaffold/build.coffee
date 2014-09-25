@@ -73,8 +73,10 @@ module.exports = (project, name) ->
 
 		if nspFile.scripts
 			for action of nspFile.scripts
-				if action isnt 'preinstall' or action isnt 'postinstall'
-					runConfigCommand(nspFile.scripts[action], process.cwd())
+				if action isnt 'preinstall' or
+					action isnt 'postinstall' or
+					action isnt 'custom'
+						runConfigCommand(nspFile.scripts[action], process.cwd())
 
 
 		# Before compiling, remove the nspignore folder
@@ -99,6 +101,11 @@ module.exports = (project, name) ->
 			for their system here:
 
 			[https://github.com/npm/npm/blob/master/lib/utils/lifecycle.js]
+
+			If we restrict the type of scripts to just process scripts we
+			can successfully register a fallback. In fact if we spawn a child
+			process and run node <script name> then we should be able to do the
+			same type of callback if it is a file.
 
 
 	###

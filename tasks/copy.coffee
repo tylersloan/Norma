@@ -10,7 +10,6 @@ packageLoc  = path.dirname(fs.realpathSync(__filename)) + "/../package.json"
 $           = require("gulp-load-plugins")({config: packageLoc})
 
 
-
 # CONFIG ---------------------------------------------------------------------
 
 config = require("../lib/config/config")(process.cwd())

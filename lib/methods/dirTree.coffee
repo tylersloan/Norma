@@ -7,7 +7,7 @@ path = require 'path'
 whitelist = [
 	'.git'
 	'node_modules'
-	'gulpfile.js'
+	'nsp_tasks'
 ]
 
 mkdir = (dir) ->
