@@ -20,6 +20,10 @@ module.exports = (tasks, env) ->
 			"   nsp create --package [<package_name>]\n"
 		)
 
+		# Resassign to array
+		tasks = [tasks]
+
+
 	if tasks.length > 1
 		# making directory without exception if exists
 		try
@@ -29,5 +33,10 @@ module.exports = (tasks, env) ->
 
 		process.chdir tasks[1]
 		env.cwd = process.cwd()
-		
-		init "init", env
+
+		init "create", env
+
+	else
+		console.log chalk.red "Please specify a project name"
+
+		process.exit 0
