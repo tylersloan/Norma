@@ -6,29 +6,34 @@
 ###
 
 # Require packages
-fs = require 'fs'
-path = require 'path'
-chalk = require 'chalk'
+Fs = require "fs-extra"
+Path = require "path"
+Chalk = require "chalk"
 
 module.exports = (cwd) ->
 
 	# Find file based on cwd argument
-	fileLoc = path.join(cwd, 'nspfile.json')
+	fileLoc = Path.join(cwd, "#{Tool}.json")
 
 	# Create empty config object for empty returns
 	config = {}
 
-	parseFile = (data) ->
+	parse = (data) ->
 
 		if data is `undefined`
-			console.log chalk.red("Cannot find nspfile.json. Have you initiated nsp?")
+			console.log(
+				Chalk.red "Cannot find #{Tool}.json. Have you initiated norma?"
+			)
 			process.exit 0
 
 		# Try parsing the config data as JSON
 		try
 			config = JSON.parse(data)
 		catch err
-			console.log chalk.red("The nspfile.json file is not valid json. Aborting."), err
+			console.log(
+				Chalk.red "The #{Tool}.json file is not valid json. Aborting."
+				, err
+			)
 			process.exit 0
 
 
@@ -38,7 +43,9 @@ module.exports = (cwd) ->
 		This is done syncronously in order to return read data correctly
 
 	###
-	nspfile = parseFile( fs.readFileSync(fileLoc, {encoding: 'utf8'}) )
+	file = Fs.readFileSync fileLoc, encoding: "utf8"
+
+	parse file
 
 	# Return the config object
 	return config

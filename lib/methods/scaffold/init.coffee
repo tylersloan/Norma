@@ -2,10 +2,10 @@ _				= require("lodash")
 inquirer = require("inquirer")
 fs			 = require("fs-extra")
 chalk		= require("chalk")
-mapTree = require("../dirTree").mapTree
+mapTree = require("../directory-tools").mapTree
 path = require("path")
 build = require("./build")
-removeTree = require("../dirTree").removeTree
+removeTree = require("../directory-tools").removeTree
 
 
 
@@ -19,8 +19,8 @@ module.exports = (tasks, env) ->
 			should be similar to nsp add --scaffold <git repo>
 
 	###
-	nspLoc = path.dirname(fs.realpathSync(__filename))
-	scaffolds = path.join nspLoc, "/../../../scaffolds"
+	fileLoc = path.dirname(fs.realpathSync(__filename))
+	scaffolds = path.join fileLoc, "/../../../scaffolds"
 	scaffolds = mapTree scaffolds
 
 	# Add in custom option

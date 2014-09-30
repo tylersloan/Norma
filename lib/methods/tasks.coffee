@@ -1,20 +1,19 @@
 
-path = require 'path'
-fs = require 'fs'
-_ = require 'lodash'
-sequence   = require "run-sequence"
-chalk = require 'chalk'
-exec     = require('child_process').exec
+Path = require "path"
+Fs = require "fs-extra"
+Sequence = require "run-sequence"
+Chalk = require "chalk"
+Exec = require("child_process").exec
 
-mapTree = require('./dirTree').mapTree
-config = require '../config/config'
+MapTree = require("./directory-tools").mapTree
+Config = require "../config/config"
 
 
 
 module.exports = (tasks, configPath) ->
 
   # Load config
-  config = config(configPath)
+  config = Config configPath
 
   # Set emtpy array for fileTypes
   fileTypes = new Array
@@ -57,24 +56,24 @@ module.exports = (tasks, configPath) ->
 
     ###
 
-      The cyclomatic complexity of this statement is way too damn high.
+      The cyclomatic complexity of this statement is way too high.
       Need to break it apart into smaller, more efficent tasks.
 
     ###
-    for task of gulp.tasks
+    for task of Gulp.tasks
 
-      if gulp.tasks[task].ext
+      if Gulp.tasks[task].ext
 
         for type in types
 
-          if gulp.tasks[task].ext.indexOf(type) > -1
+          if Gulp.tasks[task].ext.indexOf(type) > -1
 
-            if gulp.tasks[task].order
+            if Gulp.tasks[task].order
 
-              gulp.tasks[task].type = gulp.tasks[task].type or 'async'
+              Gulp.tasks[task].type = Gulp.tasks[task].type or "async"
 
               saveTask(
-                taskList[gulp.tasks[task].order][gulp.tasks[task].type]
+                taskList[Gulp.tasks[task].order][Gulp.tasks[task].type]
                 task
               )
 
@@ -82,7 +81,7 @@ module.exports = (tasks, configPath) ->
               saveTask taskList.main.async, task
 
 
-    cb(taskList)
+    cb taskList
 
   ###
 
@@ -110,16 +109,16 @@ module.exports = (tasks, configPath) ->
   ignore = config.ignore or []
 
 
-  folders = mapTree path.normalize(process.cwd()), ignore
+  folders = MapTree Path.normalize(process.cwd()), ignore
 
   getFileTypes = (files) ->
 
     for child in files.children
 
-      if child.type is 'folder'
+      if child.type is "folder"
         getFileTypes(child)
       else
-        ext = path.extname(child.name)
+        ext = Path.extname(child.name)
 
         # add other file type to task list if not in config (autodiscovery)
         if fileTypes.indexOf(ext) is -1
@@ -142,36 +141,46 @@ module.exports = (tasks, configPath) ->
 
     return builtList
 
+
+  ###
+
+    runConfigCommandCommand is a utility to run post build scripts
+    that can be defined per project. I think this should be abstracted
+    into another file since it is used in other places on the tool.
+
+    @todo - abstract this function
+
+  ###
   runConfigCommand = (action, cwd, cb) ->
 
-    file = fs.existsSync(
-      path.join(cwd, action)
+    file = Fs.existsSync(
+      Path.join(cwd, action)
     )
 
     if file
-      require path.join(cwd, action)
+      require Path.join(cwd, action)
 
     else
-      child = exec(action, {cwd: cwd}, (err, stdout, stderr) ->
+      child = Exec(action, {cwd: cwd}, (err, stdout, stderr) ->
 
         throw err if err
 
         cb()
       )
-      child.stdout.setEncoding('utf8')
+      child.stdout.setEncoding("utf8")
       child.stdout.on "data", (data) ->
         str = data.toString()
         lines = str.split(/(\r?\n)/g)
 
         i = 0
         while i < lines.length
-          if !lines[i].match '\n'
-            message = lines[i].split('] ')
+          if !lines[i].match "\n"
+            message = lines[i].split("] ")
 
             if message.length > 1
               message.splice(0, 1)
 
-            message = message.join(' ')
+            message = message.join(" ")
 
             console.log message
           i++
@@ -182,36 +191,45 @@ module.exports = (tasks, configPath) ->
 
     builtList = buildList(list)
 
-    gulp.task 'default', () ->
+    Gulp.task "default", () ->
 
-      sequence(
-        builtList[0], builtList[1],
-        builtList[2], builtList[3],
-        builtList[4], builtList[5],
-      ->
-        if config.scripts and config.scripts.custom?
-          runConfigCommand config.scripts.custom, process.cwd(), ->
-            console.log chalk.magenta("Build Complete")
+      Sequence(
+        builtList[0]
+        builtList[1]
+        builtList[2]
+        builtList[3]
+        builtList[4]
+        builtList[5]
+      ,
+        ->
+          if config.scripts and config.scripts.custom
+            runConfigCommand(
+              config.scripts.custom
+              process.cwd()
+            ,
+              ->
+                console.log Chalk.magenta "Build Complete"
+            )
       )
 
     process.nextTick( ->
-      gulp.start(['default'])
+      Gulp.start ["default"]
     )
 
 
-  gulp = require 'gulp'
-  gulpFile = require '../../gulpfile'
+  Gulp = require "gulp"
+  GulpFile = require "../../gulpfile"
 
 
   ###
 
     The through task is a way to run a full sequence even
-    when sequence tasks aren't defined. It feels kinda hacky but gulp
-    isn't really meant to be used in this way. When gulp moves to full
+    when sequence tasks aren"t defined. It feels kinda hacky but gulp
+    isn"t really meant to be used in this way. When gulp moves to full
     orchestrator support, this tool will need a serious revist.
 
   ###
-  gulp.task "through", (cb) ->
+  Gulp.task "through", (cb) ->
     cb null
 
 

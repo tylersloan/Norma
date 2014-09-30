@@ -6,19 +6,19 @@ path = require 'path'
 
 
 # Lets see if there are custom local configs overwrites
-configExists = fs.existsSync path.join(process.cwd(), '.nspconfig')
+configExists = fs.existsSync path.join(process.cwd(), ".#{Tool}")
 
 useDir = if configExists then process.cwd() else path.resolve(__dirname, '../')
 
 # load master config in case local doesn't have the data we need
 masterConfig = JSON.parse(fs.readFileSync(
-	path.join(path.resolve(__dirname, '../'), '.nspconfig'), {encoding: 'utf8'}
+	path.join(path.resolve(__dirname, '../'), ".#{Tool}"), {encoding: 'utf8'}
 ))
 
 # Use nconf to load the data
 nconf
 	.file('project', {
-		file: '.nspconfig',
+		file: ".#{Tool}",
 		dir: useDir,
 		search: true
 	})
@@ -47,26 +47,31 @@ openBrowser = (location)->
 	)
 
 	if browser is `undefined`
-		console.log(chalk.red('No browser configured. Add browser to nsp config'))
-		console.log(chalk.red('`nsp config user:browser yourbrowserhere`'))
+		console.log(
+			chalk.red 'No browser configured. Add browser to #{Tool} config\n'
+			chalk.red '`#{Tool} config user:browser yourbrowserhere`'
+		)
 	else
-		browser = browser.split(',')
-		for brow in browser
-	  	open location, brow.trim()
+		browsers = browser.split ','
+		for browser in browsers
+	  	open location, browser.trim()
 
 
 # Open files in editor
 openEditor = (cwd) ->
 
-	console.log(chalk.cyan("Opening"),
-		chalk.magenta(cwd),
-		chalk.cyan("in"),
-		chalk.magenta(editor)
+	console.log(
+		chalk.cyan "Opening"
+		chalk.magenta cwd
+		chalk.cyan "in"
+		chalk.magenta editor
 	)
 
 	if editor is `undefined`
-		console.log(chalk.red('No editor configured. Add editor to nsp config'))
-		console.log(chalk.red('`nsp config user:editor youreditorhere`'))
+		console.log(
+			chalk.red 'No editor configured. Add editor to #{Tool} config\n'
+			chalk.red '`#{Tool} config user:editor youreditorhere`'
+		)
 	else
 		open cwd, editor
 

@@ -1,11 +1,11 @@
 {
-  "name": "nsp",
+  "name": "norma",
   "version": "0.0.0",
-  "description": "NewSpring build utility",
+  "description": "Auto Discover Build Utility",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/jbaxleyiii/nsp.git"
+    "url": "https://github.com/NewSpring/norma.git"
   },
   "author": "jbaxleyiii",
   "license": [
@@ -15,7 +15,7 @@
     }
   ],
   "bugs": {
-    "url": "https://github.com/jbaxleyiii/nsp/issues"
+    "url": "https://github.com/NewSpring/norma/issues"
   },
   "tags": [
     "build",
@@ -96,8 +96,8 @@
     "node": ">= 0.9"
   },
   "bin": {
-    "nsp": "./bin/nsp.js"
+    "norma": "./bin/norma.js"
   },
   "engineStrict": true,
-  "homepage": "https://github.com/jbaxleyiii/nsp"
+  "homepage": "https://github.com/NewSpring/norma"
 }

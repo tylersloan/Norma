@@ -5,12 +5,12 @@
 ###
 
 # Require the needed packages
-argv = require('minimist')( process.argv.slice(2) )
-chalk = require 'chalk'
-nconf = require 'nconf'
+Flags = require("minimist")( process.argv.slice(2) )
+Chalk = require "chalk"
+
 
 # Logger is where console output info for the CLI is stored
-logger = require '../logging/logger'
+Logger = require "../logging/logger"
 
 
 module.exports = (env) ->
@@ -19,19 +19,19 @@ module.exports = (env) ->
 	# VARIABLES ----------------------------------------------------------------
 
 	# Get the package.json for nsp info
-	cliPackage = require '../../package'
+	cliPackage = require "../../package"
 
 	# Bind tasks to variable for easy passing
-	task = argv._
+	task = Flags._
 
 
 
 	# UTILITY ------------------------------------------------------------------
 
 	# Check for version flag and report version
-	if argv.v or argv.version
+	if Flags.v or Flags.version
 
-		console.log 'nsp CLI version', chalk.cyan(cliPackage.version)
+		console.log "nsp CLI version", Chalk.cyan(cliPackage.version)
 
 		# exit
 		process.exit 0
@@ -52,8 +52,8 @@ module.exports = (env) ->
 		task = task[0]
 
 	# See if help or h task is trying to be run
-	if argv.help or argv.h
-		logger.logInfo(cliPackage)
+	if Flags.help or Flags.h
+		Logger.logInfo(cliPackage)
 
 		process.exit 0
 
@@ -67,33 +67,33 @@ module.exports = (env) ->
 	if process.cwd() isnt env.cwd
 		process.chdir env.cwd
 		console.log(
-			chalk.cyan('Working directory changed to', chalk.magenta(env.cwd))
+			Chalk.cyan("Working directory changed to", Chalk.magenta(env.cwd))
 		)
 
 
 
 	# TASKS -------------------------------------------------------------------
 
-	if task is 'create' or task[0] is 'create'
-		create = require './scaffold/create'
+	if task is "create" or task[0] is "create"
+		create = require "./scaffold/create"
 		create(task, env)
 
 
-	if task is 'init' or task[0] is 'init'
-		init = require './scaffold/init'
+	if task is "init" or task[0] is "init"
+		init = require "./scaffold/init"
 		init(task, env)
 
 
-	if task is 'build' or task[0] is 'build'
-		runTasks = require './tasks'
+	if task is "build" or task[0] is "build"
+		runTasks = require "./tasks"
 		runTasks(task, process.cwd())
 
 
-	if task is 'watch' or task[0] is 'watch'
-		serve = require './serve'
+	if task is "watch" or task[0] is "watch"
+		serve = require "./serve"
 		serve(task, env)
 
 
-	if task is 'config' or task[0] is 'config'
-		manage = require '../config/manage'
+	if task is "config" or task[0] is "config"
+		manage = require "../config/manage"
 		manage(task, env)

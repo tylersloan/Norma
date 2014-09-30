@@ -9,6 +9,7 @@ fs          = require "fs"
 packageLoc  = path.dirname(fs.realpathSync(__filename)) + "/../package.json"
 $           = require("gulp-load-plugins")({config: packageLoc})
 
+Test = require './copy/test'
 
 # CONFIG ---------------------------------------------------------------------
 
