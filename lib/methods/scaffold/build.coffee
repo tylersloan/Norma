@@ -1,25 +1,26 @@
-inquirer = require("inquirer")
-fs       = require("fs-extra")
-chalk    = require("chalk")
-path     = require("path")
-config   = require "../../config/config"
-exec     = require('child_process').exec
-argv     = require('minimist')( process.argv.slice(2) )
+# Need to set up questions regarding custom build
+# inquirer = require("inquirer")
+Fs       = require("fs-extra")
+Path     = require("path")
+Config   = require "../../config/config"
+Exec     = require('child_process').exec
+Argv     = require('minimist')( process.argv.slice(2) )
 
 module.exports = (project, name) ->
 
 	# See if a config file already exists (for local files)
-	configExists = fs.existsSync path.join(project.path, 'nspfile.json')
+	fileName = "#{Tool}.json"
+	configExists = Fs.existsSync Path.join(project.path, fileName)
 
 	###
 
-		This portions saves the name of the project to the nspfile. I wonder
+		This portions saves the name of the project to the norma. I wonder
 		if there is a way to insert the name at the top. Ordering of keys
 		will be needed for more complex initializations as well
 
 	###
 	if configExists
-		scaffoldConfig = config path.join project.path
+		scaffoldConfig = Config Path.join project.path
 		scaffoldConfig.name = name
 	else
 		scaffoldConfig =
@@ -37,17 +38,18 @@ module.exports = (project, name) ->
 	###
 	runConfigCommand = (action, cwd) ->
 
-		file = fs.existsSync(
-			path.join(cwd, action)
+		file = Fs.existsSync(
+			Path.join(cwd, action)
 		)
 
 		if file
-			require path.join(cwd, action)
+			require Path.join(cwd, action)
 
 		else
-			child = exec(action, (err, stdout, stderr) ->
-				throw err if err
-
+			child = Exec(
+				action
+				(err, stdout, stderr) ->
+					throw err if err
 			)
 
 
@@ -55,11 +57,11 @@ module.exports = (project, name) ->
 	compile = ->
 
 
-		buildTasks = require('../tasks')
-		tasks = argv._
+		buildTasks = require '../tasks'
+		tasks = Argv._
 		tasks[0] = "build"
 
-		buildTasks(tasks, process.cwd())
+		buildTasks tasks, process.cwd()
 
 		# Run post installation scripts
 		if scaffoldConfig.scripts and scaffoldConfig.scripts.postinstall?
@@ -69,18 +71,18 @@ module.exports = (project, name) ->
 	# Run any other scripts for the project
 	runScripts = ->
 
-		nspFile = config(process.cwd())
+		file = Config process.cwd()
 
-		if nspFile.scripts
-			for action of nspFile.scripts
+		if file.scripts
+			for action of file.scripts
 				if action isnt 'preinstall' or
 					action isnt 'postinstall' or
 					action isnt 'custom'
-						runConfigCommand(nspFile.scripts[action], process.cwd())
+						runConfigCommand(file.scripts[action], process.cwd())
 
 
 		# Before compiling, remove the nspignore folder
-		fs.remove(path.join(process.cwd() + '/nspignore') )
+		Fs.remove(Path.join(process.cwd() + '/norma-ignore') )
 
 		compile()
 
@@ -114,13 +116,13 @@ module.exports = (project, name) ->
 
 	if project.path isnt process.cwd()
 		# Copy over all of the things
-		fs.copySync(project.path, process.cwd())
+		Fs.copySync(project.path, process.cwd())
 
 
 	# Save config
-	fs.writeFileSync(
-		path.join(process.cwd(), 'nspfile.json')
-		JSON.stringify(scaffoldConfig, null, 5)
+	Fs.writeFileSync(
+		Path.join(process.cwd(), fileName)
+		JSON.stringify(scaffoldConfig, null, 2)
 	)
 
 

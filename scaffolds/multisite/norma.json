@@ -26,7 +26,7 @@
 		]
 	},
 	"scripts" : {
-		"start" : "nspignore/test.coffee"
+		"start" : "./norma-ignore/test.coffee"
 	},
 	"root" : "./assets/templates/"
 

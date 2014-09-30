@@ -1,16 +1,37 @@
-fs			 = require("fs-extra")
-chalk		= require("chalk")
-path = require("path")
-argv = require('minimist')( process.argv.slice(2) )
-init = require('./init')
+Fs = require("fs-extra")
+Chalk	= require("chalk")
+Flags = require('minimist')( process.argv.slice(2) )
+Init = require('./init')
 
 module.exports = (tasks, env) ->
 
-	if argv.list
+	if Flags.list
+		###
+
+			Is this a list of tasks or a list of scaffolds? I don't feel scaffolds
+			are as helpful since they only get used once
+
+		###
 		console.log "set up listing of projects here"
-	if argv.package
+	if Flags.package
+		###
+
+			We should probably create a sample package for creating tasks and
+			a sample scaffold. Is a package a task or a scaffold? This should
+			be clearer
+
+		###
 		console.log "build a package here"
 
+	if Flags.search
+		###
+
+			What would it look like to include a package system built on
+			npm to pull in packages with a norma- prefix. This is getting ahead
+			of the scope right now but could be really useful for packages
+
+		###
+		console.log "searching for packages"
 
 	if tasks is "create"
 
@@ -27,16 +48,16 @@ module.exports = (tasks, env) ->
 	if tasks.length > 1
 		# making directory without exception if exists
 		try
-			fs.mkdirSync tasks[1]
+			Fs.mkdirSync tasks[1]
 		catch e
 			throw e	unless e.code is "EEXIST"
 
 		process.chdir tasks[1]
 		env.cwd = process.cwd()
 
-		init "create", env
+		Init "create", env
 
 	else
-		console.log chalk.red "Please specify a project name"
+		console.log Chalk.red "Please specify a project name"
 
 		process.exit 0

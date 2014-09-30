@@ -10,28 +10,29 @@
 ###
 
 # Require packages
-fs    = require("fs-extra")
-nconf = require("nconf")
-flags = require("minimist")(process.argv.slice(2))
-chalk = require("chalk")
-path = require 'path'
+Fs    = require "fs-extra"
+Nconf = require "nconf"
+Flags = require("minimist")(process.argv.slice(2))
+Chalk = require "chalk"
+Path = require "path"
 
 
 module.exports = (tasks) ->
 
 	###
 
-		If command has been run with --global or --g then swich to the global config
-		Otherwise use current directory level to create and use config (local)
+		If command has been run with --global or --g then
+		swich to the global config, otherwise use current
+		directory level to create and use config (local)
 
 	###
-	unless flags.global or flags.g
-		useDir = process.cwd()
+	if Flags.global or Flags.g
+		useDir = Path.resolve __dirname, "../../"
 	else
-		useDir = path.resolve(__dirname, '../../')
+		useDir = process.cwd()
 
 	# See if a config file already exists (for local files)
-	configExists = fs.existsSync path.join(useDir, '.nspconfig')
+	configExists = Fs.existsSync Path.join(useDir, ".#{Tool}")
 
 	# If no file, then we create a new one with some preset items
 
@@ -45,29 +46,32 @@ module.exports = (tasks) ->
 
 	###
 
-	unless configExists
+	if !configExists
 		config =
-			path: process.cwd()
+			Path: process.cwd()
 			message : "Write custom config items in this file"
 
 		# Save config
-		fs.writeFileSync(path.join(useDir, '.nspconfig'), JSON.stringify(config, null, 5))
+		Fs.writeFileSync(
+			Path.join(useDir, ".#{Tool}")
+			JSON.stringify(config, null, 2)
+		)
 
 
 
 	###
 
-		Setup nconf to use (in-order):
+		Setup Nconf to use (in-order):
 			1. Command-line arguments
 			2. Environment variables
-			3. A file located at 'path/to/config.json'
+			3. A file located at "Path/to/config.json"
 
 	###
-	nconf
+	Nconf
 		.env()
 		.argv()
-		.file('project', {
-	    file: '.nspconfig',
+		.file("project", {
+	    file: ".#{Tool}",
 	    dir: useDir,
 	    search: true
 	  })
@@ -84,45 +88,54 @@ module.exports = (tasks) ->
 
 	###
 
-	if typeof tasks is 'string'
+	if typeof tasks is "string"
 		tasks = [tasks]
 
 	# Empty config command returns print out of config
 	if tasks.length is 1
 
 		# Set directory
-		dir = path.join(useDir, '.nspconfig')
+		dir = Path.join useDir, ".#{Tool}"
 
 		try
-			configData = JSON.parse( fs.readFileSync(dir, {encoding: 'utf8'}) )
+			file = Fs.readFileSync dir, encoding: "utf8"
+
+			configData = JSON.parse file
+
 		catch err
-			console.log chalk.red("The nspfile.json file is not valid json. Aborting."), err
+
+			console.log(
+				Chalk.red "The .#{Tool} file is not valid json. Aborting."
+				err
+			)
 			process.exit 0
 
+		# Print out cofing data for easy lookup
 		console.log configData
 
+
 	# Read config of a value
-	if tasks[1]? and tasks[2] is `undefined`
+	if tasks[1] and tasks[2] is `undefined`
 
 		# Gives users the options to remove config items
-		unless flags.remove
+		if !Flags.remove
 			console.log(
-				chalk.cyan( tasks[1] + ": ")
-				chalk.magenta( nconf.get(tasks[1]))
+				Chalk.cyan( tasks[1] + ": ")
+				Chalk.magenta( Nconf.get(tasks[1]))
 			)
 		else
-			nconf.clear tasks[1]
+			Nconf.clear tasks[1]
 
 	# Save config with value
-	if tasks[2]?
-		nconf.set tasks[1], tasks[2]
+	if tasks[2]
+		Nconf.set tasks[1], tasks[2]
 
 
-	# Reset clears entire nconf file
-	if flags.reset
-		nconf.reset()
+	# Reset clears entire Nconf file
+	if Flags.reset
+		Nconf.reset()
 
 
 	# Save the configuration object to file
-	nconf.save (err) ->
+	Nconf.save (err) ->
 		throw err if err

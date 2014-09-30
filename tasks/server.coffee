@@ -30,23 +30,25 @@ isPSI = flags.psi or false
 config		 = require('../lib/config/config')(cwd)
 isProxy = if config.proxy then true else false
 connection = {}
+configFile = '.' + Tool
+
 
 # .NSPCONFIG -----------------------------------------------------------------
 
 # Lets see if there are custom local configs overwrites
-configExists = fs.existsSync path.join(process.cwd(), '.nspconfig')
+configExists = fs.existsSync path.join(process.cwd(), configFile)
 
 useDir = if configExists then process.cwd() else path.resolve(__dirname, '../')
 
 # load master config in case local doesn't have the data we need
 masterConfig = JSON.parse(fs.readFileSync(
-	path.join(path.resolve(__dirname, '../'), '.nspconfig'), {encoding: 'utf8'}
+	path.join(path.resolve(__dirname, '../'), configFile), {encoding: 'utf8'}
 ))
 
 # Use nconf to load the data
 nconf
 	.file('project', {
-		file: '.nspconfig',
+		file: '.#{Tool}',
 		dir: useDir,
 		search: true
 	})
@@ -94,7 +96,7 @@ gulp.task "server", ["browsersync"],	(cb) ->
 
 
 gulp.task "browsersync", (cb) ->
-	
+
 	serverOpts =
 		server:
 			baseDir: if config.root? then path.normalize(config.root) else process.cwd()
