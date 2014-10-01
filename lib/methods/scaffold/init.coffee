@@ -1,11 +1,11 @@
-_				= require("lodash")
-inquirer = require("inquirer")
-fs			 = require("fs-extra")
-chalk		= require("chalk")
-mapTree = require("../directory-tools").mapTree
-path = require("path")
-build = require("./build")
-removeTree = require("../directory-tools").removeTree
+_	= require("lodash")
+Inquirer = require("inquirer")
+Fs = require("fs-extra")
+Chalk = require("chalk")
+MapTree = require("../directory-tools").mapTree
+Path = require("path")
+Build = require("./build")
+RemoveTree = require("../directory-tools").removeTree
 
 
 
@@ -15,17 +15,17 @@ module.exports = (tasks, env) ->
 
 		Get all available scaffolds
 
-		@todo - need to build out api to add custom scaffolds
+		@todo - need to Build out api to add custom scaffolds
 			should be similar to nsp add --scaffold <git repo>
 
 	###
-	fileLoc = path.dirname(fs.realpathSync(__filename))
-	scaffolds = path.join fileLoc, "/../../../scaffolds"
-	scaffolds = mapTree scaffolds
+	fileLoc = Path.dirname Fs.realpathSync(__filename)
+	scaffolds = Path.join fileLoc, "/../../../scaffolds"
+	scaffolds = MapTree scaffolds
 
 	# Add in custom option
 	scaffolds.children.push custom =
-		path: process.cwd()
+		Path: process.cwd()
 		name: 'custom'
 		type: 'folder'
 		children: []
@@ -35,7 +35,7 @@ module.exports = (tasks, env) ->
 	scaffoldNames = (scaffold.name for scaffold in scaffolds.children)
 
 	# Generate list of current files in directory
-	cwdFiles = _.remove fs.readdirSync(env.cwd), (file) ->
+	cwdFiles = _.remove Fs.readdirSync(env.cwd), (file) ->
 		file.substring(0, 1) isnt "."
 
 
@@ -46,23 +46,23 @@ module.exports = (tasks, env) ->
 
 		# If we found a project, build it
 		if projects.length is 1
-			build(projects[0], projectName)
+			Build projects[0], projectName
 		else
 			console.log(
-				chalk.red('That scaffold template is not found, try these:')
+				Chalk.red 'That scaffold template is not found, try these:'
 			)
 			for name in scaffoldNames
 				# Don't add an extra space after the last list
 				if (_i + 1) isnt scaffoldNames.length
-					console.log(chalk.cyan(name) )
+					console.log Chalk.cyan name
 				else
-					console.log(chalk.cyan(name + '\n') )
+					console.log Chalk.cyan name + '\n'
 
 
 	startInit = ->
 
 		if typeof tasks is 'string'
-			inquirer.prompt([
+			Inquirer.prompt([
 				{
 					type: "list"
 					message: "What type of project do you want to build?"
@@ -81,7 +81,7 @@ module.exports = (tasks, env) ->
 			)
 
 		else
-			inquirer.prompt
+			Inquirer.prompt
 				type: "input"
 				message: "What do you want your project to be named?"
 				name: "projectName"
@@ -94,7 +94,7 @@ module.exports = (tasks, env) ->
 
 	# Failsafe to make sure project is empty on creation of new folder
 	if cwdFiles.length and tasks is 'create'
-		inquirer.prompt
+		Inquirer.prompt
 			type: "confirm"
 			message: "Initializing will empty the current directory. Continue?"
 			name: "override"
@@ -104,7 +104,7 @@ module.exports = (tasks, env) ->
 			if answer.override
 
 				# Make really really sure that the user wants this
-				inquirer.prompt
+				Inquirer.prompt
 					type: "confirm"
 					message: "Removed files are gone forever. Continue?"
 					name: "overridconfirm"
@@ -114,8 +114,8 @@ module.exports = (tasks, env) ->
 					if answer.overridconfirm
 
 						# Clean up directory
-						console.log chalk.grey("Emptying current directory")
-						removeTree(env.cwd, true)
+						console.log Chalk.grey("Emptying current directory")
+						RemoveTree env.cwd, true
 						startInit()
 
 					else
