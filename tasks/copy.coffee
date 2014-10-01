@@ -13,7 +13,7 @@ Test = require './copy/test'
 
 # CONFIG ---------------------------------------------------------------------
 
-config = require("../lib/config/config")(process.cwd())
+config = require("../lib/methods/read-config")(process.cwd())
 
 if !config.copy
   return

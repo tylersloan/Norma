@@ -17,7 +17,7 @@ Chalk = require "chalk"
 Path = require "path"
 
 
-module.exports = (tasks) ->
+module.exports = (tasks, cwd) ->
 
 	###
 
@@ -76,20 +76,6 @@ module.exports = (tasks) ->
 	    search: true
 	  })
 
-
-	# Convert back to array
-
-	###
-
-		@note this lends back to the discussion of stringifying the task list
-		This is the only current string -> array we are using but if it
-		grows to more then we should reset and always keep tasks as an array
-		~ @jbaxleyiii
-
-	###
-
-	if typeof tasks is "string"
-		tasks = [tasks]
 
 	# Empty config command returns print out of config
 	if tasks.length is 1

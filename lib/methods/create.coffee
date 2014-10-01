@@ -3,7 +3,7 @@ Chalk	= require("chalk")
 Flags = require('minimist')( process.argv.slice(2) )
 Init = require('./init')
 
-module.exports = (tasks, env) ->
+module.exports = (tasks, cwd) ->
 
 	if Flags.list
 		###
@@ -33,7 +33,7 @@ module.exports = (tasks, env) ->
 		###
 		console.log "searching for packages"
 
-	if tasks is "create"
+	if tasks[0] is "create"
 
 		console.log(
 			"Usage: nsp create <name>\n" +
@@ -41,8 +41,6 @@ module.exports = (tasks, env) ->
 			"   nsp create --package [<package_name>]\n"
 		)
 
-		# Resassign to array
-		tasks = [tasks]
 
 
 	if tasks.length > 1
@@ -53,9 +51,9 @@ module.exports = (tasks, env) ->
 			throw e	unless e.code is "EEXIST"
 
 		process.chdir tasks[1]
-		env.cwd = process.cwd()
 
-		Init "create", env
+
+		Init "create", cwd
 
 	else
 		console.log Chalk.red "Please specify a project name"

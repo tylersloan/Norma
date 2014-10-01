@@ -2,7 +2,7 @@
 # inquirer = require("inquirer")
 Fs       = require("fs-extra")
 Path     = require("path")
-Config   = require "../../config/config"
+ReadConfig   = require "./read-config"
 Exec     = require('child_process').exec
 Argv     = require('minimist')( process.argv.slice(2) )
 
@@ -10,6 +10,7 @@ module.exports = (project, name) ->
 
 	# See if a config file already exists (for local files)
 	fileName = "#{Tool}.json"
+	console.log project
 	configExists = Fs.existsSync Path.join(project.path, fileName)
 
 	###
@@ -20,7 +21,7 @@ module.exports = (project, name) ->
 
 	###
 	if configExists
-		scaffoldConfig = Config Path.join project.path
+		scaffoldConfig = ReadConfig Path.join project.path
 		scaffoldConfig.name = name
 	else
 		scaffoldConfig =
@@ -57,7 +58,7 @@ module.exports = (project, name) ->
 	compile = ->
 
 
-		buildTasks = require '../tasks'
+		buildTasks = require './build'
 		tasks = Argv._
 		tasks[0] = "build"
 
@@ -71,7 +72,7 @@ module.exports = (project, name) ->
 	# Run any other scripts for the project
 	runScripts = ->
 
-		file = Config process.cwd()
+		file = ReadConfig process.cwd()
 
 		if file.scripts
 			for action of file.scripts

@@ -2,30 +2,22 @@ _	= require("lodash")
 Inquirer = require("inquirer")
 Fs = require("fs-extra")
 Chalk = require("chalk")
-MapTree = require("../directory-tools").mapTree
+MapTree = require("./directory-tools").mapTree
 Path = require("path")
-Build = require("./build")
-RemoveTree = require("../directory-tools").removeTree
+Scaffold = require("./scaffold")
+RemoveTree = require("./directory-tools").removeTree
 
 
 
-module.exports = (tasks, env) ->
+module.exports = (tasks, cwd) ->
 
-	###
-
-		Get all available scaffolds
-
-		@todo - need to Build out api to add custom scaffolds
-			should be similar to nsp add --scaffold <git repo>
-
-	###
 	fileLoc = Path.dirname Fs.realpathSync(__filename)
-	scaffolds = Path.join fileLoc, "/../../../scaffolds"
+	scaffolds = Path.join fileLoc, "/../../scaffolds"
 	scaffolds = MapTree scaffolds
 
 	# Add in custom option
 	scaffolds.children.push custom =
-		Path: process.cwd()
+		path: process.cwd()
 		name: 'custom'
 		type: 'folder'
 		children: []
@@ -35,7 +27,7 @@ module.exports = (tasks, env) ->
 	scaffoldNames = (scaffold.name for scaffold in scaffolds.children)
 
 	# Generate list of current files in directory
-	cwdFiles = _.remove Fs.readdirSync(env.cwd), (file) ->
+	cwdFiles = _.remove Fs.readdirSync(cwd), (file) ->
 		file.substring(0, 1) isnt "."
 
 
@@ -46,7 +38,7 @@ module.exports = (tasks, env) ->
 
 		# If we found a project, build it
 		if projects.length is 1
-			Build projects[0], projectName
+			Scaffold projects[0], projectName
 		else
 			console.log(
 				Chalk.red 'That scaffold template is not found, try these:'
@@ -61,7 +53,7 @@ module.exports = (tasks, env) ->
 
 	startInit = ->
 
-		if typeof tasks is 'string'
+		if tasks.length is 1
 			Inquirer.prompt([
 				{
 					type: "list"
@@ -93,7 +85,7 @@ module.exports = (tasks, env) ->
 
 
 	# Failsafe to make sure project is empty on creation of new folder
-	if cwdFiles.length and tasks is 'create'
+	if cwdFiles.length and tasks[0] is 'create'
 		Inquirer.prompt
 			type: "confirm"
 			message: "Initializing will empty the current directory. Continue?"
@@ -115,7 +107,7 @@ module.exports = (tasks, env) ->
 
 						# Clean up directory
 						console.log Chalk.grey("Emptying current directory")
-						RemoveTree env.cwd, true
+						RemoveTree cwd, true
 						startInit()
 
 					else
@@ -124,7 +116,7 @@ module.exports = (tasks, env) ->
 			else
 				process.exit 0
 
-	else if typeof tasks is 'string'
+	else if tasks.length is 1
 		startInit()
 
 	else

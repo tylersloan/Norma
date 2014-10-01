@@ -6,14 +6,14 @@ Chalk = require "chalk"
 Exec = require("child_process").exec
 
 MapTree = require("./directory-tools").mapTree
-Config = require "../config/config"
+ReadConfig = require "./read-config"
 
 
 
-module.exports = (tasks, configPath) ->
+module.exports = (tasks, cwd) ->
 
   # Load config
-  config = Config configPath
+  config = ReadConfig process.cwd()
 
   # Set emtpy array for fileTypes
   fileTypes = new Array

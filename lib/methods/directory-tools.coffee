@@ -39,7 +39,7 @@ copy = (src, dest, cb) ->
 
 mapTree = (filename, ignore) ->
 
-	if ignore.length
+	if ignore and ignore.length
 		for ignored in ignore
 			if whitelist.indexOf(ignored) is -1
 				whitelist.push ignored
@@ -48,7 +48,7 @@ mapTree = (filename, ignore) ->
 		stats = Fs.lstatSync filename
 
 		info =
-			Path: filename
+			path: filename
 			name: Path.basename filename
 
 		if stats.isDirectory()
