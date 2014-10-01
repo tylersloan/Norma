@@ -22,7 +22,7 @@ module.exports = (env) ->
 	cliPackage = require "../../package"
 
 	# Bind tasks to variable for easy passing
-	task = Flags._
+	tasks = Flags._
 
 
 
@@ -37,19 +37,9 @@ module.exports = (env) ->
 		process.exit 0
 
 	# set default task to watch if running bare
-	if task.length is 0
-		task = ["watch"]
+	if tasks.length is 0
+		tasks = ["watch"]
 
-	###
-
-		If only one task argument is passed, turn it into a string.
-		We do this to be able to type check in tasks for empty commands.
-		This may not be the best way to do it but I'm fond of it
-		~ @jbaxleyiii
-
-	###
-	if task.length is 1
-		task = task[0]
 
 	# See if help or h task is trying to be run
 	if Flags.help or Flags.h
@@ -74,26 +64,5 @@ module.exports = (env) ->
 
 	# TASKS -------------------------------------------------------------------
 
-	if task is "create" or task[0] is "create"
-		create = require "./scaffold/create"
-		create(task, env)
-
-
-	if task is "init" or task[0] is "init"
-		init = require "./scaffold/init"
-		init(task, env)
-
-
-	if task is "build" or task[0] is "build"
-		runTasks = require "./tasks"
-		runTasks(task, process.cwd())
-
-
-	if task is "watch" or task[0] is "watch"
-		serve = require "./serve"
-		serve(task, env)
-
-
-	if task is "config" or task[0] is "config"
-		manage = require "../config/manage"
-		manage(task, env)
+	task = require "./#{tasks[0]}"
+	task tasks, env.cwd

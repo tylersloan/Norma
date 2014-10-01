@@ -14,7 +14,7 @@ $           = require("gulp-load-plugins")({config: packageLoc})
 # CONFIG ---------------------------------------------------------------------
 
 
-config = require("../lib/config/config")(process.cwd())
+config = require("../lib/methods/read-config")(process.cwd())
 
 unless config.javascript?
   configFound = false

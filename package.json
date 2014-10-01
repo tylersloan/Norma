@@ -90,6 +90,7 @@
     "update-notifier": "^0.1.10"
   },
   "devDependencies": {
+    "github-download": "^0.3.0",
     "gulp-debug": "^0.3.0"
   },
   "engines": {
