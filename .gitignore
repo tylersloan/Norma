@@ -11,4 +11,4 @@ sandbox
 test/out-fixtures/*
 test/watch-*.txt
 workbench
-scaffolds/
+scaffolds
