@@ -1,10 +1,17 @@
 Path = require "path"
 Exec = require('child_process').exec
+Chalk = require 'chalk'
 Flags = require('minimist')( process.argv.slice(2) )
 Ghdownload = require("github-download")
 
 # norma add --scaffold <git repo>
 module.exports = (tasks, cwd) ->
+
+	if tasks.length is 1
+
+		console.log Chalk.red "Please specify a task or --scaffold <repo>"
+
+		process.exit 0
 
 	if Flags.scaffold
 		tasks[1] = Flags.scaffold
@@ -21,3 +28,15 @@ module.exports = (tasks, cwd) ->
 		  Exec "tree", (err, stdout, sderr) ->
 		    console.log "Scaffold ready!"
 		    return
+
+	if !Flags.scaffold
+
+		# Do work on users global norma
+		process.chdir Path.resolve __dirname, '../../'
+
+		config = require Path.join process.cwd(), 'package.json'
+
+		console.log config
+
+		# Change back to project cwd for further tasks
+		process.chdir cwd

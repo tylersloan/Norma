@@ -4,9 +4,11 @@ Fs = require "fs-extra"
 Sequence = require "run-sequence"
 Chalk = require "chalk"
 Exec = require("child_process").exec
+_ = require "underscore"
 
 MapTree = require("./directory-tools").mapTree
 ReadConfig = require "./read-config"
+PkgeLookup = require "./package-lookup"
 
 
 
@@ -217,8 +219,16 @@ module.exports = (tasks, cwd) ->
     )
 
 
+
+
+
   Gulp = require "gulp"
-  GulpFile = require "../../gulpfile"
+  gulpTasks = PkgeLookup tasks, (Path.resolve __dirname, "../../")
+
+
+  for task in gulpTasks
+    _.extend Gulp.tasks, task
+
 
 
   ###

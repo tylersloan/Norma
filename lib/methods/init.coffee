@@ -2,9 +2,10 @@ _	= require("lodash")
 Inquirer = require("inquirer")
 Fs = require("fs-extra")
 Chalk = require("chalk")
-MapTree = require("./directory-tools").mapTree
 Path = require("path")
+
 Scaffold = require("./scaffold")
+MapTree = require("./directory-tools").mapTree
 RemoveTree = require("./directory-tools").removeTree
 
 
@@ -85,7 +86,7 @@ module.exports = (tasks, cwd) ->
 
 
 	# Failsafe to make sure project is empty on creation of new folder
-	if cwdFiles.length and tasks[0] is 'create'
+	if cwdFiles.length
 		Inquirer.prompt
 			type: "confirm"
 			message: "Initializing will empty the current directory. Continue?"

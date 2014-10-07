@@ -1,6 +1,6 @@
 ###
 
-	This file finds the nspfile.json for a project.
+	This file finds the norma.json for a project.
 	It then parses it and returns the object as the result of the function
 
 ###

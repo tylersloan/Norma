@@ -28,7 +28,7 @@ module.exports = (tasks, cwd) ->
 		list = listTypes "/../../tasks", "file"
 
 		cleanedList = (
-			name.split('.')[0] for name in list when name isnt '.DS_Store'
+			name.split(".")[0] for name in list when name isnt ".DS_Store"
 		)
 
 		console.log cleanedList

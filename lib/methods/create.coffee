@@ -1,18 +1,12 @@
 Fs = require("fs-extra")
 Chalk	= require("chalk")
 Flags = require('minimist')( process.argv.slice(2) )
+
 Init = require('./init')
 
 module.exports = (tasks, cwd) ->
 
-	if Flags.list
-		###
 
-			Is this a list of tasks or a list of scaffolds? I don't feel scaffolds
-			are as helpful since they only get used once
-
-		###
-		console.log "set up listing of projects here"
 	if Flags.package
 		###
 
@@ -33,15 +27,6 @@ module.exports = (tasks, cwd) ->
 		###
 		console.log "searching for packages"
 
-	if tasks[0] is "create"
-
-		console.log(
-			"Usage: nsp create <name>\n" +
-			"   nsp create --list\n" +
-			"   nsp create --package [<package_name>]\n"
-		)
-
-
 
 	if tasks.length > 1
 		# making directory without exception if exists
@@ -52,10 +37,17 @@ module.exports = (tasks, cwd) ->
 
 		process.chdir tasks[1]
 
+		tasks = ["create"]
 
-		Init "create", cwd
+		Init tasks, process.cwd()
 
 	else
+		console.log(
+			"Usage: nsp create <name>\n" +
+			"   nsp create --list\n" +
+			"   nsp create --package [<package_name>]\n"
+		)
+
 		console.log Chalk.red "Please specify a project name"
 
 		process.exit 0
