@@ -1,0 +1,11 @@
+{
+  "copy": {
+    "src": "./scaffolds/ee-multisite/assets/_source/templates/",
+    "dest": "./scaffolds/ee-multisite/assets/templates/",
+    "ext": [
+      "feed",
+      "json",
+      "img"
+    ]
+  }
+}

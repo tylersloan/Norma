@@ -4,4 +4,4 @@ var path = require('path')
 
 // Dynamically load all gulp tasks
 var requireDir = require('require-dir');
-var dir        = requireDir('./tasks');
+var dir        = requireDir('./plugins');
