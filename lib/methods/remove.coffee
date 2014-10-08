@@ -4,7 +4,7 @@ ReadConfig = require "./read-config"
 Exec = require('child_process').exec
 Flags = require('minimist')( process.argv.slice(2) )
 
-RemoveTree = require('./directory-tools').removeTree
+RemoveTree = require('./../utilities/directory-tools').removeTree
 
 
 # norma add --scaffold <git repo>

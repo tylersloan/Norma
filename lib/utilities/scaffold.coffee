@@ -2,9 +2,10 @@
 # inquirer = require("inquirer")
 Fs       = require("fs-extra")
 Path     = require("path")
-ReadConfig   = require "./read-config"
 Exec     = require('child_process').exec
 Argv     = require('minimist')( process.argv.slice(2) )
+
+ReadConfig   = require "./read-config"
 
 module.exports = (project, name) ->
 
@@ -58,7 +59,7 @@ module.exports = (project, name) ->
 	compile = ->
 
 
-		buildTasks = require './build'
+		buildTasks = require './../methods/build'
 		tasks = Argv._
 		tasks[0] = "build"
 

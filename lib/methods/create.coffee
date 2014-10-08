@@ -3,7 +3,7 @@ Chalk	= require("chalk")
 Flags = require("minimist")( process.argv.slice(2) )
 
 Init = require("./init")
-Package = require "./package"
+Package = require "./../utilities/package"
 
 module.exports = (tasks, cwd) ->
 
