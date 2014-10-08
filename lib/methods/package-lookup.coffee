@@ -52,9 +52,6 @@ module.exports = (tasks, cwd) ->
 
 	Multimatch(names, pattern).forEach (name) ->
 
-		# requireName = name.replace(replaceString, "")
-
-		# requireName = camelize(requireName)
 		packageList.push name
 
 		return

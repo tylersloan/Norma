@@ -1,13 +1,16 @@
 Path = require "path"
 Fs = require "fs-extra"
 Flags = require("minimist")( process.argv.slice(2) )
+Chalk = require "chalk"
 
 MapTree = require("./directory-tools").mapTree
+PkgeLookup = require "./package-lookup"
 
 # norma add --scaffold <git repo>
 module.exports = (tasks, cwd) ->
 
 	listTypes = (folderLocation, type) ->
+
 		fileLoc = Path.dirname Fs.realpathSync(__filename)
 		scaffolds = Path.join fileLoc, folderLocation
 		scaffolds = MapTree(scaffolds).children
@@ -25,10 +28,15 @@ module.exports = (tasks, cwd) ->
 
 	else
 
-		list = listTypes "/../../tasks", "file"
+		# list = listTypes "/../../tasks", "file"
+		#
+		# cleanedList = (
+		# 	name.split(".")[0] for name in list when name isnt ".DS_Store"
+		# )
+		#
+		# console.log cleanedList
 
-		cleanedList = (
-			name.split(".")[0] for name in list when name isnt ".DS_Store"
-		)
+		console.log Chalk.red "Need to build out list for packages still"
 
-		console.log cleanedList
+		# packages = PkgeLookup tasks, (Path.resolve __dirname, "../../")
+		# console.log packages
