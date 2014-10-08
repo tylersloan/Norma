@@ -86,7 +86,7 @@ module.exports = (tasks, cwd) ->
 
 
 	# Failsafe to make sure project is empty on creation of new folder
-	if cwdFiles.length
+	if cwdFiles.length and tasks[0] isnt 'init'
 		Inquirer.prompt
 			type: "confirm"
 			message: "Initializing will empty the current directory. Continue?"

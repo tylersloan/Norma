@@ -1,32 +1,21 @@
 Fs = require("fs-extra")
 Chalk	= require("chalk")
-Flags = require('minimist')( process.argv.slice(2) )
+Flags = require("minimist")( process.argv.slice(2) )
 
-Init = require('./init')
+Init = require("./init")
+Package = require "./package"
 
 module.exports = (tasks, cwd) ->
 
+	args = process.argv.slice(2)
 
-	if Flags.package
-		###
+	count = 0
+	for argument in args
 
-			We should probably create a sample package for creating tasks and
-			a sample scaffold. Is a package a task or a scaffold? This should
-			be clearer
-
-		###
-		console.log "build a package here"
-
-	if Flags.search
-		###
-
-			What would it look like to include a package system built on
-			npm to pull in packages with a norma- prefix. This is getting ahead
-			of the scope right now but could be really useful for packages
-
-		###
-		console.log "searching for packages"
-
+		if !argument.match /(-|--)package/
+			index = args.indexOf argument
+			tasks[count] = argument
+			count++
 
 	if tasks.length > 1
 		# making directory without exception if exists
@@ -37,9 +26,14 @@ module.exports = (tasks, cwd) ->
 
 		process.chdir tasks[1]
 
-		tasks = ["create"]
+		if Flags.package
 
-		Init tasks, process.cwd()
+			Package tasks, cwd
+
+		else
+			tasks = ["create"]
+
+			Init tasks, process.cwd()
 
 	else
 		console.log(

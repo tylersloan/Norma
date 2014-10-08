@@ -36,7 +36,5 @@ module.exports = (tasks, cwd) ->
 
 		config = require Path.join process.cwd(), 'package.json'
 
-		console.log config
-
 		# Change back to project cwd for further tasks
 		process.chdir cwd

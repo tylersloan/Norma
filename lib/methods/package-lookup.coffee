@@ -18,8 +18,8 @@ module.exports = (tasks, cwd) ->
 	finalObject = {}
 
 	pattern = arrayify([
-		"norma-*"
-		"norma.*"
+		"#{Tool}-*"
+		"#{Tool}.*"
 	])
 
 	config = Findup "package.json", cwd: cwd
