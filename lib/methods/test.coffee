@@ -6,7 +6,7 @@ Gulp = require "gulp"
 Flags = require("minimist")( process.argv.slice(2) )
 _ = require "underscore"
 
-ReadConfig = require "./read-config"
+ReadConfig = require "./../utilities/read-config"
 
 
 module.exports = (tasks, cwd) ->

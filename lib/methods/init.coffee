@@ -4,9 +4,9 @@ Fs = require("fs-extra")
 Chalk = require("chalk")
 Path = require("path")
 
-Scaffold = require("./scaffold")
-MapTree = require("./directory-tools").mapTree
-RemoveTree = require("./directory-tools").removeTree
+Scaffold = require("./../utilities/scaffold")
+MapTree = require("./../utilities/directory-tools").mapTree
+RemoveTree = require("./../utilities/directory-tools").removeTree
 
 
 

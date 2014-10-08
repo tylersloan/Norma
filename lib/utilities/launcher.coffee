@@ -10,7 +10,7 @@ Chalk = require "chalk"
 
 
 # Logger is where console output info for the CLI is stored
-Logger = require "../logging/logger"
+Logger = require "./../logging/logger"
 
 
 module.exports = (env) ->
@@ -64,5 +64,5 @@ module.exports = (env) ->
 
 	# TASKS -------------------------------------------------------------------
 
-	task = require "./#{tasks[0]}"
+	task = require "./../methods/#{tasks[0]}"
 	task tasks, env.cwd

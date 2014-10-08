@@ -7,9 +7,9 @@ Exec = require("child_process").exec
 _ = require "underscore"
 Gulp = require "gulp"
 
-MapTree = require("./directory-tools").mapTree
-ReadConfig = require "./read-config"
-PkgeLookup = require "./package-lookup"
+MapTree = require("./../utilities/directory-tools").mapTree
+ReadConfig = require "./../utilities/read-config"
+PkgeLookup = require "./../utilities/package-lookup"
 
 
 
@@ -222,29 +222,27 @@ module.exports = (tasks, cwd) ->
 
 
 
-
-
-
   # Get any project specific packages (from package.json)
   projectTasks = PkgeLookup tasks, cwd
 
   # Get global packages added to Norma
   rootGulpTasks = PkgeLookup tasks, (Path.resolve __dirname, "../../")
 
-
   # See if there are any project packages (from norma-packages dir)
   customPackages = Fs.existsSync Path.join(cwd, "#{Tool}-packages")
 
   if customPackages
+
     customPackages = PkgeLookup tasks, Path.join(cwd, "#{Tool}-packages")
 
     projectTasks = customPackages.concat projectTasks
+
+
 
   combinedTasks = projectTasks.concat rootGulpTasks
 
   for task in combinedTasks
     _.extend Gulp.tasks, task
-
 
 
   ###

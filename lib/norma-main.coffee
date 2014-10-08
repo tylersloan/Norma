@@ -35,7 +35,7 @@ cli = new Liftoff({
 	Invoke acts as the main router file of the commands to be run
 
 ###
-invoke = require("./methods/launcher")
+invoke = require("./utilities/launcher")
 
 # Launch the CLI (Command Line Interface)
 cli.launch(

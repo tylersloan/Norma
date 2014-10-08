@@ -3,8 +3,8 @@ Fs = require "fs-extra"
 Flags = require("minimist")( process.argv.slice(2) )
 Chalk = require "chalk"
 
-MapTree = require("./directory-tools").mapTree
-PkgeLookup = require "./package-lookup"
+MapTree = require("./../utilities/directory-tools").mapTree
+PkgeLookup = require "./../utilities/package-lookup"
 
 # norma add --scaffold <git repo>
 module.exports = (tasks, cwd) ->
