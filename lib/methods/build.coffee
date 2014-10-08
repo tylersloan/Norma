@@ -223,10 +223,14 @@ module.exports = (tasks, cwd) ->
 
 
   Gulp = require "gulp"
-  gulpTasks = PkgeLookup tasks, (Path.resolve __dirname, "../../")
+  gulpTasks = PkgeLookup tasks, cwd
+  rootGulpTasks = PkgeLookup tasks, (Path.resolve __dirname, "../../")
 
+  combinedTasks = gulpTasks.concat rootGulpTasks
 
-  for task in gulpTasks
+  console.log combinedTasks
+
+  for task in combinedTasks
     _.extend Gulp.tasks, task
 
 
