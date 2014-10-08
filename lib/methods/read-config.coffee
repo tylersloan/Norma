@@ -43,7 +43,13 @@ module.exports = (cwd) ->
 		This is done syncronously in order to return read data correctly
 
 	###
-	file = Fs.readFileSync fileLoc, encoding: "utf8"
+	try
+		file = Fs.readFileSync fileLoc, encoding: "utf8"
+	catch err
+		console.log(
+			Chalk.red "Cannot find #{Tool}.json. Have you initiated norma?"
+		)
+		process.exit 0
 
 	parse file
 
