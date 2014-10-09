@@ -29,6 +29,33 @@ module.exports = (tasks, cwd) ->
 
 	else
 
+		# # Get any project specific packages (from package.json)
+		# projectTasks = PkgeLookup tasks, cwd
+		#
+		# # Get global packages added to Norma
+		# rootGulpTasks = PkgeLookup tasks, Path.resolve(__dirname, "../../")
+		#
+		# # See if there are any project packages (from norma-packages dir)
+		# # Should this check be in the PgkeLookup file?
+		# customPackages = Fs.existsSync Path.join(cwd, "#{Tool}-packages")
+		#
+		# if customPackages
+		#
+		# 	# Look for project specific packages (from norma-packages dir)
+		# 	customPackages = PkgeLookup tasks, Path.join(cwd, "#{Tool}-packages")
+		#
+		# 	projectTasks = customPackages.concat projectTasks
+		#
+		#
+		# combinedTasks = projectTasks.concat rootGulpTasks
+		#
+		# console.log rootGulpTasks
+		#
+		# for task in combinedTasks
+		# 	for taskKey of task
+		# 		console.log task[taskKey].name
+
+
 		# list = listTypes "/../../tasks", "file"
 		#
 		# cleanedList = (
