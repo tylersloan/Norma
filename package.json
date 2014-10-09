@@ -40,7 +40,7 @@
     "minimist": "0.2.0",
     "multimatch": "^1.0.0",
     "nconf": "^0.6.9",
-    "norma-copy": "0.0.1",
+    "norma-copy": "0.0.2",
     "norma-javascript": "0.0.2",
     "norma-markup": "0.0.1",
     "norma-sass": "0.0.1",

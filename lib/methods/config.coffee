@@ -1,6 +1,6 @@
 ###
 
-	In order to have a great build tool, I feel each developer needs
+	In order to have a great build tool, I think each developer needs
 	the ability to add their own preferences of how things are run.
 	This file uses the awesome `nconf` package to store global and local
 	config data. This allows devs to choose custom info system wise and
@@ -9,7 +9,6 @@
 
 ###
 
-# Require packages
 Fs    = require "fs-extra"
 Nconf = require "nconf"
 Flags = require("minimist")(process.argv.slice(2))
@@ -17,7 +16,55 @@ Chalk = require "chalk"
 Path = require "path"
 
 
+
+module.exports.api = [
+	{
+		command: "config"
+		description: "print out current project config"
+	}
+	{
+		command: "config key"
+		description: "print out value of local config key"
+	}
+	{
+		command: "config key --reset"
+		description: "clear out value of local config key"
+	}
+	{
+		command: "config key value"
+		description: "save value of local config key"
+	}
+	{
+		command: "config --reset"
+		description: "clear out all local config items"
+	}
+	{
+		command: "config --global"
+		description: "print out global config"
+	}
+	{
+		command: "config key --global"
+		description: "print out value of global config key"
+	}
+	{
+		command: "config key --global --reset"
+		description: "clear out value of global config key"
+	}
+	{
+		command: "config key value --global"
+		description: "save value of global config key"
+	}
+	{
+		command: "config --reset --global"
+		description: "clear out all global config items"
+	}
+]
+
+
+
 module.exports = (tasks, cwd) ->
+
+	# CONFIG-TYPE -----------------------------------------------------------
 
 	###
 
@@ -34,18 +81,10 @@ module.exports = (tasks, cwd) ->
 	# See if a config file already exists (for local files)
 	configExists = Fs.existsSync Path.join(useDir, ".#{Tool}")
 
+
+	# CONFIG-CREATE ---------------------------------------------------------
+
 	# If no file, then we create a new one with some preset items
-
-	###
-
-		@todo - Should we add in ability to set common copy tasks in global config
-		This could be done based off of project type and/or add a default task?
-
-		This might not be needed if all checks fall back to global?
-		~ @jbaxleyiii
-
-	###
-
 	if !configExists
 		config =
 			Path: process.cwd()
@@ -58,6 +97,8 @@ module.exports = (tasks, cwd) ->
 		)
 
 
+
+	# CONFIG-READ -----------------------------------------------------------
 
 	###
 
@@ -76,6 +117,9 @@ module.exports = (tasks, cwd) ->
 	    search: true
 	  })
 
+
+
+	# READ ------------------------------------------------------------------
 
 	# Empty config command returns print out of config
 	if tasks.length is 1
@@ -100,8 +144,11 @@ module.exports = (tasks, cwd) ->
 		console.log configData
 
 
+	# KEY-TASKS ------------------------------------------------------------
+
 	# Read config of a value
 	if tasks[1] and tasks[2] is `undefined`
+
 
 		# Gives users the options to remove config items
 		if !Flags.remove
@@ -112,15 +159,24 @@ module.exports = (tasks, cwd) ->
 		else
 			Nconf.clear tasks[1]
 
+
+
+	# SAVE ------------------------------------------------------------------
+
 	# Save config with value
 	if tasks[2]
 		Nconf.set tasks[1], tasks[2]
 
 
+
+	# RESET -----------------------------------------------------------------
+
 	# Reset clears entire Nconf file
 	if Flags.reset
 		Nconf.reset()
 
+
+	# CONFIG-SAVE -----------------------------------------------------------
 
 	# Save the configuration object to file
 	Nconf.save (err) ->
