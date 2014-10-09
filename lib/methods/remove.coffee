@@ -7,7 +7,17 @@ Flags = require('minimist')( process.argv.slice(2) )
 RemoveTree = require('./../utilities/directory-tools').removeTree
 
 
-# norma add --scaffold <git repo>
+module.exports.api = [
+	# {
+	# 	command: ""
+	# 	description: "list all available packages"
+	# }
+	{
+		command: "<name> --scaffold"
+		description: "remove scaffold from #{Tool}"
+	}
+]
+
 module.exports = (tasks, cwd) ->
 
 	if Flags.scaffold

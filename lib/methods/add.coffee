@@ -7,15 +7,15 @@ ExecCommand = require "./../utilities/execute-command"
 
 module.exports.api = [
 	{
-		command: "<git repo> --scaffold"
+		command: "<git-repo> --scaffold"
 		description: "install global scaffold"
 	}
 	{
-		command: "package-name"
+		command: "<package-name>"
 		description: "install local package"
 	}
 	{
-		command: "package-name --global"
+		command: "<package-name> --global"
 		description: "install global package"
 	}
 ]

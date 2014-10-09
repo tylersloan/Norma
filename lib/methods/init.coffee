@@ -10,6 +10,13 @@ RemoveTree = require("./../utilities/directory-tools").removeTree
 
 
 
+module.exports.api = [
+	{
+		command: ""
+		description: "initalize a directory as a #{Tool} project"
+	}
+]
+
 module.exports = (tasks, cwd) ->
 
 	scaffolds = MapTree Path.join __dirname, "/../../scaffolds"

@@ -14,11 +14,11 @@ ExecCommand = require "./../utilities/execute-command"
 
 module.exports.api = [
   {
-    command: "task-name"
+    command: "<task-name>"
     description: "build single task"
   }
   {
-    command: "task-name task-name task-name"
+    command: "<task-name> <task-name> <task-name>"
     description: "build multiple tasks"
   }
 ]

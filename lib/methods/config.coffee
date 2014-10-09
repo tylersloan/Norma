@@ -19,43 +19,43 @@ Path = require "path"
 
 module.exports.api = [
 	{
-		command: "config"
+		command: ""
 		description: "print out current project config"
 	}
 	{
-		command: "config key"
+		command: "<key>"
 		description: "print out value of local config key"
 	}
 	{
-		command: "config key --reset"
+		command: "<key> --reset"
 		description: "clear out value of local config key"
 	}
 	{
-		command: "config key value"
+		command: "<key> value"
 		description: "save value of local config key"
 	}
 	{
-		command: "config --reset"
+		command: "--reset"
 		description: "clear out all local config items"
 	}
 	{
-		command: "config --global"
+		command: "--global"
 		description: "print out global config"
 	}
 	{
-		command: "config key --global"
+		command: "<key> --global"
 		description: "print out value of global config key"
 	}
 	{
-		command: "config key --global --reset"
+		command: "<key> --global --reset"
 		description: "clear out value of global config key"
 	}
 	{
-		command: "config key value --global"
+		command: "<key> value --global"
 		description: "save value of global config key"
 	}
 	{
-		command: "config --reset --global"
+		command: "--reset --global"
 		description: "clear out all global config items"
 	}
 ]
