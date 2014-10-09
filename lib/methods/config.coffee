@@ -16,52 +16,6 @@ Chalk = require "chalk"
 Path = require "path"
 
 
-
-module.exports.api = [
-	{
-		command: ""
-		description: "print out current project config"
-	}
-	{
-		command: "<key>"
-		description: "print out value of local config key"
-	}
-	{
-		command: "<key> --reset"
-		description: "clear out value of local config key"
-	}
-	{
-		command: "<key> value"
-		description: "save value of local config key"
-	}
-	{
-		command: "--reset"
-		description: "clear out all local config items"
-	}
-	{
-		command: "--global"
-		description: "print out global config"
-	}
-	{
-		command: "<key> --global"
-		description: "print out value of global config key"
-	}
-	{
-		command: "<key> --global --reset"
-		description: "clear out value of global config key"
-	}
-	{
-		command: "<key> value --global"
-		description: "save value of global config key"
-	}
-	{
-		command: "--reset --global"
-		description: "clear out all global config items"
-	}
-]
-
-
-
 module.exports = (tasks, cwd) ->
 
 	# CONFIG-TYPE -----------------------------------------------------------
@@ -181,3 +135,50 @@ module.exports = (tasks, cwd) ->
 	# Save the configuration object to file
 	Nconf.save (err) ->
 		throw err if err
+
+
+
+# API ----------------------------------------------------------------------
+
+module.exports.api = [
+	{
+		command: ""
+		description: "print out current project config"
+	}
+	{
+		command: "<key>"
+		description: "print out value of local config key"
+	}
+	{
+		command: "<key> --reset"
+		description: "clear out value of local config key"
+	}
+	{
+		command: "<key> value"
+		description: "save value of local config key"
+	}
+	{
+		command: "--reset"
+		description: "clear out all local config items"
+	}
+	{
+		command: "--global"
+		description: "print out global config"
+	}
+	{
+		command: "<key> --global"
+		description: "print out value of global config key"
+	}
+	{
+		command: "<key> --global --reset"
+		description: "clear out value of global config key"
+	}
+	{
+		command: "<key> value --global"
+		description: "save value of global config key"
+	}
+	{
+		command: "--reset --global"
+		description: "clear out all global config items"
+	}
+]

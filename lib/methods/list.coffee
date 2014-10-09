@@ -8,18 +8,6 @@ PkgeLookup = require "./../utilities/package-lookup"
 
 
 
-module.exports.api = [
-	# {
-	# 	command: ""
-	# 	description: "list all available packages"
-	# }
-	{
-		command: "--scaffold"
-		description: "list all available scaffolds"
-	}
-]
-
-
 module.exports = (tasks, cwd) ->
 
 	listTypes = (folderLocation, type) ->
@@ -53,3 +41,17 @@ module.exports = (tasks, cwd) ->
 
 		# packages = PkgeLookup tasks, (Path.resolve __dirname, "../../")
 		# console.log packages
+
+
+# API ----------------------------------------------------------------------
+
+module.exports.api = [
+	# {
+	# 	command: ""
+	# 	description: "list all available packages"
+	# }
+	{
+		command: "--scaffold"
+		description: "list all available scaffolds"
+	}
+]

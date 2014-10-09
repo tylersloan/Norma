@@ -6,18 +6,6 @@ Init = require("./init")
 Package = require "./../utilities/package"
 
 
-module.exports.api = [
-	{
-		command: "<name>"
-		description: "create a new scaffoled project from name"
-	}
-	{
-		command: "<name> --package"
-		description: "create a new package project from name"
-	}
-]
-
-
 module.exports = (tasks, cwd) ->
 
 	args = process.argv.slice(2)
@@ -69,3 +57,18 @@ module.exports = (tasks, cwd) ->
 		console.log Chalk.red "Please specify a project name"
 
 		process.exit 0
+
+
+
+# API ----------------------------------------------------------------------
+
+module.exports.api = [
+	{
+		command: "<name>"
+		description: "create a new scaffoled project from name"
+	}
+	{
+		command: "<name> --package"
+		description: "create a new package project from name"
+	}
+]
