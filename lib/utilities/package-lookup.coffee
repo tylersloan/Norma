@@ -40,15 +40,18 @@ module.exports = (tasks, cwd) ->
 
 
 
-	if cwd.match /norma-packages/
+	if normaConfig.type is "package" or cwd.match /norma-packages/
+
+		if cwd.match /norma-packages/
+			cwd = Path.resolve cwd, "norma-packages"
 
 		customs = MapTree cwd
-		for custom in customs.children
 
-			for pkge in custom.children
+		for pkge in customs.children
 
-				if pkge.name.match /package[.](js|coffee)/
-					mapPkge pkge.path
+			if pkge.name and pkge.name.match /package[.](js|coffee)$/
+
+				mapPkge pkge.path
 
 	else
 
