@@ -3,14 +3,108 @@ Path = require "path"
 Fs = require "fs-extra"
 Sequence = require "run-sequence"
 Chalk = require "chalk"
-Exec = require("child_process").exec
 _ = require "underscore"
 Gulp = require "gulp"
 
 MapTree = require("./../utilities/directory-tools").mapTree
 ReadConfig = require "./../utilities/read-config"
 PkgeLookup = require "./../utilities/package-lookup"
+ExecCommand = require "./../utilities/execute-command"
 
+
+# TASKLIST --------------------------------------------------------------
+
+generateTaskList = (types, cb) ->
+
+  saveTask = (location, task) ->
+
+    if location.indexOf(task) is -1
+      location.push task
+
+
+  ###
+
+    @note
+
+      Task are run in three phases, each with a sync run and an async
+      run. The order is as follows:
+        1. Pre Compile
+        2. Main Compile
+        3. Post compile.
+      This taskList object is where those tasks are mapped. The type of
+      taks is defined within each gulp task.
+
+      An example of a full task set would be:
+        1. Pre Compile - sync task would be starting a mongodb.
+        2. Main Compile - actually compile the project
+        3. Post Compile - start local project server
+  ###
+  taskList =
+    pre :
+      sync: []
+      async: []
+    main:
+      sync: []
+      async: []
+    post:
+      sync: []
+      async: []
+
+  ###
+
+    The cyclomatic complexity of this statement is way too high.
+    Need to break it apart into smaller, more efficent tasks.
+
+  ###
+  for task of Gulp.tasks
+
+    if Gulp.tasks[task].ext
+
+      for type in types
+
+        if Gulp.tasks[task].ext.indexOf(type) > -1
+
+          if Gulp.tasks[task].order
+
+            Gulp.tasks[task].type = Gulp.tasks[task].type or "async"
+
+            saveTask(
+              taskList[Gulp.tasks[task].order][Gulp.tasks[task].type]
+              task
+            )
+
+          else
+            saveTask taskList.main.async, task
+
+
+  cb taskList
+
+
+###
+
+  The through task is a way to run a full sequence even
+  when sequence tasks aren"t defined. It feels kinda hacky but gulp
+  isn"t really meant to be used in this way. When gulp moves to full
+  orchestrator support, this tool will need a serious revist.
+
+  @todo - Update to Gulp 4.0 and see what happens
+
+###
+Gulp.task "through", (cb) ->
+  cb null
+
+
+# # Coming soon
+# module.exports.api = [
+#   {
+#     command: "task-name"
+#     description: "build single task"
+#   }
+#   {
+#     command: "task-name task-name task-name"
+#     description: "build multiple tasks"
+#   }
+# ]
 
 
 module.exports = (tasks, cwd) ->
@@ -21,70 +115,8 @@ module.exports = (tasks, cwd) ->
   # Set emtpy array for fileTypes
   fileTypes = new Array
 
-  generateTaskList = (types, cb) ->
 
-    saveTask = (location, task) ->
-
-      if location.indexOf(task) is -1
-        location.push task
-
-
-    ###
-
-      @note
-
-        Task are run in three phases, each with a sync run and an async
-        run. The order is as follows:
-          1. Pre Compile
-          2. Main Compile
-          3. Post compile.
-        This taskList object is where those tasks are mapped. The type of
-        taks is defined within each gulp task.
-
-        An example of a full task set would be:
-          1. Pre Compile - sync task would be starting a mongodb.
-          2. Main Compile - actually compile the project
-          3. Post Compile - start local project server
-    ###
-    taskList =
-      pre :
-        sync: []
-        async: []
-      main:
-        sync: []
-        async: []
-      post:
-        sync: []
-        async: []
-
-    ###
-
-      The cyclomatic complexity of this statement is way too high.
-      Need to break it apart into smaller, more efficent tasks.
-
-    ###
-    for task of Gulp.tasks
-
-      if Gulp.tasks[task].ext
-
-        for type in types
-
-          if Gulp.tasks[task].ext.indexOf(type) > -1
-
-            if Gulp.tasks[task].order
-
-              Gulp.tasks[task].type = Gulp.tasks[task].type or "async"
-
-              saveTask(
-                taskList[Gulp.tasks[task].order][Gulp.tasks[task].type]
-                task
-              )
-
-            else
-              saveTask taskList.main.async, task
-
-
-    cb taskList
+  # CONFIG-FILE-TYPES ----------------------------------------------------
 
   ###
 
@@ -103,6 +135,10 @@ module.exports = (tasks, cwd) ->
           fileTypes.push( ext )
 
 
+
+
+  # PROJECT-FILE-TYPES ---------------------------------------------------
+
   ###
 
     Get all of the file types within the project.
@@ -110,7 +146,6 @@ module.exports = (tasks, cwd) ->
 
   ###
   ignore = config.ignore or []
-
 
   folders = MapTree Path.normalize(process.cwd()), ignore
 
@@ -130,6 +165,8 @@ module.exports = (tasks, cwd) ->
   getFileTypes folders
 
 
+  # TASK-MANGEMENT ------------------------------------------------------
+
   buildList = (list) ->
 
     builtList = new Array
@@ -144,51 +181,6 @@ module.exports = (tasks, cwd) ->
 
     return builtList
 
-
-  ###
-
-    runConfigCommandCommand is a utility to run post build scripts
-    that can be defined per project. I think this should be abstracted
-    into another file since it is used in other places on the tool.
-
-    @todo - abstract this function
-
-  ###
-  runConfigCommand = (action, cwd, cb) ->
-
-    file = Fs.existsSync(
-      Path.join(cwd, action)
-    )
-
-    if file
-      require Path.join(cwd, action)
-
-    else
-      child = Exec(action, {cwd: cwd}, (err, stdout, stderr) ->
-
-        throw err if err
-
-        cb()
-      )
-      child.stdout.setEncoding("utf8")
-      child.stdout.on "data", (data) ->
-        str = data.toString()
-        lines = str.split(/(\r?\n)/g)
-
-        i = 0
-        while i < lines.length
-          if !lines[i].match "\n"
-            message = lines[i].split("] ")
-
-            if message.length > 1
-              message.splice(0, 1)
-
-            message = message.join(" ")
-
-            console.log message
-          i++
-
-        return
 
   cb = (list)->
 
@@ -206,7 +198,7 @@ module.exports = (tasks, cwd) ->
       ,
         ->
           if config.scripts and config.scripts.custom
-            runConfigCommand(
+            ExecCommand(
               config.scripts.custom
               process.cwd()
             ,
@@ -220,6 +212,7 @@ module.exports = (tasks, cwd) ->
     )
 
 
+  # PACKAGES -------------------------------------------------------------
 
 
   # Get any project specific packages (from package.json)
@@ -229,32 +222,25 @@ module.exports = (tasks, cwd) ->
   rootGulpTasks = PkgeLookup tasks, (Path.resolve __dirname, "../../")
 
   # See if there are any project packages (from norma-packages dir)
+  # Should this check be in the PgkeLookup file?
   customPackages = Fs.existsSync Path.join(cwd, "#{Tool}-packages")
 
   if customPackages
 
+    # Look for project specific packages (from norma-packages dir)
     customPackages = PkgeLookup tasks, Path.join(cwd, "#{Tool}-packages")
 
     projectTasks = customPackages.concat projectTasks
 
 
-
   combinedTasks = projectTasks.concat rootGulpTasks
 
+  # Combine all tasks list in order of local - local npm - global npm
   for task in combinedTasks
     _.extend Gulp.tasks, task
 
 
-  ###
 
-    The through task is a way to run a full sequence even
-    when sequence tasks aren"t defined. It feels kinda hacky but gulp
-    isn"t really meant to be used in this way. When gulp moves to full
-    orchestrator support, this tool will need a serious revist.
-
-  ###
-  Gulp.task "through", (cb) ->
-    cb null
-
+  # GENERATE-LIST -------------------------------------------------------
 
   generateTaskList(fileTypes, cb)

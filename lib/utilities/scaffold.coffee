@@ -1,11 +1,14 @@
 # Need to set up questions regarding custom build
 # inquirer = require("inquirer")
-Fs       = require("fs-extra")
-Path     = require("path")
+Fs       = require "fs-extra"
+Path     = require "path"
 Exec     = require('child_process').exec
 Argv     = require('minimist')( process.argv.slice(2) )
 
 ReadConfig   = require "./read-config"
+ExecCommand = require "./execute-command"
+
+
 
 module.exports = (project, name) ->
 
@@ -31,30 +34,6 @@ module.exports = (project, name) ->
 
 
 
-	###
-
-		This function is used for running custom pre and post init scripts
-		It can run a node script or a command line script such as
-		mocha, npm run, etc
-
-	###
-	runConfigCommand = (action, cwd) ->
-
-		file = Fs.existsSync(
-			Path.join(cwd, action)
-		)
-
-		if file
-			require Path.join(cwd, action)
-
-		else
-			child = Exec(
-				action
-				(err, stdout, stderr) ->
-					throw err if err
-			)
-
-
 	# Run the inital batch of scripts
 	compile = ->
 
@@ -67,7 +46,7 @@ module.exports = (project, name) ->
 
 		# Run post installation scripts
 		if scaffoldConfig.scripts and scaffoldConfig.scripts.postinstall?
-			runConfigCommand(scaffoldConfig.scripts.postinstall, project.path)
+			ExecCommand(scaffoldConfig.scripts.postinstall, project.path)
 
 
 	# Run any other scripts for the project
@@ -80,7 +59,7 @@ module.exports = (project, name) ->
 				if action isnt 'preinstall' or
 					action isnt 'postinstall' or
 					action isnt 'custom'
-						runConfigCommand(file.scripts[action], process.cwd())
+						ExecCommand(file.scripts[action], process.cwd())
 
 
 		# Before compiling, remove the nspignore folder
@@ -114,7 +93,7 @@ module.exports = (project, name) ->
 
 	###
 	# if scaffoldConfig.scripts and scaffoldConfig.scripts.preinstall?
-	# 	runConfigCommand(scaffoldConfig.scripts.preinstall, project.path)
+	# 	ExecCommand(scaffoldConfig.scripts.preinstall, project.path)
 
 	if project.path isnt process.cwd()
 		# Copy over all of the things

@@ -12,9 +12,7 @@ RemoveTree = require("./../utilities/directory-tools").removeTree
 
 module.exports = (tasks, cwd) ->
 
-	fileLoc = Path.dirname Fs.realpathSync(__filename)
-	scaffolds = Path.join fileLoc, "/../../scaffolds"
-	scaffolds = MapTree scaffolds
+	scaffolds = MapTree Path.join __dirname, "/../../scaffolds"
 
 	# Add in custom option
 	scaffolds.children.push custom =
