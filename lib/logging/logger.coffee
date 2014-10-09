@@ -15,13 +15,6 @@ Path = require "path"
 MapTree = require("./../utilities/directory-tools").mapTree
 
 
-###
-
-	@DEPRECEATED
-
-	New API's need to be finalized and then this file needs to be updated
-
-###
 logTasks = ->
 
 	console.log(
