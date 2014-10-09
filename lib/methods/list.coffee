@@ -6,7 +6,20 @@ Chalk = require "chalk"
 MapTree = require("./../utilities/directory-tools").mapTree
 PkgeLookup = require "./../utilities/package-lookup"
 
-# norma add --scaffold <git repo>
+
+
+module.exports.api = [
+	# {
+	# 	command: ""
+	# 	description: "list all available packages"
+	# }
+	{
+		command: "--scaffold"
+		description: "list all available scaffolds"
+	}
+]
+
+
 module.exports = (tasks, cwd) ->
 
 	listTypes = (folderLocation, type) ->

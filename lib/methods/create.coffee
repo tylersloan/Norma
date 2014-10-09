@@ -8,11 +8,11 @@ Package = require "./../utilities/package"
 
 module.exports.api = [
 	{
-		command: "name"
+		command: "<name>"
 		description: "create a new scaffoled project from name"
 	}
 	{
-		command: "name --package"
+		command: "<name> --package"
 		description: "create a new package project from name"
 	}
 ]
