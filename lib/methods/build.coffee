@@ -12,6 +12,19 @@ PkgeLookup = require "./../utilities/package-lookup"
 ExecCommand = require "./../utilities/execute-command"
 
 
+module.exports.api = [
+  {
+    command: "task-name"
+    description: "build single task"
+  }
+  {
+    command: "task-name task-name task-name"
+    description: "build multiple tasks"
+  }
+]
+
+
+
 # TASKLIST --------------------------------------------------------------
 
 generateTaskList = (types, cb) ->
@@ -94,18 +107,6 @@ Gulp.task "through", (cb) ->
   cb null
 
 
-# # Coming soon
-# module.exports.api = [
-#   {
-#     command: "task-name"
-#     description: "build single task"
-#   }
-#   {
-#     command: "task-name task-name task-name"
-#     description: "build multiple tasks"
-#   }
-# ]
-
 
 module.exports = (tasks, cwd) ->
 
@@ -182,7 +183,7 @@ module.exports = (tasks, cwd) ->
     return builtList
 
 
-  cb = (list)->
+  build = (list)->
 
     builtList = buildList(list)
 
@@ -243,4 +244,33 @@ module.exports = (tasks, cwd) ->
 
   # GENERATE-LIST -------------------------------------------------------
 
-  generateTaskList(fileTypes, cb)
+  if tasks.length is 1
+    generateTaskList(fileTypes, build)
+
+  else
+
+    # USER-DEFINED  -----------------------------------------------------
+
+    tasks.shift()
+
+    for task in tasks
+      if !Gulp.tasks[task]
+        console.log(
+          Chalk.red "#{task} is not a known package"
+        )
+        return
+
+    Gulp.task "default", tasks, ->
+
+      if config.scripts and config.scripts.custom
+        ExecCommand(
+          config.scripts.custom
+          process.cwd()
+        ,
+          ->
+            console.log Chalk.magenta "Build Complete"
+        )
+
+    process.nextTick( ->
+      Gulp.start ["default"]
+    )
