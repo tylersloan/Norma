@@ -72,29 +72,31 @@ module.exports = (tasks, cwd) ->
 
 		replaceString = /^norma(-|\.)/
 
-		config = require(config)
 
-		if !config
-			console.log(
-				Chalk.red("Could not find dependencies." +
-				" Do you have a package.json file in your project?"
-				)
+
+		if config
+			# console.log(
+			# 	Chalk.red("Could not find dependencies." +
+			# 	" Do you have a package.json file in your project?"
+			# 	)
+			# )
+			#
+			config = require(config)
+
+			names = scope.reduce(
+				(result, prop) ->
+			  	result.concat Object.keys(config[prop] or {})
+				[]
 			)
 
-		names = scope.reduce(
-			(result, prop) ->
-		  	result.concat Object.keys(config[prop] or {})
-			[]
-		)
+			Multimatch(names, pattern).forEach (name) ->
 
-		Multimatch(names, pattern).forEach (name) ->
+				packageList.push Path.resolve(node_modules, name)
 
-			packageList.push Path.resolve(node_modules, name)
+				return
 
-			return
-
-		for pkge in packageList
-			packageList[pkge] = mapPkge pkge
+			for pkge in packageList
+				packageList[pkge] = mapPkge pkge
 
 
 	return packages
