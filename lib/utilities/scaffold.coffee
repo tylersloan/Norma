@@ -14,7 +14,7 @@ module.exports = (project, name) ->
 
 	# See if a config file already exists (for local files)
 	fileName = "#{Tool}.json"
-	console.log project
+
 	configExists = Fs.existsSync Path.join(project.path, fileName)
 
 	###
