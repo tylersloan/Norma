@@ -5,20 +5,6 @@ Flags = require("minimist")( process.argv.slice(2) )
 Ghdownload = require "github-download"
 ExecCommand = require "./../utilities/execute-command"
 
-module.exports.api = [
-	{
-		command: "<git-repo> --scaffold"
-		description: "install global scaffold"
-	}
-	{
-		command: "<package-name>"
-		description: "install local package"
-	}
-	{
-		command: "<package-name> --global"
-		description: "install global package"
-	}
-]
 
 module.exports = (tasks, cwd) ->
 
@@ -84,3 +70,22 @@ module.exports = (tasks, cwd) ->
 			->
 				process.exit 0
 		)
+
+
+
+# API ----------------------------------------------------------------------
+
+module.exports.api = [
+	{
+		command: "<git-repo> --scaffold"
+		description: "install global scaffold"
+	}
+	{
+		command: "<package-name>"
+		description: "install local package"
+	}
+	{
+		command: "<package-name> --global"
+		description: "install global package"
+	}
+]

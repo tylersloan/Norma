@@ -43,6 +43,7 @@ module.exports = (env) ->
 
 	# See if help or h task is trying to be run
 	if Flags.help or Flags.h
+
 		Logger.logInfo(cliPackage)
 
 		process.exit 0

@@ -8,6 +8,7 @@ whitelist = [
 	'.git'
 	'node_modules'
 	'#{Tool}_tasks'
+	'.DS_Store'
 ]
 
 mkdir = (dir) ->
@@ -38,6 +39,7 @@ copy = (src, dest, cb) ->
 
 
 mapTree = (filename, ignore) ->
+
 
 	if ignore and ignore.length
 		for ignored in ignore

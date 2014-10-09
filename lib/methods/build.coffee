@@ -12,18 +12,6 @@ PkgeLookup = require "./../utilities/package-lookup"
 ExecCommand = require "./../utilities/execute-command"
 
 
-module.exports.api = [
-  {
-    command: "<task-name>"
-    description: "build single task"
-  }
-  {
-    command: "<task-name> <task-name> <task-name>"
-    description: "build multiple tasks"
-  }
-]
-
-
 
 # TASKLIST --------------------------------------------------------------
 
@@ -275,3 +263,18 @@ module.exports = (tasks, cwd) ->
     process.nextTick( ->
       Gulp.start ["default"]
     )
+
+
+
+# API ----------------------------------------------------------------------
+
+module.exports.api = [
+  {
+    command: "<task-name>"
+    description: "build single task"
+  }
+  {
+    command: "<task-name> <task-name> <task-name>"
+    description: "build multiple tasks"
+  }
+]

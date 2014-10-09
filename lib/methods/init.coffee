@@ -8,15 +8,6 @@ Scaffold = require("./../utilities/scaffold")
 MapTree = require("./../utilities/directory-tools").mapTree
 RemoveTree = require("./../utilities/directory-tools").removeTree
 
-
-
-module.exports.api = [
-	{
-		command: ""
-		description: "initalize a directory as a #{Tool} project"
-	}
-]
-
 module.exports = (tasks, cwd) ->
 
 	scaffolds = MapTree Path.join __dirname, "/../../scaffolds"
@@ -127,3 +118,13 @@ module.exports = (tasks, cwd) ->
 
 	else
 		chooseProject(tasks[1])
+
+
+# API ----------------------------------------------------------------------
+
+module.exports.api = [
+	{
+		command: ""
+		description: "initalize a directory as a #{Tool} project"
+	}
+]

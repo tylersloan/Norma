@@ -18,3 +18,17 @@ module.exports = (tasks, cwd) ->
 		)
 
 		Build tasks, cwd
+
+
+# API ----------------------------------------------------------------------
+
+module.exports.api = [
+	{
+		command: ""
+		description: "test your project"
+	}
+	{
+		command: "--package"
+		description: "test your packagge"
+	}
+]
