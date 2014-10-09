@@ -40,19 +40,23 @@ module.exports = (tasks, cwd) ->
 
 	# if you specified a name
 	if tasks.length > 1
+
+
+		dir = if Flags.package then "#{Tool}-#{tasks[1]}" else tasks[1]
+
 		# making directory without exception if exists
 		try
-			Fs.mkdirSync tasks[1]
+			Fs.mkdirSync dir
 		catch e
 			throw e	unless e.code is "EEXIST"
 
 		# After directory is made or found, change to it for the process
-		process.chdir tasks[1]
+		process.chdir dir
 
 		# Make a package
 		if Flags.package
 
-			Package tasks, cwd
+			Package tasks, process.cwd()
 
 		# Creae a scaffold
 		else
