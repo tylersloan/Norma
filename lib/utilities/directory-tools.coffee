@@ -72,6 +72,7 @@ mapTree = (filename, ignore) ->
 
 	else return false
 
+
 copyTree = (src, dest, cb) ->
 
 	mkdir dest

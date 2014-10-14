@@ -5,11 +5,13 @@ Exec = require('child_process').exec
 
 ###
 
-	runConfigCommandCommand is a utility to run post build scripts
-	that can be defined per project. I think this should be abstracted
-	into another file since it is used in other places on the tool.
+	I really like the idea of spawing processes but in
+	practice it has proved to be awfully slow. Any thoughts
+	on a better way to run through commands? One that comes to
+	mind is adding of packages requires an npm i --save which seems
+	to take forever to even start the process?
 
-	@todo - abstract this function
+	~ @jbaxleyiii
 
 ###
 module.exports = (action, cwd, cb) ->
