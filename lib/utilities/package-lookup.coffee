@@ -16,12 +16,12 @@ camelize = (str) ->
 
 
 
-
 module.exports = (tasks, cwd) ->
 
 	normaConfig = ReadConfig process.cwd()
 	packageList = new Array
 	packages = new Array
+	customs = MapTree cwd
 
 	mapPkge = (pkgeCwd) ->
 
@@ -47,8 +47,6 @@ module.exports = (tasks, cwd) ->
 				checkFile nestedFile
 
 
-	customs = MapTree cwd
-
 	# Local packages
 	for pkge in customs.children
 
@@ -60,51 +58,55 @@ module.exports = (tasks, cwd) ->
 	# Package testing
 	if normaConfig.type is "package"
 
-		checkFile customs
+		pkges = MapTree process.cwd()
+
+		checkFile pkges
+
+	# npm package testing
+	else
+
+		pattern = arrayify([
+			"#{Tool}-*"
+			"#{Tool}.*"
+		])
+
+		config = Findup "package.json", cwd: cwd
+
+		node_modules = Findup "node_modules", cwd: cwd
+
+		scope = arrayify([
+			"dependencies"
+			"devDependencies"
+			"peerDependencies"
+		])
+
+		replaceString = /^norma(-|\.)/
 
 
-	pattern = arrayify([
-		"#{Tool}-*"
-		"#{Tool}.*"
-	])
 
-	config = Findup "package.json", cwd: cwd
+		if config
+			# console.log(
+			# 	Chalk.red("Could not find dependencies." +
+			# 	" Do you have a package.json file in your project?"
+			# 	)
+			# )
+			#
+			config = require(config)
 
-	node_modules = Findup "node_modules", cwd: cwd
+			names = scope.reduce(
+				(result, prop) ->
+			  	result.concat Object.keys(config[prop] or {})
+				[]
+			)
 
-	scope = arrayify([
-		"dependencies"
-		"devDependencies"
-		"peerDependencies"
-	])
+			Multimatch(names, pattern).forEach (name) ->
 
-	replaceString = /^norma(-|\.)/
+				packageList.push Path.resolve(node_modules, name)
 
+				return
 
-
-	if config
-		# console.log(
-		# 	Chalk.red("Could not find dependencies." +
-		# 	" Do you have a package.json file in your project?"
-		# 	)
-		# )
-		#
-		config = require(config)
-
-		names = scope.reduce(
-			(result, prop) ->
-		  	result.concat Object.keys(config[prop] or {})
-			[]
-		)
-
-		Multimatch(names, pattern).forEach (name) ->
-
-			packageList.push Path.resolve(node_modules, name)
-
-			return
-
-		for pkge in packageList
-			packageList[pkge] = mapPkge pkge
+			for pkge in packageList
+				packageList[pkge] = mapPkge pkge
 
 
 	return packages
