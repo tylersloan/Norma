@@ -3,6 +3,8 @@ Exec = require("child_process").exec
 Chalk = require "chalk"
 Flags = require("minimist")( process.argv.slice(2) )
 Ghdownload = require "github-download"
+Findup = require "findup-sync"
+
 ExecCommand = require "./../utilities/execute-command"
 
 
@@ -45,10 +47,44 @@ module.exports = (tasks, cwd) ->
 
 	# PACKAGES ---------------------------------------------------------------
 
-	action = "npm i --save #{Tool}-#{tasks[1]}"
+	config = Findup "package.json", cwd: process.cwd()
+
+	if !config
+		console.log(
+			Chalk.red("No package.json found, ") +
+			Chalk.red("please run `npm init` in the root")
+		)
+
+		process.exit 0
+
+	###
+
+		Here we allow users to specify a number of pacakges to be added
+		both localy or globally in a single command.
+
+		The command can be norma add <package> <package> <package>
+		and it will add all of them with a norma- prepended prior
+		to the npm install
+
+	###
+	taskList = tasks
+	taskList.shift()
+
+	taskList = (
+		"#{Tool}-#{task}" for task in taskList
+	)
+
+	taskList = taskList.join(" ")
+
+	action = "npm i --save #{taskList}"
 
 
 	if Flags.global
+
+		console.log(
+			Chalk.green "Installing packages to your global #{Tool}..."
+		)
+
 		# Do work on users global norma
 		process.chdir Path.resolve __dirname, "../../"
 
@@ -59,15 +95,29 @@ module.exports = (tasks, cwd) ->
 			->
 				# Change back to project cwd for further tasks
 				process.chdir cwd
+
+				console.log(
+					Chalk.magenta "Packages installed!"
+				)
 				process.exit 0
 		)
 
 	else
+
+		console.log(
+			Chalk.green "Installing packages to your local #{Tool}..."
+		)
+
 		ExecCommand(
 			action
 			process.cwd()
 		,
 			->
+
+				console.log(
+					Chalk.magenta "Packages installed!"
+				)
+
 				process.exit 0
 		)
 

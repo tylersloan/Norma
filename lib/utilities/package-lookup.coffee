@@ -15,12 +15,6 @@ camelize = (str) ->
 		p1.toUpperCase()
 
 
-requireFn = (cwd) ->
-
-	return require cwd
-
-
-
 
 
 module.exports = (tasks, cwd) ->
@@ -31,7 +25,7 @@ module.exports = (tasks, cwd) ->
 
 	mapPkge = (pkgeCwd) ->
 
-		task = requireFn pkgeCwd
+		task = require pkgeCwd
 
 		taskObject = task normaConfig, Path.resolve(__dirname, '../../')
 		taskObject = null
@@ -40,63 +34,77 @@ module.exports = (tasks, cwd) ->
 
 
 
-	if normaConfig.type is "package" or cwd.match /norma-packages/
+	checkFile = (file) ->
 
-		if cwd.match /norma-packages/
-			cwd = Path.resolve cwd, "norma-packages"
+		if file.name and file.name.match /package[.](js|coffee)$/
 
-		customs = MapTree cwd
+			mapPkge file.path
 
-		for pkge in customs.children
+		else if file.children
 
-			if pkge.name and pkge.name.match /package[.](js|coffee)$/
+			for nestedFile in file.children
 
-				mapPkge pkge.path
-
-	else
-
-		pattern = arrayify([
-			"#{Tool}-*"
-			"#{Tool}.*"
-		])
-
-		config = Findup "package.json", cwd: cwd
-
-		node_modules = Findup "node_modules", cwd: cwd
-
-		scope = arrayify([
-			"dependencies"
-			"devDependencies"
-			"peerDependencies"
-		])
-
-		replaceString = /^norma(-|\.)/
+				checkFile nestedFile
 
 
+	customs = MapTree cwd
 
-		if config
-			# console.log(
-			# 	Chalk.red("Could not find dependencies." +
-			# 	" Do you have a package.json file in your project?"
-			# 	)
-			# )
-			#
-			config = require(config)
+	# Local packages
+	for pkge in customs.children
 
-			names = scope.reduce(
-				(result, prop) ->
-			  	result.concat Object.keys(config[prop] or {})
-				[]
-			)
+		if pkge and pkge.path.match /norma-packages/
 
-			Multimatch(names, pattern).forEach (name) ->
+			checkFile pkge
 
-				packageList.push Path.resolve(node_modules, name)
 
-				return
+	# Package testing
+	if normaConfig.type is "package"
 
-			for pkge in packageList
-				packageList[pkge] = mapPkge pkge
+		checkFile customs
+
+
+	pattern = arrayify([
+		"#{Tool}-*"
+		"#{Tool}.*"
+	])
+
+	config = Findup "package.json", cwd: cwd
+
+	node_modules = Findup "node_modules", cwd: cwd
+
+	scope = arrayify([
+		"dependencies"
+		"devDependencies"
+		"peerDependencies"
+	])
+
+	replaceString = /^norma(-|\.)/
+
+
+
+	if config
+		# console.log(
+		# 	Chalk.red("Could not find dependencies." +
+		# 	" Do you have a package.json file in your project?"
+		# 	)
+		# )
+		#
+		config = require(config)
+
+		names = scope.reduce(
+			(result, prop) ->
+		  	result.concat Object.keys(config[prop] or {})
+			[]
+		)
+
+		Multimatch(names, pattern).forEach (name) ->
+
+			packageList.push Path.resolve(node_modules, name)
+
+			return
+
+		for pkge in packageList
+			packageList[pkge] = mapPkge pkge
 
 
 	return packages

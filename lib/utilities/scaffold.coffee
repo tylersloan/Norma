@@ -39,7 +39,9 @@ module.exports = (project, name) ->
 
 
 		buildTasks = require './../methods/build'
-		tasks = Argv._
+		# This was causing issues on intial create
+		# tasks = Argv._
+		tasks = new Array
 		tasks[0] = "build"
 
 		buildTasks tasks, process.cwd()
