@@ -1,5 +1,5 @@
 Fs = require("fs-extra")
-Chalk	= require("chalk")
+Chalk  = require("chalk")
 Flags = require("minimist")( process.argv.slice(2) )
 
 Init = require("./init")
@@ -8,67 +8,67 @@ Package = require "./../utilities/package"
 
 module.exports = (tasks, cwd) ->
 
-	args = process.argv.slice(2)
+  args = process.argv.slice(2)
 
-	# remove the need for the flag to be last
-	###
+  # remove the need for the flag to be last
+  ###
 
-		This seems odd to be needed? Need to explore more
-		~ @jbaxleyiii
+    This seems odd to be needed? Need to explore more
+    ~ @jbaxleyiii
 
-	###
-	count = 0
-	for argument in args
+  ###
+  count = 0
+  for argument in args
 
-		if !argument.match /(-|--)package/
-			index = args.indexOf argument
-			tasks[count] = argument
-			count++
-
-
-	# if you specified a name
-	if tasks.length > 1
+    if !argument.match /(-|--)package/
+      index = args.indexOf argument
+      tasks[count] = argument
+      count++
 
 
-		dir = if Flags.package then "#{Tool}-#{tasks[1]}" else tasks[1]
+  # if you specified a name
+  if tasks.length > 1
 
-		# making directory without exception if exists
-		try
-			Fs.mkdirSync dir
-		catch e
-			throw e	unless e.code is "EEXIST"
 
-		# After directory is made or found, change to it for the process
-		process.chdir dir
+    dir = if Flags.package then "#{Tool}-#{tasks[1]}" else tasks[1]
 
-		# Make a package
-		if Flags.package
+    # making directory without exception if exists
+    try
+      Fs.mkdirSync dir
+    catch e
+      throw e  unless e.code is "EEXIST"
 
-			Package tasks, process.cwd()
+    # After directory is made or found, change to it for the process
+    process.chdir dir
 
-		# Creae a scaffold
-		else
-			tasks = ["create"]
+    # Make a package
+    if Flags.package
 
-			Init tasks, process.cwd()
+      Package tasks, process.cwd()
 
-	else
+    # Creae a scaffold
+    else
+      tasks = ["create"]
 
-		console.log Chalk.red "Please specify a project name"
+      Init tasks, process.cwd()
 
-		process.exit 0
+  else
+
+    console.log Chalk.red "Please specify a project name"
+
+    process.exit 0
 
 
 
 # API ----------------------------------------------------------------------
 
 module.exports.api = [
-	{
-		command: "<name>"
-		description: "create a new scaffoled project from name"
-	}
-	{
-		command: "<name> --package"
-		description: "create a new package project from name"
-	}
+  {
+    command: "<name>"
+    description: "create a new scaffoled project from name"
+  }
+  {
+    command: "<name> --package"
+    description: "create a new package project from name"
+  }
 ]
