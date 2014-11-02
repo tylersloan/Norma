@@ -15,7 +15,7 @@ mkdir = (dir) ->
 
   # making directory without exception if exists
   try
-    Fs.mkdirSync dir, 777
+    Fs.mkdirSync dir, '0755'
   catch e
     throw e  unless e.code is "EEXIST"
 
