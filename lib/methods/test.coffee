@@ -7,6 +7,8 @@ Flags = require("minimist")( process.argv.slice(2) )
 _ = require "underscore"
 
 Build = require "./../methods/build"
+Watch = require "./../methods/watch"
+
 ReadConfig = require "./../utilities/read-config"
 
 
@@ -20,7 +22,13 @@ module.exports = (tasks, cwd) ->
       Chalk.green "✔ Testing your package!"
     )
 
-    Build tasks, cwd
+    if Flags.watch
+
+      Watch tasks, cwd
+      
+    else
+      Build tasks, cwd
+
 
 
 # API ----------------------------------------------------------------------
