@@ -15,7 +15,7 @@ mkdir = (dir) ->
 
   # making directory without exception if exists
   try
-    Fs.mkdirSync dir
+    Fs.mkdirSync dir, 777
   catch e
     throw e  unless e.code is "EEXIST"
 
@@ -40,6 +40,7 @@ copy = (src, dest, cb) ->
 
 mapTree = (filename, ignore) ->
 
+  mkdir filename
 
   if ignore and ignore.length
     for ignored in ignore
