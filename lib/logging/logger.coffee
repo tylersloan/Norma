@@ -21,7 +21,7 @@ logTasks = ->
     Chalk.magenta('-v'),
     'or',
     Chalk.magenta('--version'),
-    'to print out the version of your nsp CLI\n'
+    'to print out the version of your #{Tool} CLI\n'
   )
 
   console.log('Please use one of the following tasks:')
