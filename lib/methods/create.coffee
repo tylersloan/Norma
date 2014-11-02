@@ -46,7 +46,7 @@ module.exports = (tasks, cwd) ->
 
       Package tasks, process.cwd()
 
-    # Creae a scaffold
+    # Create a scaffold
     else
       tasks = ["create"]
 
