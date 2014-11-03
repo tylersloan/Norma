@@ -29,12 +29,11 @@ module.exports = (tasks, cwd) ->
   # if you specified a name
   if tasks.length > 1
 
-
     dir = if Flags.package then "#{Tool}-#{tasks[1]}" else tasks[1]
 
     # making directory without exception if exists
     try
-      Fs.mkdirSync dir
+      Fs.mkdirSync dir, '0755'
     catch e
       throw e  unless e.code is "EEXIST"
 
@@ -46,11 +45,19 @@ module.exports = (tasks, cwd) ->
 
       Package tasks, process.cwd()
 
-    # Creae a scaffold
+    # Create a scaffold
     else
       tasks = ["create"]
 
       Init tasks, process.cwd()
+
+      if not Fs.existsSync('package.json')
+
+        defaultPackageData = {
+          name: dir
+        }
+
+        Fs.writeFile 'package.json', JSON.stringify(defaultPackageData, null, 4)
 
   else
 
