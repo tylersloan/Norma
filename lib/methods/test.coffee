@@ -25,7 +25,7 @@ module.exports = (tasks, cwd) ->
     if Flags.watch
 
       Watch tasks, cwd
-      
+
     else
       Build tasks, cwd
 
@@ -36,10 +36,10 @@ module.exports = (tasks, cwd) ->
 module.exports.api = [
   {
     command: ""
-    description: "test your project"
+    description: "test your project/package"
   }
   {
-    command: "--package"
-    description: "test your packagge"
+    command: "--watch"
+    description: "continueosly test project/package"
   }
 ]

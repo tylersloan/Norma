@@ -45,6 +45,11 @@ module.exports = (tasks, cwd) ->
   # Store lr in Gulp to span files
   Norma.watchStarted = true
 
+  if Norma.verbose
+    console.log(
+      Chalk.cyan "Watching files..."
+    )
+
   # Dynamically generate watch tasks off of runnable tasks
   createWatch = (task) ->
 
@@ -79,17 +84,6 @@ module.exports = (tasks, cwd) ->
   for task of Gulp.tasks
     createWatch(task) if Gulp.tasks[task].ext?
 
-  # if Gulp.tasks['server']
-  #
-  #   process.nextTick( ->
-  #     Gulp.start ["server"]
-  #   )
-  #
-  # else
-  #
-  #   console.log(
-  #     Chalk.red "Please add a server task to Norma"
-  #   )
 
 
 # API ---------------------------------------------------------------------

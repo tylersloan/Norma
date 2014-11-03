@@ -49,6 +49,9 @@ module.exports = (env) ->
     process.exit 0
 
 
+  if Flags.verbose
+    Norma.verbose = true
+
   ###
 
     Change directory to where nsp was called from.
