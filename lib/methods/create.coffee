@@ -57,7 +57,7 @@ module.exports = (tasks, cwd) ->
           name: dir
         }
 
-        Fs.writeFile 'package.json', JSON.stringify(defaultPackageData, null, 4)
+        Fs.writeFile 'package.json', JSON.stringify(defaultPackageData, null, 2)
 
   else
 
