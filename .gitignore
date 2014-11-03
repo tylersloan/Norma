@@ -12,4 +12,4 @@ test/out-fixtures/*
 test/watch-*.txt
 workbench
 .norma
-scaffolds/
+scaffolds/**
