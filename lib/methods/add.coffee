@@ -76,7 +76,10 @@ module.exports = (tasks, cwd) ->
 
   taskList = taskList.join(" ")
 
-  action = "npm i --save #{taskList}"
+  if Flags.dev
+    action = "npm i --save-dev #{taskList}"
+  else
+    action = "npm i --save #{taskList}"
 
 
   if Flags.global
@@ -133,6 +136,10 @@ module.exports.api = [
   {
     command: "<package-name>"
     description: "install local package"
+  }
+  {
+    command: "<package-name> --dev"
+    description: "install local package as a dev dependency"
   }
   {
     command: "<package-name> --global"
