@@ -40,6 +40,6 @@ module.exports.api = [
   }
   {
     command: "--watch"
-    description: "continueosly test project/package"
+    description: "continuously test project/package"
   }
 ]
