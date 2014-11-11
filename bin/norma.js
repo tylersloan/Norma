@@ -2,6 +2,7 @@
 "use strict";
 
 GLOBAL.Tool = "norma"
+
 GLOBAL.Norma = {
   watchStarted: false,
   reloadTasks: []
