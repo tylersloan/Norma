@@ -21,9 +21,13 @@ module.exports = (tasks, cwd) ->
   # NORMA.JSON ----------------------------------------------------------
 
   fileName = "#{Tool}.json"
+  packageName = tasks[1]
+
+  if packageName.indexOf "#{Tool}-" isnt 0
+    packageName = "#{Tool}-#{packageName}"
 
   config =
-  name: Tool + "-" + tasks[1]
+  name: packageName
   type: "package"
 
   # Save config
@@ -35,7 +39,7 @@ module.exports = (tasks, cwd) ->
   # PACKAGE.JSON --------------------------------------------------------
 
   pkgeConfig =
-    name: "norma-" + tasks[1]
+    name: packageName
     version: "0.0.1"
     main: "package.coffee"
     keywords: [

@@ -29,7 +29,12 @@ module.exports = (tasks, cwd) ->
   # if you specified a name
   if tasks.length > 1
 
-    dir = if Flags.package then "#{Tool}-#{tasks[1]}" else tasks[1]
+    packageName = tasks[1]
+
+    if Flags.package and packageName.indexOf("#{Tool}-") isnt 0
+      dir = "#{Tool}-#{packageName}"
+    else
+      dir = packageName
 
     # making directory without exception if exists
     try
