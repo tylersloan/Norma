@@ -15,7 +15,8 @@ cli = new Liftoff({
   .on("require", (name, module) ->
 
     # Handling of extenal modules via Liftoff's require method
-    console.log Chalk.grey("Requiring external module: "+name+"...")
+
+    console.log Chalk.grey("Requiring external module: " + name + "...")
 
     if name is "coffee-script"
       module.register()

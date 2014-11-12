@@ -10,6 +10,8 @@ MapTree = require("./../utilities/directory-tools").mapTree
 ReadConfig = require "./../utilities/read-config"
 PkgeLookup = require "./../utilities/package-lookup"
 ExecCommand = require "./../utilities/execute-command"
+AutoDiscover = require "./../utilities/auto-discover"
+
 
 
 
@@ -115,12 +117,14 @@ module.exports = (tasks, cwd) ->
   ###
   do (config) ->
 
+    task = config.tasks
     # Generate kind of files to compile
-    for key of config
+    for key of task
 
-      if config[key].ext
+      if task[key].ext
 
-        for ext in config[key].ext
+        for ext in task[key].ext
+
           fileTypes.push( ext )
 
 
@@ -227,6 +231,13 @@ module.exports = (tasks, cwd) ->
   # Combine all tasks list in order of local - local npm - global npm
   for task in combinedTasks
     _.extend Gulp.tasks, task
+
+
+  # see if we need to download any packages
+  isMissingTasks = AutoDiscover cwd, Gulp.tasks
+
+
+  return false if isMissingTasks
 
 
 

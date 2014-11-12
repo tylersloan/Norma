@@ -53,6 +53,11 @@ module.exports = (tasks, cwd) ->
   # Dynamically generate watch tasks off of runnable tasks
   createWatch = (task) ->
 
+    if Norma.debug
+      console.log(
+        Chalk.red( "Task: #{task.toUpperCase()} added to watch" )
+      )
+
     src = if config[task]? then config[task].src else "./**/*/"
 
     taskName = task

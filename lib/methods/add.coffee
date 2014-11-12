@@ -8,7 +8,8 @@ Findup = require "findup-sync"
 ExecCommand = require "./../utilities/execute-command"
 
 
-module.exports = (tasks, cwd) ->
+
+module.exports = (tasks, cwd, cb) ->
 
 
   # LOGS -------------------------------------------------------------------
@@ -70,6 +71,8 @@ module.exports = (tasks, cwd) ->
   taskList = tasks
   taskList.shift()
 
+
+  # Quick add method for norma
   taskList = (
     "#{Tool}-#{task}" for task in taskList
   )
@@ -102,7 +105,10 @@ module.exports = (tasks, cwd) ->
         console.log(
           Chalk.magenta "Packages installed!"
         )
-        process.exit 0
+
+        if typeof cb is 'function'
+          cb null
+
     )
 
   else
@@ -121,7 +127,9 @@ module.exports = (tasks, cwd) ->
           Chalk.magenta "Packages installed!"
         )
 
-        process.exit 0
+        if typeof cb is 'function'
+          cb null
+
     )
 
 

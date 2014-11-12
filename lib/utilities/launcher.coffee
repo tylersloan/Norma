@@ -18,7 +18,7 @@ module.exports = (env) ->
 
   # VARIABLES ----------------------------------------------------------------
 
-  # Get the package.json for nsp info
+  # Get the package.json for norma info
   cliPackage = require "../../package"
 
   # Bind tasks to variable for easy passing
@@ -31,7 +31,7 @@ module.exports = (env) ->
   # Check for version flag and report version
   if Flags.v or Flags.version
 
-    console.log "nsp CLI version", Chalk.cyan(cliPackage.version)
+    console.log "#{Tool} CLI version", Chalk.cyan(cliPackage.version)
 
     # exit
     process.exit 0
@@ -52,6 +52,10 @@ module.exports = (env) ->
   if Flags.verbose
     Norma.verbose = true
 
+
+  if Flags.debug
+    Norma.debug = true
+
   ###
 
     Change directory to where nsp was called from.
@@ -68,5 +72,14 @@ module.exports = (env) ->
 
   # TASKS -------------------------------------------------------------------
 
+
+  ###
+
+    Should we remove the first argument since that is the file name?
+    Also this should be wrapped in a try method and log errors
+
+    @rich
+
+  ###
   task = require "./../methods/#{tasks[0]}"
   task tasks, env.cwd
