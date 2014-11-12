@@ -18,7 +18,7 @@ module.exports = (cwd, tasks) ->
 
   if !config.tasks
     console.log(
-      Chalk.red("#{Tool}.json has not task object")
+      Chalk.red("#{Tool}.json needs a task object")
     )
 
     process.exit 0
@@ -32,7 +32,7 @@ module.exports = (cwd, tasks) ->
   build = ->
     reBuild ["build"], cwd
 
-  
+
   if neededPackages.length > 1
     Add neededPackages, cwd, build
 
