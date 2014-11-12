@@ -18,7 +18,7 @@ module.exports = (cwd, tasks) ->
 
   if !config.tasks
     console.log(
-      Chalk.red("#{Tool}.json needs a task object")
+      Chalk.red("#{Tool}.json needs a tasks object")
     )
 
     process.exit 0
