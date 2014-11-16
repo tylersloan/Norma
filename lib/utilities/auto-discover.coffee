@@ -34,6 +34,7 @@ module.exports = (cwd, tasks) ->
 
 
   if neededPackages.length > 1
+    console.log "Needed packages #{neededPackages}"
     Add neededPackages, cwd, build
 
     packages = neededPackages

@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 "use strict";
 
+var EE = require('event-emitter');
+var Emitter = EE({});
+
 GLOBAL.Tool = "norma"
 
 GLOBAL.Norma = {
   watchStarted: false,
-  reloadTasks: []
+  reloadTasks: [],
+  emitter: Emitter
 }
 
 // Load Coffeescript for node tasks

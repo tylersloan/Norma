@@ -8,6 +8,7 @@ _ = require "underscore"
 
 Build = require "./../methods/build"
 Watch = require "./../methods/watch"
+Start = require "./../methods/start"
 
 ReadConfig = require "./../utilities/read-config"
 
@@ -16,7 +17,15 @@ module.exports = (tasks, cwd) ->
 
   normaConfig = ReadConfig process.cwd()
 
-  if normaConfig.type is "package"
+  if normaConfig.type is "process"
+
+    console.log(
+      Chalk.green "✔ Testing your process!"
+    )
+
+    Start tasks, cwd
+
+  else if normaConfig.type is "package"
 
     console.log(
       Chalk.green "✔ Testing your package!"
