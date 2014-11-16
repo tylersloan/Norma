@@ -58,7 +58,7 @@ module.exports = (tasks, cwd) ->
         Chalk.red( "Task: #{task.toUpperCase()} added to watch" )
       )
 
-    src = if config[task]? then config[task].src else "./**/*/"
+    src = if config.tasks[task]? then config.tasks[task].src else "./**/*/"
 
     taskName = task
 
@@ -66,23 +66,28 @@ module.exports = (tasks, cwd) ->
       ext.replace(".", "") for ext in Gulp.tasks[task].ext
     )
 
-    Gulp.watch("#{src}/*.{#{exts}}", (event) ->
+    Gulp.watch(
+      [
+        "#{src}/*.{#{exts}}"
+        "!node_modules/**/*"
+        "!.git/**/*"
+      ], (event) ->
 
 
-      fileName = Path.basename event.path
+        fileName = Path.basename event.path
 
-      if Norma.verbose
-        console.log(
-          Chalk.cyan(taskName.toUpperCase())
-          "saw"
-          Chalk.magenta(fileName)
-          "was #{event.type}"
-        )
+        if Norma.verbose
+          console.log(
+            Chalk.cyan(taskName.toUpperCase())
+            "saw"
+            Chalk.magenta(fileName)
+            "was #{event.type}"
+          )
 
-      if Norma.reloadTasks.length
-        Sequence taskName, Norma.reloadTasks
-      else
-        Sequence taskName
+        if Norma.reloadTasks.length
+          Sequence taskName, Norma.reloadTasks
+        else
+          Sequence taskName
 
     )
 
