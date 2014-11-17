@@ -12,7 +12,7 @@ module.exports = (cwd, tasks) ->
 
   config = ReadConfig cwd
 
-  neededPackages = ["norma"]
+  neededPackages = ["add"]
   newPackages = []
   taskList = {}
 
