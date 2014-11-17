@@ -75,9 +75,9 @@ Use the following commands to create a project and locally (only this new
 project and not all norma projects on your machine) add a coffeescript compiler:
 
 ````bash
-norma create myNormaApp
-cd myNormaApp
-norma add javascript
+$ norma create myNormaApp
+$ cd myNormaApp
+$ norma add javascript
 ````
 
 Now replace the contents of the norma.json file with this:
@@ -107,5 +107,5 @@ Now run the following command - a js directory will be created with a file
 called script.js with the compiled javascript within:
 
 ````bash
-norma build
+$ norma build
 ````
