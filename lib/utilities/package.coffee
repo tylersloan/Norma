@@ -30,6 +30,7 @@ module.exports = (tasks, cwd) ->
   name: packageName
   type: "package"
   tasks: {}
+  processes: {}
 
   # Save config
   Fs.writeFileSync(
