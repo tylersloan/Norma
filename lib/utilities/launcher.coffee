@@ -69,6 +69,18 @@ module.exports = (env) ->
     )
 
 
+  # REGISTER ---------------------------------------------------------------
+
+  ###
+
+    This is where we need to register all processes prior
+    to running any tasks
+
+  ###
+
+  
+
+
 
   # TASKS -------------------------------------------------------------------
 
