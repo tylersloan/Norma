@@ -1,5 +1,7 @@
+hasListeners = require 'event-emitter/has-listeners'
+
 module.exports = (tasks, cwd) ->
-  console.log 'emmitting'
+
   Norma.emitter.emit 'start'
 
 module.exports.api = [
