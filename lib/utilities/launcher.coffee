@@ -77,8 +77,26 @@ module.exports = (env) ->
     to running any tasks
 
   ###
+  
+  ###
+  
+    @bwiley
+    Lets change this to use the ReadConfig utility method. It will return the
+    object in the same way but has error handling and messaging built in
+    
+    ~ @jbaxleyiii
+  
+  ###
   config = require "#{process.cwd()}/#{Tool}.json"
-
+  
+  ###
+  
+    Also the package lookup method should be able to handle this portion as well
+    although it might need to be modified slightly
+    
+    ~ @jbaxleyiii
+  
+  ###
   if tasks[0] is 'test'
     testPackage = require "#{process.cwd()}/package.coffee"
     testPackage config
