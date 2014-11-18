@@ -77,19 +77,21 @@ module.exports = (env) ->
     to running any tasks
 
   ###
-  config = require "#{process.cwd()}/#{Tool}.json"
+  if tasks[0] is 'build' or tasks[0] is 'test'
 
-  if tasks[0] is 'test'
-    testPackage = require "#{process.cwd()}/package.coffee"
-    testPackage config
+    config = require "#{process.cwd()}/#{Tool}.json"
 
-  else if config.processes
+    if tasks[0] is 'test'
+      testPackage = require "#{process.cwd()}/package.coffee"
+      testPackage config
 
-    for key, val of config.processes
+    else if config.processes
 
-      url = "#{process.cwd()}/node_modules/#{Tool}-#{key}/package.coffee"
-      processPackage = require url
-      processPackage config
+      for key, val of config.processes
+
+        url = "#{process.cwd()}/node_modules/#{Tool}-#{key}/package.coffee"
+        processPackage = require url
+        processPackage config
 
 
   # TASKS -------------------------------------------------------------------

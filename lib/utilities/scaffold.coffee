@@ -30,7 +30,9 @@ module.exports = (project, name) ->
   else
     scaffoldConfig =
       name: name
-      message : "Write custom config items in this file"
+      message: "Write custom config items in this file"
+      tasks: {}
+      processes: {}
 
 
 
