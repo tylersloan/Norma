@@ -7,6 +7,9 @@
 # Require the needed packages
 Flags = require("minimist")( process.argv.slice(2) )
 Chalk = require "chalk"
+ReadConfig = require "./read-config"
+PkgeLookup = require "./../utilities/package-lookup"
+Path = require 'path'
 
 
 # Logger is where console output info for the CLI is stored
@@ -78,18 +81,9 @@ module.exports = (env) ->
 
   ###
 
-  if tasks[0] is 'build' or tasks[0] is 'test'
+  if tasks[0] is 'start' or tasks[0] is 'test'
 
-    ###
-
-      @bwiley
-      Lets change this to use the ReadConfig utility method. It will return the
-      object in the same way but has error handling and messaging built in
-
-      ~ @jbaxleyiii
-
-    ###
-    config = require "#{process.cwd()}/#{Tool}.json"
+    config = ReadConfig process.cwd()
 
     ###
 
@@ -101,16 +95,19 @@ module.exports = (env) ->
     ###
 
     if tasks[0] is 'test'
-      testPackage = require "#{process.cwd()}/package.coffee"
-      testPackage config
+      main = config.main or "package.coffee"
+      testPackage = require "#{process.cwd()}/#{main}"
+      testPackage config, tasks
 
     else if config.processes
 
       for key, val of config.processes
 
-        url = "#{process.cwd()}/node_modules/#{Tool}-#{key}/package.coffee"
-        processPackage = require url
-        processPackage config
+        rootOfProcess = Path.join process.cwd(), "node_modules", "#{Tool}-$key"
+        processConfig = ReadConfig rootOfProcess
+        processMain = processConfig.main or "package.coffee"
+        processPackage = require processMain
+        processPackage config, tasks
 
 
   # TASKS -------------------------------------------------------------------
