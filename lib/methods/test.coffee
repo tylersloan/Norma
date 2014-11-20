@@ -8,7 +8,7 @@ _ = require "underscore"
 
 Build = require "./../methods/build"
 Watch = require "./../methods/watch"
-Start = require "./../methods/start"
+Do = require "./../methods/do"
 
 ReadConfig = require "./../utilities/read-config"
 
@@ -23,7 +23,7 @@ module.exports = (tasks, cwd) ->
       Chalk.green "✔ Testing your process!"
     )
 
-    Start tasks, cwd
+    Do tasks, cwd
 
   else if normaConfig.type is "package"
 
