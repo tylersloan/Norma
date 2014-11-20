@@ -81,7 +81,7 @@ module.exports = (env) ->
 
   ###
 
-  if tasks[0] is 'start' or tasks[0] is 'test'
+  if tasks[0] is 'do' or tasks[0] is 'test'
 
     config = ReadConfig process.cwd()
 
@@ -103,10 +103,8 @@ module.exports = (env) ->
 
       for key, val of config.processes
 
-        rootOfProcess = Path.join process.cwd(), "node_modules", "#{Tool}-$key"
-        processConfig = ReadConfig rootOfProcess
-        processMain = processConfig.main or "package.coffee"
-        processPackage = require processMain
+        rootOfProcess = Path.join process.cwd(), "node_modules", "#{Tool}-#{key}"
+        processPackage = require Path.join rootOfProcess, "package.coffee"
         processPackage config, tasks
 
 
