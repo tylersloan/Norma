@@ -7,8 +7,12 @@
 # Require the needed packages
 Flags = require("minimist")( process.argv.slice(2) )
 Chalk = require "chalk"
+
+
 ReadConfig = require "./read-config"
-PkgeLookup = require "./../utilities/package-lookup"
+RegisterPackages = require "./register-packages"
+
+
 Path = require 'path'
 
 
@@ -18,7 +22,7 @@ Logger = require "./../logging/logger"
 
 module.exports = (env) ->
 
-
+  Norma.cwd = Path.resolve __dirname, "../../"
   # VARIABLES ----------------------------------------------------------------
 
   # Get the package.json for norma info
@@ -76,36 +80,15 @@ module.exports = (env) ->
 
   ###
 
-    This is where we need to register all processes prior
+    This is where we need to register all packages prior
     to running any tasks
 
   ###
 
-  if tasks[0] is 'do' or tasks[0] is 'test'
-
-    config = ReadConfig process.cwd()
-
-    ###
-
-      Also the package lookup method should be able to handle this portion as well
-      although it might need to be modified slightly
-
-      ~ @jbaxleyiii
-
-    ###
-
-    if tasks[0] is 'test'
-      main = config.main or "package.coffee"
-      testPackage = require "#{process.cwd()}/#{main}"
-      testPackage config, tasks
-
-    else if config.processes
-
-      for key, val of config.processes
-
-        rootOfProcess = Path.join process.cwd(), "node_modules", "#{Tool}-#{key}"
-        processPackage = require Path.join rootOfProcess, "package.coffee"
-        processPackage config, tasks
+  if tasks[0] is "build" or tasks[0] is "test" or tasks[0] is "watch"
+    packagesReady = RegisterPackages tasks, env.cwd
+  else
+    packagesReady = true
 
 
   # TASKS -------------------------------------------------------------------
@@ -119,5 +102,10 @@ module.exports = (env) ->
     @rich
 
   ###
-  task = require "./../methods/#{tasks[0]}"
-  task tasks, env.cwd
+  if packagesReady
+
+    try
+      task = require "./../methods/#{tasks[0]}"
+      task tasks, env.cwd
+    catch e
+      error = new Norma.error "require fail", e

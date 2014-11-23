@@ -17,15 +17,7 @@ module.exports = (tasks, cwd) ->
 
   normaConfig = ReadConfig process.cwd()
 
-  if normaConfig.type is "process"
-
-    console.log(
-      Chalk.green "✔ Testing your process!"
-    )
-
-    Do tasks, cwd
-
-  else if normaConfig.type is "package"
+  if normaConfig.type is "package"
 
     console.log(
       Chalk.green "✔ Testing your package!"

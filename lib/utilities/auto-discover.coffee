@@ -16,9 +16,9 @@ module.exports = (cwd, tasks) ->
   newPackages = []
   taskList = {}
 
-  if !config.tasks
+  if !config.tasks and !config.procceses
     console.log(
-      Chalk.red("#{Tool}.json needs a tasks object")
+      Chalk.red("#{Tool}.json needs a tasks object or a processes object")
     )
 
     process.exit 0
@@ -27,15 +27,19 @@ module.exports = (cwd, tasks) ->
     if tasks[key] is undefined
       neededPackages.push key
 
-  reBuild = require("./../methods/build")
+  for key of config.processes
+    if tasks[key] is undefined
+      neededPackages.push key
+
+  lookup = require("./auto-discover")
 
   build = ->
-    reBuild ["build"], cwd
+    lookup ["build"], cwd
 
 
   if neededPackages.length > 1
     console.log "Needed packages #{neededPackages}"
-    Add neededPackages, cwd, build
+    Add neededPackages, cwd, lookup
 
     packages = neededPackages
     packages.shift()

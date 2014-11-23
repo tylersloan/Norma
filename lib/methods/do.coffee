@@ -22,6 +22,7 @@ module.exports = (tasks, cwd) ->
     Norma.emitter.emit nextTask
 
 
+
 module.exports.api = [
   {
     command: ""

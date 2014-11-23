@@ -16,7 +16,8 @@ camelize = (str) ->
 
 
 
-module.exports = (tasks, cwd) ->
+module.exports = (tasks, cwd, type) ->
+
 
   normaConfig = ReadConfig process.cwd()
   packageList = new Array
@@ -55,58 +56,59 @@ module.exports = (tasks, cwd) ->
       checkFile pkge
 
 
+
   # Package testing
   if normaConfig.type is "package"
 
-    pkges = MapTree process.cwd()
+    if cwd isnt Path.resolve __dirname, '../../'
+      pkges = MapTree process.cwd()
 
-    checkFile pkges
+      checkFile pkges
 
   # npm package testing
-  else
 
-    pattern = arrayify([
-      "#{Tool}-*"
-      "#{Tool}.*"
-    ])
+  pattern = arrayify([
+    "#{Tool}-*"
+    "#{Tool}.*"
+  ])
 
-    config = Findup "package.json", cwd: cwd
+  config = Findup "package.json", cwd: cwd
 
-    node_modules = Findup "node_modules", cwd: cwd
+  node_modules = Findup "node_modules", cwd: cwd
 
-    scope = arrayify([
-      "dependencies"
-      "devDependencies"
-      "peerDependencies"
-    ])
+  scope = arrayify([
+    "dependencies"
+    "devDependencies"
+    "peerDependencies"
+  ])
 
-    replaceString = /^norma(-|\.)/
-
+  replaceString = /^norma(-|\.)/
 
 
-    if config
-      # console.log(
-      #   Chalk.red("Could not find dependencies." +
-      #   " Do you have a package.json file in your project?"
-      #   )
-      # )
-      #
-      config = require(config)
 
-      names = scope.reduce(
-        (result, prop) ->
-          result.concat Object.keys(config[prop] or {})
-        []
-      )
+  if config
+    # console.log(
+    #   Chalk.red("Could not find dependencies." +
+    #   " Do you have a package.json file in your project?"
+    #   )
+    # )
+    #
+    config = require(config)
 
-      Multimatch(names, pattern).forEach (name) ->
+    names = scope.reduce(
+      (result, prop) ->
+        result.concat Object.keys(config[prop] or {})
+      []
+    )
 
-        packageList.push Path.resolve(node_modules, name)
+    Multimatch(names, pattern).forEach (name) ->
 
-        return
+      packageList.push Path.resolve(node_modules, name)
 
-      for pkge in packageList
-        packageList[pkge] = mapPkge pkge
+      return
+
+    for pkge in packageList
+      packageList[pkge] = mapPkge pkge
 
 
   return packages
