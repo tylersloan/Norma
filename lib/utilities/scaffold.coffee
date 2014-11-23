@@ -27,8 +27,7 @@ module.exports = (project, name) ->
   #   children: [Object] }
 
   # See if a config file already exists (for local files)
-  configName = "#{Tool}.json"
-  configExists = Fs.existsSync Path.join(project.path, configName)
+  configExists = Fs.existsSync Path.join(project.path, "#{Tool}.json")
 
   ###
 
@@ -50,31 +49,18 @@ module.exports = (project, name) ->
       tasks: {}
       processes: {}
 
-  ###
+  if scaffoldConfig.scripts and scaffoldConfig.scripts.preinstall?
 
-    Run preinstall command
+    ExecCommand(scaffoldConfig.scripts.preinstall, project.path, ->
+      doAfterPreInstall project, scaffoldConfig
+    )
 
-    @note
+  else
 
-      Thoughts on being able to make this an async task with a callback?
-      Or perhaps promise based. I'm not really sure how to do this.
-      Right now the move can happen while other scripts are being run.
-      We need to figure out a way to have the move be delayed until after
-      any preinstall scripts are ready. I might kill this feature until
-      we can figure this out. We can get insight into how npm is doing it
-      for their system here:
-
-      [https://github.com/npm/npm/blob/master/lib/utils/lifecycle.js]
-
-      If we restrict the type of scripts to just process scripts we
-      can successfully register a fallback. In fact if we spawn a child
-      process and run node <script name> then we should be able to do the
-      same type of callback if it is a file.
+    doAfterPreInstall project, scaffoldConfig
 
 
-  ###
-  # if scaffoldConfig.scripts and scaffoldConfig.scripts.preinstall?
-  #   ExecCommand(scaffoldConfig.scripts.preinstall, project.path)
+doAfterPreInstall = (project, scaffoldConfig) ->
 
   if project.path isnt process.cwd()
 
@@ -83,7 +69,7 @@ module.exports = (project, name) ->
 
   # Save config
   Fs.writeFileSync(
-    Path.join(process.cwd(), configName)
+    Path.join(process.cwd(), "#{Tool}.json")
     JSON.stringify(scaffoldConfig, null, 2)
   )
 
