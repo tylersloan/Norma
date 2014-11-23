@@ -1,18 +1,65 @@
+###
+
+  This file executes when a user says "norma create/init ...".  A new directory
+  has been created for the new norma project and the process has already moved
+  to that directory.  This script will gather info about the project from the
+  user and then execute the scaffold script.
+
+###
+
+
 _  = require("lodash")
 Inquirer = require("inquirer")
 Fs = require("fs-extra")
 Chalk = require("chalk")
 Path = require("path")
-
 Scaffold = require("./../utilities/scaffold")
 MapTree = require("./../utilities/directory-tools").mapTree
 RemoveTree = require("./../utilities/directory-tools").removeTree
 
+
+doInit = (scaffoldNames, scaffolds) ->
+
+  Inquirer.prompt([
+    {
+      type: "list"
+      message: "What type of project do you want to build?"
+      name: "scaffold"
+      choices: scaffoldNames
+    }
+    {
+      type: "input"
+      message: "What do you want your project to be named?"
+      name: "project"
+      default: "My Awesome Project"
+    }
+    ],
+    (answer) ->
+
+      # Faster filter method
+      projects = (p for p in scaffolds.children when p.name is answer.scaffold)
+
+      # Use first match if one was found
+      if projects.length
+
+        Scaffold projects[0], answer.project
+        return
+
+      console.log(
+        Chalk.red 'That scaffold was not found. Try "norma list --scaffold"'
+      )
+  )
+
+
 module.exports = (tasks, cwd) ->
 
+  # cwd = path where norma package to be init'ed (same as process cwd)
+  # tasks = [ 'create', <appName> ] - flags are not included in the array
+
+  # __dirname is this script files' directory
   scaffolds = MapTree Path.join __dirname, "/../../scaffolds"
 
-  # Add in custom option
+  # Add in custom option to list of scaffolds available
   scaffolds.children.push custom =
     path: process.cwd()
     name: 'custom'
@@ -20,69 +67,14 @@ module.exports = (tasks, cwd) ->
     children: []
 
   # Create list of scaffold names for prompt
-  scaffoldNames = new Array
   scaffoldNames = (scaffold.name for scaffold in scaffolds.children)
 
-  # Generate list of current files in directory
-  cwdFiles = _.remove Fs.readdirSync(cwd), (file) ->
-    file.substring(0, 1) isnt "."
-
-
-  chooseProject = (project, projectName) ->
-
-    # Faster filter method
-    projects = (proj for proj in scaffolds.children when proj.name is project)
-
-    # If we found a project, build it
-    if projects.length is 1
-      Scaffold projects[0], projectName
-    else
-      console.log(
-        Chalk.red 'That scaffold template is not found, try these:'
-      )
-      for name in scaffoldNames
-        # Don't add an extra space after the last list
-        if (_i + 1) isnt scaffoldNames.length
-          console.log Chalk.cyan name
-        else
-          console.log Chalk.cyan name + '\n'
-
-
-  startInit = ->
-
-    if tasks.length is 1
-      Inquirer.prompt([
-        {
-          type: "list"
-          message: "What type of project do you want to build?"
-          name: "projectType"
-          choices: scaffoldNames
-        }
-        {
-          type: "input"
-          message: "What do you want your project to be named?"
-          name: "projectName"
-          default: "My Awesome Project"
-        }
-      ],
-        (answer) ->
-          chooseProject answer.projectType, answer.projectName
-      )
-
-    else
-      Inquirer.prompt
-        type: "input"
-        message: "What do you want your project to be named?"
-        name: "projectName"
-        default: "My Awesome Project"
-      ,
-        (answer) ->
-
-          chooseProject tasks[1], answer.projectName
-
+  # Generate list of current files in directory (auto excludes "." and "..")
+  cwdIsEmpty = (Fs.readdirSync cwd).length is 0
 
   # Failsafe to make sure project is empty on creation of new folder
-  if cwdFiles.length and tasks[0] isnt 'init'
+  if (not cwdIsEmpty) and (tasks[0] isnt 'init')
+
     Inquirer.prompt
       type: "confirm"
       message: "Initializing will empty the current directory. Continue?"
@@ -105,7 +97,7 @@ module.exports = (tasks, cwd) ->
             # Clean up directory
             console.log Chalk.grey("Emptying current directory")
             RemoveTree cwd, true
-            startInit()
+            doInit scaffoldNames, scaffolds
 
           else
             process.exit 0
@@ -113,11 +105,9 @@ module.exports = (tasks, cwd) ->
       else
         process.exit 0
 
-  else if tasks.length is 1
-    startInit()
-
   else
-    chooseProject(tasks[1])
+
+    doInit scaffoldNames, scaffolds
 
 
 # API ----------------------------------------------------------------------

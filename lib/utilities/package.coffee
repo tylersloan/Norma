@@ -1,3 +1,13 @@
+###
+
+  This file executes when a user says "norma create <name> --package".  A new
+  directory has been created for the new norma package and the process has
+  already moved to that directory.  This script will put a template file in the
+  directory and initialize the directory as a npm and norma package.
+
+###
+
+
 Path = require "path"
 Fs = require "fs-extra"
 Chalk = require "chalk"
@@ -9,10 +19,14 @@ ExecCommand = require "./execute-command"
 
 module.exports = (tasks, cwd) ->
 
+  # cwd = absolute path of directory where package is to be created
+  # tasks = [ 'create', <appName> ] - flags are not included in the array
+
   console.log Chalk.green "Creating your package..."
 
   # PACKAGE-TEMPLATE ----------------------------------------------------
 
+  # __dirname is the directory that the currently executing script resides in
   Fs.copySync(
     Path.resolve __dirname , "./base-package.coffee"
     Path.join process.cwd(), "package.coffee"
@@ -20,21 +34,20 @@ module.exports = (tasks, cwd) ->
 
   # NORMA.JSON ----------------------------------------------------------
 
-  fileName = "#{Tool}.json"
   packageName = tasks[1]
 
   if packageName.indexOf "#{Tool}-" isnt 0
     packageName = "#{Tool}-#{packageName}"
 
   config =
-  name: packageName
-  type: "package"
-  tasks: {}
-  processes: {}
+    name: packageName
+    type: "package"
+    tasks: {}
+    processes: {}
 
   # Save config
   Fs.writeFileSync(
-    Path.join(process.cwd(), fileName)
+    Path.join(process.cwd(), "#{Tool}.json")
     JSON.stringify(config, null, 2)
   )
 
