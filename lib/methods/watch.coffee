@@ -59,6 +59,8 @@ module.exports = (tasks, cwd) ->
             "was #{event.type}"
           )
 
+          event[task] = taskName
+
           Sequence taskName
 
           Norma.events.emit 'file-change', event
