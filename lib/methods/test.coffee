@@ -8,7 +8,6 @@ _ = require "underscore"
 
 Build = require "./../methods/build"
 Watch = require "./../methods/watch"
-Do = require "./../methods/do"
 
 ReadConfig = require "./../utilities/read-config"
 

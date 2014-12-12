@@ -1,5 +1,6 @@
 
 Path = require "path"
+Fs = require "fs-extra"
 Multimatch = require "multimatch"
 Findup = require "findup-sync"
 
@@ -22,7 +23,7 @@ module.exports = (tasks, cwd, type) ->
   normaConfig = ReadConfig process.cwd()
   packageList = new Array
   packages = new Array
-  customs = MapTree cwd
+
 
   mapPkge = (pkgeCwd) ->
 
@@ -37,9 +38,13 @@ module.exports = (tasks, cwd, type) ->
 
   checkFile = (file) ->
 
-    if file.name and file.name.match /package[.](js|coffee)$/
+    if file.name is "norma.json"
+      pkgeConfig = ReadConfig Path.resolve file.path, "../"
 
-      mapPkge file.path
+      if pkgeConfig.type is "package" and pkgeConfig.main
+        entry = Path.resolve file.path, "../", pkgeConfig.main
+
+        mapPkge entry
 
     else if file.children
 
@@ -48,25 +53,30 @@ module.exports = (tasks, cwd, type) ->
         checkFile nestedFile
 
 
-  # Local packages
-  for pkge in customs.children
-
-    if pkge and pkge.path.match /norma-packages/
-
-      checkFile pkge
 
 
+  # Norma-packages (non npm based)
+  if Fs.existsSync Path.join( cwd, "norma-packages")
 
-  # Package testing
+      customs = MapTree Path.join( cwd, "norma-packages")
+
+      checkFile pkge for pkge in customs.children
+
+
+
+
+  # Package testing (used in building and testing packages)
   if normaConfig.type is "package"
 
+    # verify we aren't in root
     if cwd isnt Path.resolve __dirname, '../../'
       pkges = MapTree process.cwd()
 
       checkFile pkges
 
-  # npm package testing
 
+
+  # npm package testing
   pattern = arrayify([
     "#{Tool}-*"
     "#{Tool}.*"
@@ -86,7 +96,7 @@ module.exports = (tasks, cwd, type) ->
 
 
 
-  if config
+  if config and node_modules
     # console.log(
     #   Chalk.red("Could not find dependencies." +
     #   " Do you have a package.json file in your project?"

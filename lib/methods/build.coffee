@@ -9,7 +9,6 @@ Gulp = require "gulp"
 MapTree = require("./../utilities/directory-tools").mapTree
 ReadConfig = require "./../utilities/read-config"
 ExecCommand = require "./../utilities/execute-command"
-AutoDiscover = require "./../utilities/auto-discover"
 
 
 
@@ -207,15 +206,13 @@ module.exports = (tasks, cwd) ->
 
   # GENERATE-LIST -------------------------------------------------------
 
-  if tasks.length is 1
+  if !tasks.length
     generateTaskList(fileTypes, build)
 
   else
 
 
     # USER-DEFINED  -----------------------------------------------------
-
-    tasks.shift()
 
     for task in tasks
       if !Gulp.tasks[task]

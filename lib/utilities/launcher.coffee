@@ -4,25 +4,19 @@
 
 ###
 
-# Require the needed packages
 Flags = require("minimist")( process.argv.slice(2) )
 Chalk = require "chalk"
-
+Path = require "path"
 
 ReadConfig = require "./read-config"
 RegisterPackages = require "./register-packages"
-
-
-Path = require 'path'
-
-
-# Logger is where console output info for the CLI is stored
 Logger = require "./../logging/logger"
 
 
 module.exports = (env) ->
 
   Norma.cwd = Path.resolve __dirname, "../../"
+
   # VARIABLES ----------------------------------------------------------------
 
   # Get the package.json for norma info
@@ -66,7 +60,7 @@ module.exports = (env) ->
   ###
 
     Change directory to where nsp was called from.
-    This allows the tool to work is way up the tree to find an nspfile.
+    This allows the tool to work is way up the tree to find an norma.json.
 
   ###
   if process.cwd() isnt env.cwd
@@ -78,34 +72,37 @@ module.exports = (env) ->
 
   # REGISTER ---------------------------------------------------------------
 
-  ###
+  runTasks = (tasks, cwd) ->
 
-    This is where we need to register all packages prior
-    to running any tasks
+    ###
 
-  ###
+      This is where we need to register all packages prior
+      to running any tasks
 
-  if tasks[0] is "build" or tasks[0] is "test" or tasks[0] is "watch"
-    packagesReady = RegisterPackages tasks, env.cwd
-  else
-    packagesReady = true
+    ###
+
+    if tasks[0] is "build" or tasks[0] is "test" or tasks[0] is "watch"
+      packagesReady = RegisterPackages tasks, cwd
+    else
+      packagesReady = true
 
 
-  # TASKS -------------------------------------------------------------------
+    # TASKS -------------------------------------------------------------------
 
 
-  ###
+    if packagesReady
 
-    Should we remove the first argument since that is the file name?
-    Also this should be wrapped in a try method and log errors
+      Norma.events.emit "start"
 
-    @rich
+      try
+        task = require "./../methods/#{tasks[0]}"
+        tasks.shift()
 
-  ###
-  if packagesReady
+        task tasks, cwd
+      catch e
+        Norma.events.emit "error", e
 
-    try
-      task = require "./../methods/#{tasks[0]}"
-      task tasks, env.cwd
-    catch e
-      error = new Norma.error "require fail", e
+
+  runTasks tasks, env.cwd
+
+  module.exports.run = runTasks

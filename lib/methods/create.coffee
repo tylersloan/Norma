@@ -18,14 +18,15 @@ Package = require "./../utilities/package"
 module.exports = (tasks, cwd) ->
 
   # cwd = absolute path of directory where user typed 'norma create <appName>'
-  # tasks = [ 'create', <appName> ] - flags are not included in the array
+  # tasks = [ <appName> ] - flags are not included in the array
 
-  if tasks.length < 2
+  if !tasks.length
 
     console.log Chalk.red "Please specify a project name"
     process.exit 0
 
-  packageName = tasks[1]
+
+  packageName = tasks[0]
 
   # If this is a package it should look like "norma-#{name}"
   if Flags.package and packageName.indexOf("#{Tool}-") isnt 0
@@ -53,6 +54,14 @@ module.exports = (tasks, cwd) ->
 
       defaultPackageData =
         name: packageName
+        version: "0.0.0"
+        description: ""
+        main: "index.js"
+        scripts:
+          test: "echo \"Error: no test specified\" && exit 1"
+        author: ""
+        license: "ISC"
+
 
       Fs.writeFile 'package.json', JSON.stringify(defaultPackageData, null, 2)
 

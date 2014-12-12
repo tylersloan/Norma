@@ -45,7 +45,6 @@ module.exports = (project, name) ->
 
     scaffoldConfig =
       name: name
-      message: "Write custom config items in this file"
       tasks: {}
       processes: {}
 

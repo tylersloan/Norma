@@ -34,8 +34,10 @@ module.exports = (tasks, cwd) ->
   for task in combinedTasks
     _.extend Gulp.tasks, task
 
+  console.log Gulp.tasks
+
   # see if we need to download any packages
-  isMissingTasks = AutoDiscover cwd, Gulp.tasks
+  isMissingTasks = AutoDiscover tasks, cwd, Gulp.tasks
 
   return false if isMissingTasks
 

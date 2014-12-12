@@ -15,7 +15,7 @@ module.exports = (tasks, cwd, cb) ->
   # LOGS -------------------------------------------------------------------
 
   # User tried to run `norma add` without argument
-  if tasks.length is 1
+  if !tasks.length
 
     console.log Chalk.red "Please specify a task or --scaffold <repo>"
 
@@ -27,8 +27,8 @@ module.exports = (tasks, cwd, cb) ->
   if Flags.scaffold
 
     # Clean out args to find git repo
-    tasks[1] = Flags.scaffold
-    finalLoc = tasks[1].split "norma-"
+    tasks[0] = Flags.scaffold
+    finalLoc = tasks[0].split "norma-"
     finalLoc = finalLoc[1]
 
     # Get final resting place of global scaffolds
@@ -36,7 +36,7 @@ module.exports = (tasks, cwd, cb) ->
 
     # Download from github
     Ghdownload(
-      tasks[1]
+      tasks[0]
       scaffoldLocation + "/"
     ).on "end", ->
       Exec "tree", (err, stdout, sderr) ->
@@ -68,16 +68,13 @@ module.exports = (tasks, cwd, cb) ->
     to the npm install
 
   ###
-  taskList = tasks
-  taskList.shift()
-
 
   # Quick add method for norma
   taskList = (
-    "#{Tool}-#{task}" for task in taskList
+    "#{Tool}-#{task}" for task in tasks
   )
 
-  taskList = taskList.join(" ")
+  tasks = taskList.join(" ")
 
   if Flags.dev
     action = "npm i --save-dev #{taskList}"
@@ -107,7 +104,7 @@ module.exports = (tasks, cwd, cb) ->
         )
 
         if typeof cb is 'function'
-          cb null
+          cb()
 
     )
 
@@ -128,7 +125,7 @@ module.exports = (tasks, cwd, cb) ->
         )
 
         if typeof cb is 'function'
-          cb null
+          cb()
 
     )
 

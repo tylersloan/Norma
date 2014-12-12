@@ -20,7 +20,7 @@ ExecCommand = require "./execute-command"
 module.exports = (tasks, cwd) ->
 
   # cwd = absolute path of directory where package is to be created
-  # tasks = [ 'create', <appName> ] - flags are not included in the array
+  # tasks = [ <appName> ] - flags are not included in the array
 
   console.log Chalk.green "Creating your package..."
 
@@ -34,7 +34,7 @@ module.exports = (tasks, cwd) ->
 
   # NORMA.JSON ----------------------------------------------------------
 
-  packageName = tasks[1]
+  packageName = tasks[0]
 
   if packageName.indexOf "#{Tool}-" isnt 0
     packageName = "#{Tool}-#{packageName}"
