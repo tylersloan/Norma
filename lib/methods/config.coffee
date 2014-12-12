@@ -76,7 +76,7 @@ module.exports = (tasks, cwd) ->
   # READ ------------------------------------------------------------------
 
   # Empty config command returns print out of config
-  if tasks.length is 1
+  if !tasks.length
 
     # Set directory
     dir = Path.join useDir, ".#{Tool}"
@@ -101,25 +101,25 @@ module.exports = (tasks, cwd) ->
   # KEY-TASKS ------------------------------------------------------------
 
   # Read config of a value
-  if tasks[1] and tasks[2] is `undefined`
+  if tasks[0] and tasks[1] is `undefined`
 
 
     # Gives users the options to remove config items
     if !Flags.remove
       console.log(
-        Chalk.cyan( tasks[1] + ": ")
-        Chalk.magenta( Nconf.get(tasks[1]))
+        Chalk.cyan( tasks[0] + ": ")
+        Chalk.magenta( Nconf.get(tasks[0]))
       )
     else
-      Nconf.clear tasks[1]
+      Nconf.clear tasks[0]
 
 
 
   # SAVE ------------------------------------------------------------------
 
   # Save config with value
-  if tasks[2]
-    Nconf.set tasks[1], tasks[2]
+  if tasks[1]
+    Nconf.set tasks[0], tasks[1]
 
 
 

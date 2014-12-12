@@ -8,7 +8,7 @@ GLOBAL.Tool = "norma"
 GLOBAL.Norma = {
   watchStarted: false,
   reloadTasks: [],
-  emitter: EventEmitter
+  events: EventEmitter
 }
 
 // Load Coffeescript for node tasks

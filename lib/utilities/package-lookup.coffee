@@ -1,5 +1,6 @@
 
 Path = require "path"
+Fs = require "fs-extra"
 Multimatch = require "multimatch"
 Findup = require "findup-sync"
 
@@ -16,12 +17,13 @@ camelize = (str) ->
 
 
 
-module.exports = (tasks, cwd) ->
+module.exports = (tasks, cwd, type) ->
+
 
   normaConfig = ReadConfig process.cwd()
   packageList = new Array
   packages = new Array
-  customs = MapTree cwd
+
 
   mapPkge = (pkgeCwd) ->
 
@@ -36,9 +38,13 @@ module.exports = (tasks, cwd) ->
 
   checkFile = (file) ->
 
-    if file.name and file.name.match /package[.](js|coffee)$/
+    if file.name is "norma.json"
+      pkgeConfig = ReadConfig Path.resolve file.path, "../"
 
-      mapPkge file.path
+      if pkgeConfig.type is "package" and pkgeConfig.main
+        entry = Path.resolve file.path, "../", pkgeConfig.main
+
+        mapPkge entry
 
     else if file.children
 
@@ -47,66 +53,72 @@ module.exports = (tasks, cwd) ->
         checkFile nestedFile
 
 
-  # Local packages
-  for pkge in customs.children
-
-    if pkge and pkge.path.match /norma-packages/
-
-      checkFile pkge
 
 
-  # Package testing
+  # Norma-packages (non npm based)
+  if Fs.existsSync Path.join( cwd, "norma-packages")
+
+      customs = MapTree Path.join( cwd, "norma-packages")
+
+      checkFile pkge for pkge in customs.children
+
+
+
+
+  # Package testing (used in building and testing packages)
   if normaConfig.type is "package"
 
-    pkges = MapTree process.cwd()
+    # verify we aren't in root
+    if cwd isnt Path.resolve __dirname, '../../'
+      pkges = MapTree process.cwd()
 
-    checkFile pkges
+      checkFile pkges
+
+
 
   # npm package testing
-  else
+  pattern = arrayify([
+    "#{Tool}-*"
+    "#{Tool}.*"
+  ])
 
-    pattern = arrayify([
-      "#{Tool}-*"
-      "#{Tool}.*"
-    ])
+  config = Findup "package.json", cwd: cwd
 
-    config = Findup "package.json", cwd: cwd
+  node_modules = Findup "node_modules", cwd: cwd
 
-    node_modules = Findup "node_modules", cwd: cwd
+  scope = arrayify([
+    "dependencies"
+    "devDependencies"
+    "peerDependencies"
+  ])
 
-    scope = arrayify([
-      "dependencies"
-      "devDependencies"
-      "peerDependencies"
-    ])
-
-    replaceString = /^norma(-|\.)/
+  replaceString = /^norma(-|\.)/
 
 
 
-    if config
-      # console.log(
-      #   Chalk.red("Could not find dependencies." +
-      #   " Do you have a package.json file in your project?"
-      #   )
-      # )
-      #
-      config = require(config)
+  if config and node_modules
+    # console.log(
+    #   Chalk.red("Could not find dependencies." +
+    #   " Do you have a package.json file in your project?"
+    #   )
+    # )
+    #
+    config = require(config)
 
-      names = scope.reduce(
-        (result, prop) ->
-          result.concat Object.keys(config[prop] or {})
-        []
-      )
+    names = scope.reduce(
+      (result, prop) ->
+        result.concat Object.keys(config[prop] or {})
+      []
+    )
 
-      Multimatch(names, pattern).forEach (name) ->
+    Multimatch(names, pattern).forEach (name) ->
 
-        packageList.push Path.resolve(node_modules, name)
+      packageList.push Path.resolve(node_modules, name)
 
-        return
+      return
 
-      for pkge in packageList
-        packageList[pkge] = mapPkge pkge
+    for pkge in packageList
+      packageList[pkge] = mapPkge pkge
 
 
   return packages
