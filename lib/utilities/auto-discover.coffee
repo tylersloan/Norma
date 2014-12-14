@@ -15,7 +15,6 @@ module.exports = (tasks, cwd, packages) ->
   config = ReadConfig cwd
   neededPackages = []
 
-
   # If there are not tasks or processes we can't do much, so exit with error
   if !config.tasks and !config.procceses
     console.log(
@@ -29,7 +28,7 @@ module.exports = (tasks, cwd, packages) ->
 
   # collect all missing tasks into array
   for key of config.tasks
-    if tasks[key] is undefined
+    if packages[key] is undefined
       neededPackages.push key
 
   # collect all missing procceses into array
