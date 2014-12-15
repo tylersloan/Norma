@@ -1,10 +1,6 @@
 Norma
 ===
 
-# CURRENTLY BROKEN
-
-I'm resetting master and cleaning out branches in prep for milestone sprint. Norma will remain broken until I have stablized packages.
-
 Helpful development built on node
 
 Learn more about [Norma](http://en.wikipedia.org/wiki/Norma_Cenva)
