@@ -11,7 +11,6 @@ Path = require "path"
 ReadConfig = require "./read-config"
 RegisterPackages = require "./register-packages"
 Logger = require "./../logging/logger"
-MapTree = require("./../utilities/directory-tools").mapTree
 
 
 module.exports = (env) ->
@@ -93,17 +92,9 @@ module.exports = (env) ->
 
     if packagesReady
 
-      # Dynamically require all event methods from filesystem
-      do ->
-
-        events = MapTree Path.resolve(__dirname, '../events/')
-
-        for event in events.children
-          if event.path
-            require(event.path)()
-
-
+      # Fire the start event
       Norma.events.emit "start"
+
 
       try
         task = require "./../methods/#{tasks[0]}"
@@ -111,7 +102,9 @@ module.exports = (env) ->
 
         task tasks, cwd
       catch e
+        e.severity = "crash"
         Norma.events.emit "error", e
+
 
 
   runTasks tasks, env.cwd
