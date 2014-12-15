@@ -37,6 +37,10 @@ module.exports = (tasks, cwd, packages) ->
       neededPackages.push key
 
 
+  # verify unique package (don't download duplicates)
+  neededPackges = _.uniq neededPackages
+
+
   if neededPackages.length
 
     Add neededPackages, cwd, ->

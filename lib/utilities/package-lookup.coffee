@@ -17,7 +17,7 @@ camelize = (str) ->
 
 
 
-module.exports = (tasks, cwd, type) ->
+module.exports = (tasks, cwd) ->
 
 
   normaConfig = ReadConfig process.cwd()
@@ -82,6 +82,7 @@ module.exports = (tasks, cwd, type) ->
     "#{Tool}.*"
   ])
 
+
   config = Findup "package.json", cwd: cwd
 
   node_modules = Findup "node_modules", cwd: cwd
@@ -95,18 +96,29 @@ module.exports = (tasks, cwd, type) ->
   replaceString = /^norma(-|\.)/
 
 
-
   if config and node_modules
-    # console.log(
-    #   Chalk.red("Could not find dependencies." +
-    #   " Do you have a package.json file in your project?"
-    #   )
-    # )
-    #
-    config = require(config)
+
+    # Using the require method keeps the same in memory, instead we use
+    # a synchronous fileread of the JSON. This should probably be in a try
+    # with a Norma error emitted on fail
+
+    # TODO - wrap in try catch with error
+    config = Fs.readFileSync config, encoding: "utf8"
+
+
+    try
+      config = JSON.parse(config)
+    catch err
+      console.log(
+        Chalk.red "The package.json file is not valid json. Aborting."
+        , err
+      )
+      process.exit 0
+
 
     names = scope.reduce(
       (result, prop) ->
+
         result.concat Object.keys(config[prop] or {})
       []
     )

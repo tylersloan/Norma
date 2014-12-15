@@ -7,7 +7,7 @@ Path = require 'path'
 whitelist = [
   '.git'
   'node_modules'
-  '#{Tool}_tasks'
+  '#{Tool}_packages'
   '.DS_Store'
 ]
 

@@ -30,6 +30,7 @@ module.exports = (action, cwd, cb) ->
 
       if typeof cb is "function"
         cb null
+
     )
 
     child.stdout.setEncoding("utf8")
