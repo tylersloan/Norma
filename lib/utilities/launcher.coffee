@@ -92,13 +92,19 @@ module.exports = (env) ->
 
     if packagesReady
 
+      # Fire the start event
+      Norma.events.emit "start"
+
+
       try
         task = require "./../methods/#{tasks[0]}"
         tasks.shift()
 
         task tasks, cwd
       catch e
+        e.severity = "crash"
         Norma.events.emit "error", e
+
 
 
   runTasks tasks, env.cwd

@@ -42,7 +42,6 @@ module.exports = ->
 
   errorType.crash = (msg) ->
 
-
     Norma.events.emit "crash", msg
 
     errorType.warn msg
@@ -52,6 +51,7 @@ module.exports = ->
 
 
   Norma.events.on "error", (error) ->
+
 
     if error.domainThrown
       errorType.crash error

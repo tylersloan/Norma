@@ -60,13 +60,13 @@ loadEvents();
 
 // ERRORS ---------------------------------------------------------------
 
-var NormaEvents = require("../lib/events/error")()
-
 Domain.on("error", function(err){
-  // handle the error safely
-  err.severity = "crash"
 
-  Norma.events.emit("error", err)
+  err.severity = "crash";
+
+  // handle the error safely
+  Norma.events.emit("error", err);
+
 });
 
 
