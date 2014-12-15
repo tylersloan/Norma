@@ -69,12 +69,12 @@ module.exports = ->
 
       message =
         message: message
-        type: "log"
+        severity: "log"
         name: "Log"
 
 
-    if message.type
-      messageType[message.type] message
+    if message.severity
+      messageType[message.severity] message
 
     else
       messageType.log message

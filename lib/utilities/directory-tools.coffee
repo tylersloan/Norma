@@ -107,7 +107,7 @@ copyTree = (src, dest, cb) ->
         console.log dest + 'has been moved over '
       )
 
-    console.log i, files.length
+
     i++
 
   if cb then cb null
