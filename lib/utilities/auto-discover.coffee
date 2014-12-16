@@ -24,7 +24,7 @@ module.exports = (tasks, cwd, packages) ->
       name: "Not Valid"
 
     Norma.events.emit "error", err
-  
+
 
 
   # LOOKUP -----------------------------------------------------------------
@@ -36,7 +36,7 @@ module.exports = (tasks, cwd, packages) ->
 
   # collect all missing procceses into array
   for key of config.processes
-    if tasks[key] is undefined
+    if packages[key] is undefined
       neededPackages.push key
 
 
