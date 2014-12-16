@@ -100,9 +100,15 @@ module.exports = (tasks, cwd) ->
             doInit scaffoldNames, scaffolds
 
           else
+
+            Norma.events.emit "stop"
+
             process.exit 0
 
       else
+
+        Norma.events.emit "stop"
+        
         process.exit 0
 
   else

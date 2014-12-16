@@ -88,11 +88,10 @@ module.exports = (tasks, cwd) ->
 
     catch err
 
-      console.log(
-        Chalk.red "The .#{Tool} file is not valid json. Aborting."
-        err
-      )
-      process.exit 0
+      err.severity = "crash"
+
+      err.message "The .#{Tool} file is not valid json. Aborting."
+
 
     # Print out cofing data for easy lookup
     console.log configData

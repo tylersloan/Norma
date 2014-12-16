@@ -17,11 +17,14 @@ module.exports = (tasks, cwd, packages) ->
 
   # If there are not tasks or processes we can't do much, so exit with error
   if !config.tasks and !config.procceses
-    console.log(
-      Chalk.red("#{Tool}.json needs a tasks object or a processes object")
-    )
 
-    process.exit 0
+    err =
+      severity: "crash"
+      message: "#{Tool}.json needs a tasks object or a processes object"
+      name: "Not Valid"
+
+    Norma.events.emit "error", err
+  
 
 
   # LOOKUP -----------------------------------------------------------------
