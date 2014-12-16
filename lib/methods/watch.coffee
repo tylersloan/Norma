@@ -8,8 +8,7 @@ Gulp = require "gulp"
 
 ReadConfig = require "./../utilities/read-config"
 PkgeLookup = require "./../utilities/package-lookup"
-
-
+LocalTld = require "./../utilities/local-tld"
 
 
 module.exports = (tasks, cwd) ->
@@ -72,6 +71,9 @@ module.exports = (tasks, cwd) ->
 
 
   Norma.events.emit 'watch-start'
+
+  LocalTld.remove("junction")
+  LocalTld.add("junction", "3000")
 
 
 

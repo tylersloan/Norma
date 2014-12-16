@@ -35,7 +35,6 @@
     "gulp": "^3.8.5",
     "inquirer": "^0.5.1",
     "liftoff": "^0.12.0",
-    "local-tld": "^4.0.0",
     "lodash": "^2.4.1",
     "minimist": "0.2.0",
     "multimatch": "^1.0.0",
@@ -52,6 +51,10 @@
   "bin": {
     "norma": "./bin/norma.js"
   },
+  "scripts": {
+    "postinstall": "npm i -g local-tld"
+  },
+  "preferglobal": true,
   "engineStrict": true,
   "homepage": "https://github.com/NewSpring/norma"
 }
