@@ -1,11 +1,13 @@
 Norma
 ===
 
+# Still in Development. Alpha launches January 3rd!
+
 Helpful development built on node
 
 Learn more about [Norma](http://en.wikipedia.org/wiki/Norma_Cenva)
 
-# Who is Norma
+## Who is Norma
 
 Norma is the assistant developer you always wanted. She helps you get to
 your idea in as few of steps as possible. If you have ever expressed in
@@ -17,7 +19,7 @@ isn't dependent on gulp for packages though, its all node so if you want
 something, it can probably be built.
 
 
-# What is Norma
+## What is Norma
 
 Norma is an assistant. She helps to coordinate the things you want to do.
 She can help on things ranging from linting, compiling, and packaging assets
@@ -32,7 +34,7 @@ package system in order to carry out tasks. It is built to interface
 with existing gulp methods out of the box.
 
 
-# When do I use Norma
+## When do I use Norma
 
 Are you building a website? -> Use Norma
 
@@ -47,7 +49,7 @@ Are you deploying your site/app -> Use Norma
 Do you want to order a sandwhich? -> Coming soon to Norma
 
 
-# Where is Norma
+## Where is Norma
 
 Norma lives on your local machine and on your deployment servers.
 As of right now, only Unix based machines have been tested but windows
@@ -56,20 +58,20 @@ so it requires using the command line (terminal on mac) but there are plans
 for a native GUI in the future.
 
 
-# Why Norma?
+## Why Norma?
 
 You have a great idea, you want to build your great idea, anything that slows
 you down from building your idea is a problem. Norma can help fix
 that problem.
 
-# How Do I Work With Norma?
+## How Do I Work With Norma?
 
 How you work with Norma depends on what you want to do. In the wiki you
 can find a number of different ways to work with Norma. For the most
 part the example usage below gives you a pretty good start.
 
 
-# Example Usage
+## Example Usage
 
 Use the following commands to create a project and locally (only this new
 project and not all norma projects on your machine) add a coffeescript compiler:
