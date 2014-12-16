@@ -44,7 +44,7 @@ Are you building software -> You can probably use Norma
 
 Are you deploying your site/app -> Use Norma
 
-Do you want to order a sandwhich? -> Coming soon to Norma
+Do you want to order a sandwich? -> Coming soon to Norma
 
 
 # Where is Norma
