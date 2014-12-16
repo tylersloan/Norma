@@ -22,8 +22,13 @@ module.exports = (tasks, cwd) ->
 
   if !tasks.length
 
-    console.log Chalk.red "Please specify a project name"
-    process.exit 0
+    err =
+      severity: "crash"
+      name: "Missing Info"
+      message: "Please specify a project name"
+
+    Norma.events.emit "error", err
+    
 
 
   packageName = tasks[0]

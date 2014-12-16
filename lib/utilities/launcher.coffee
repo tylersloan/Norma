@@ -106,6 +106,11 @@ module.exports = (env) ->
         Norma.events.emit "error", e
 
 
+      # Fire the stop event
+      Norma.events.emit "stop"
+
+
+
 
   runTasks tasks, env.cwd
 

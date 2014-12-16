@@ -21,20 +21,23 @@ module.exports = (cwd) ->
   parse = (data) ->
 
     if data is `undefined`
-      console.log(
-        Chalk.red "Cannot find #{Tool}.json. Have you initiated norma?"
-      )
-      process.exit 0
+
+      err =
+        severity: "crash"
+        message: "Cannot find #{Tool}.json. Have you initiated norma?"
+        name: "Missing File"
+
+      Norma.events.emit "error", err
 
     # Try parsing the config data as JSON
     try
       config = JSON.parse(data)
     catch err
-      console.log(
-        Chalk.red "The #{Tool}.json file is not valid json. Aborting."
-        , err
-      )
-      process.exit 0
+
+      err.severity = "crash"
+
+      Norma.events.emit "error", err
+
 
 
   ###
@@ -46,10 +49,10 @@ module.exports = (cwd) ->
   try
     file = Fs.readFileSync fileLoc, encoding: "utf8"
   catch err
-    console.log(
-      Chalk.red "Cannot find #{Tool}.json. Have you initiated norma?"
-    )
-    process.exit 0
+    err.severity = "crash"
+
+    Norma.events.emit "error", err
+
 
   parse file
 

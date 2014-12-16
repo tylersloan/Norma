@@ -18,9 +18,12 @@ module.exports = (tasks, cwd, cb) ->
   # User tried to run `norma add` without argument
   if !tasks.length
 
-    console.log Chalk.red "Please specify a task or --scaffold <repo>"
+    err =
+      severity: "crash"
+      name: "Missing Info"
+      message: "Please specify a task or --scaffold <repo>"
 
-    process.exit 0
+    Norma.events.emit "error", err
 
 
   # SCAFFOLD ---------------------------------------------------------------
@@ -52,12 +55,16 @@ module.exports = (tasks, cwd, cb) ->
   config = Findup "package.json", cwd: process.cwd()
 
   if !config
-    console.log(
-      Chalk.red("No package.json found, ") +
-      Chalk.red("please run `npm init` in the root")
-    )
 
-    process.exit 0
+    message = "No package.json found, please run `npm init` in the root"
+
+    err =
+      severity: "crash"
+      name: "Missing Info"
+      message: message
+
+    Norma.events.emit "error", err
+
 
   ###
 

@@ -46,6 +46,8 @@ module.exports = ->
 
     errorType.warn msg
 
+    Norma.events.emit "stop"
+
     process.exit 0
 
 

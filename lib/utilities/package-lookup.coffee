@@ -109,11 +109,10 @@ module.exports = (tasks, cwd) ->
     try
       config = JSON.parse(config)
     catch err
-      console.log(
-        Chalk.red "The package.json file is not valid json. Aborting."
-        , err
-      )
-      process.exit 0
+      err.severity = "crash"
+
+      Norma.events.emit "error", err
+
 
 
     names = scope.reduce(

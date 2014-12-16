@@ -69,6 +69,7 @@ Domain.on("error", function(err){
 
 });
 
+Domain.add(Norma.events)
 
 // APPLICATION ----------------------------------------------------------
 Domain.run(function(){
