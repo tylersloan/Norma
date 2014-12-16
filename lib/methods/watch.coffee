@@ -8,8 +8,7 @@ Gulp = require "gulp"
 
 ReadConfig = require "./../utilities/read-config"
 PkgeLookup = require "./../utilities/package-lookup"
-
-
+LocalTld = require "./../utilities/local-tld"
 
 
 module.exports = (tasks, cwd) ->
@@ -72,6 +71,12 @@ module.exports = (tasks, cwd) ->
 
 
   Norma.events.emit 'watch-start'
+
+  if config.server
+    if config.server.host and config.server.port
+
+      LocalTld.remove config.server.port
+      LocalTld.add config.server.host, config.server.port
 
 
 

@@ -51,6 +51,10 @@
   "bin": {
     "norma": "./bin/norma.js"
   },
+  "scripts": {
+    "postinstall": "npm i -g local-tld"
+  },
+  "preferglobal": true,
   "engineStrict": true,
   "homepage": "https://github.com/NewSpring/norma"
 }
