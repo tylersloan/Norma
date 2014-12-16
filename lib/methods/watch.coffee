@@ -72,8 +72,11 @@ module.exports = (tasks, cwd) ->
 
   Norma.events.emit 'watch-start'
 
-  LocalTld.remove("junction")
-  LocalTld.add("junction", "3000")
+  if config.server
+    if config.server.host and config.server.port
+
+      LocalTld.remove config.server.port
+      LocalTld.add config.server.host, config.server.port
 
 
 

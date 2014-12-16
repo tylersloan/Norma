@@ -1,65 +1,119 @@
 # An app’s API to ~/.local-tld.json
-fs = require("fs-extra")
+Fs = require "fs-extra"
+Path = require "path"
 
-module.exports.tld_file = process.env.HOME + "/.local-tld.json"
-module.exports.base_port = 6000
 
-module.exports.add = setPort = (name, port) ->
-  map = read_json(module.exports.tld_file)
-  entry = map[port]
-  if entry and entry.name isnt name
-    console.log entry
-    console.log name
-    throw new Error("This port is already defined within ltld.")
-  else return  if entry and entry.name is name
-  map[port] = name: name
-  write_json module.exports.tld_file, map
+readJSON = (filename, defaultValue) ->
+
+  try
+    return JSON.parse Fs.readFileSync(filename)
+  catch e
+    return defaultValue or {}
+
   return
 
-module.exports.remove = removePort = (name) ->
-  map = read_json(module.exports.tld_file)
-  port = module.exports.getPort(name)
-  delete map[port]
 
-  write_json module.exports.tld_file, map
+writeJSON = (filename, value) ->
+
+  Fs.writeFileSync filename + ".tmp", JSON.stringify(value)
+  Fs.renameSync filename + ".tmp", filename
+
   return
 
-module.exports.getPort = getPort = (name) ->
-  map = read_json(module.exports.tld_file)
-  max_port = module.exports.base_port
-  for port_m of map
-    port_m = parseInt(port_m, 10)
-    max_port = port_m  if port_m > max_port
-    name_m = map[port_m].name
-    return port_m  if name_m is name
 
-  # if we got here, max_port is the highest registered port
-  new_port = max_port + 1
-  map[new_port] = name: name
-  write_json module.exports.tld_file, map
-  new_port
+module.exports.tld = Path.resolve process.env.HOME + "/.local-tld.json"
+module.exports.basePort = 6000
 
-module.exports.setAlias = setAlias = (name, alias) ->
-  map = read_json(module.exports.tld_file)
-  for port_m of map
-    name_m = map[port_m].name
-    if name_m is name
 
-      # found it
-      map[port_m].aliases = {}  unless map[port_m].aliases
-      map[port_m].aliases[alias] = true
-      write_json module.exports.tld_file, map
+# GET --------------------------------------------------------------------
+
+getPort = (name) ->
+
+  map = readJSON module.exports.tld
+
+  maxPort = module.exports.basePort
+
+  for port of map
+    port = parseInt port, 10
+    maxPort = port if port > maxPort
+
+    mappedName = map[port].name
+
+    if mappedName is name
+      return port
+
+  newPort = maxPort + 1
+  map[newPort] =
+    name: name
+
+  writeJSON module.exports.tld, map
+
+  newPort
+
+module.exports.getPort = getPort
+
+
+# SET --------------------------------------------------------------------
+
+setAlias = (name, alias) ->
+
+  map = readJSON module.exports.tld
+
+  for port of map
+    mappedName = map[port].name
+
+    if mappedName is name
+
+      if !map[port].aliases
+        map[port].aliases = {}
+
+      map[port].aliases[alias] = true
+
+      writeJSON module.exports.tld, map
+
       return true
   false
 
-read_json = read_json = (filename, default_value) ->
-  try
-    return JSON.parse(fs.readFileSync(filename))
-  catch e
-    return default_value or {}
-  return
+module.exports.setAlias = setAlias
 
-write_json = write_json = (filename, value) ->
-  fs.writeFileSync filename + ".tmp", JSON.stringify(value)
-  fs.renameSync filename + ".tmp", filename
-  return
+
+# ADD --------------------------------------------------------------------
+
+addPort = (name, port) ->
+
+  map = readJSON module.exports.tld
+
+  entry = map[port]
+
+  if entry and entry.name isnt name
+    err = new Error("This port is already defined within ltld.")
+
+    err.type = "warn"
+
+    Norma.events.emit "error", err
+
+  else if entry and entry.name is name
+    return
+
+  map[port] =
+    name: name
+
+  writeJSON module.exports.tld, map
+
+module.exports.add = addPort
+
+
+# REMOVE -----------------------------------------------------------------
+
+removePort = (port) ->
+
+  map = readJSON module.exports.tld
+
+  if map[port]
+
+    delete map[port]
+
+    writeJSON module.exports.tld, map
+
+
+module.exports.remove = removePort
