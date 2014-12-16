@@ -2,6 +2,9 @@ Norma
 ===
 
 # Still in Development. Alpha launches January 3rd!
+You can keep track of progress via the [waffle board](https://waffle.io/newspring/norma?milestone=Alpha).
+
+Sorry its not ready yet! [But soooon!](http://nooooooooooooooo.com/)
 
 Helpful development built on node
 
