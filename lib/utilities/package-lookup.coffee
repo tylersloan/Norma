@@ -7,15 +7,6 @@ Findup = require "findup-sync"
 MapTree = require("./directory-tools").mapTree
 ReadConfig = require "./read-config"
 
-arrayify = (el) ->
-  (if Array.isArray(el) then el else [el])
-
-
-camelize = (str) ->
-  str.replace /-(\w)/g, (m, p1) ->
-    p1.toUpperCase()
-
-
 
 module.exports = (tasks, cwd) ->
 
@@ -77,21 +68,21 @@ module.exports = (tasks, cwd) ->
 
 
   # npm package testing
-  pattern = arrayify([
+  pattern = [
     "#{Tool}-*"
     "#{Tool}.*"
-  ])
+  ]
 
 
   config = Findup "package.json", cwd: cwd
 
   node_modules = Findup "node_modules", cwd: cwd
 
-  scope = arrayify([
+  scope = [
     "dependencies"
     "devDependencies"
     "peerDependencies"
-  ])
+  ]
 
   replaceString = /^norma(-|\.)/
 

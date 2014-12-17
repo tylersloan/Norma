@@ -7,6 +7,7 @@
 Flags = require("minimist")( process.argv.slice(2) )
 Chalk = require "chalk"
 Path = require "path"
+Q = require "kew"
 
 ReadConfig = require "./read-config"
 RegisterPackages = require "./register-packages"
@@ -72,9 +73,6 @@ module.exports = (env) ->
     )
 
 
-  # DEPENDENCIES ------------------------------------------------------------
-
-  ManageDependencies tasks, env.cwd
 
 
   # REGISTER ---------------------------------------------------------------
@@ -119,6 +117,12 @@ module.exports = (env) ->
 
 
 
-  runTasks tasks, env.cwd
+  # DEPENDENCIES ------------------------------------------------------------
+
+  ready = ManageDependencies(tasks, env.cwd)
+
+  ready.then( ->
+    runTasks tasks, env.cwd
+  )
 
   module.exports.run = runTasks
