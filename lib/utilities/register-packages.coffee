@@ -17,17 +17,6 @@ module.exports = (tasks, cwd) ->
 
   rootGulpTasks = PkgeLookup tasks, (Path.resolve __dirname, "../../")
 
-  # # See if there are any project packages (from norma-packages dir)
-  # # Should this check be in the PgkeLookup file?
-  # customPackages = Fs.existsSync Path.join(cwd, "#{Tool}-packages")
-  #
-  # if customPackages
-  #
-  #   # Look for project specific packages (from norma-packages dir)
-  #   customPackages = PkgeLookup tasks, Path.join(cwd, "#{Tool}-packages")
-  #
-  #   projectTasks = customPackages.concat projectTasks
-
 
   combinedTasks = projectTasks.concat rootGulpTasks
 

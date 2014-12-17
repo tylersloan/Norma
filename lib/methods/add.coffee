@@ -84,6 +84,15 @@ module.exports = (tasks, cwd, cb) ->
 
   tasks = taskList.join(" ")
 
+
+  ###
+
+    @note
+
+      As of Norma alpha, the npm package does not support dev installing.
+      Once it does, it will replace the child proccess method done below
+
+  ###
   if Flags.dev
     action = "npm i --save-dev #{taskList}"
   else

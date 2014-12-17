@@ -11,6 +11,7 @@ Path = require "path"
 ReadConfig = require "./read-config"
 RegisterPackages = require "./register-packages"
 Logger = require "./../logging/logger"
+ManageDependencies = require "./manage-dependencies"
 
 
 module.exports = (env) ->
@@ -20,7 +21,7 @@ module.exports = (env) ->
   # VARIABLES ----------------------------------------------------------------
 
   # Get the package.json for norma info
-  cliPackage = require "../../package"
+  cliPackage = require Path.join __dirname, "../../package.json"
 
   # Bind tasks to variable for easy passing
   tasks = Flags._
@@ -57,9 +58,10 @@ module.exports = (env) ->
   if Flags.debug
     Norma.debug = true
 
+
   ###
 
-    Change directory to where nsp was called from.
+    Change directory to where norma was called from.
     This allows the tool to work is way up the tree to find an norma.json.
 
   ###
@@ -70,6 +72,9 @@ module.exports = (env) ->
     )
 
 
+  # DEPENDENCIES ------------------------------------------------------------
+
+  ManageDependencies tasks, env.cwd
 
 
   # REGISTER ---------------------------------------------------------------
