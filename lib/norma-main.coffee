@@ -7,8 +7,10 @@ Liftoff = require "Liftoff"
 Argv = require("minimist")( process.argv.slice(2) )
 Npm = require "npm"
 Path = require "path"
+Semver = require "semver"
+Inquirer = require "inquirer"
 
-
+ExecCommand = require "./utilities/execute-command"
 
 
 # UPDATE -----------------------------------------------------------------
@@ -37,15 +39,37 @@ if process.env.NODE_ENV is "development"
         availableVersion = key
         break
 
-      if currentVersion isnt availableVersion
+
+      if !Semver.satisfies currentVersion, availableVersion
 
         message =
           severity: "notify"
           message: "An update is available for Norma"
+          color: "cyan"
 
         # use inquier method for updating Norma here
 
         Norma.events.emit "message", message
+
+        Inquirer.prompt([
+          {
+            type: "list"
+            message: "Would you like to update #{Tool}?"
+            name: "update"
+            choices: ["yes", "no"]
+          }
+
+          ],
+          (answer) ->
+            if answer.update is "yes"
+
+              process.chdir Path.resolve __dirname, "../"
+
+              ExecCommand(
+                "npm update -g normajs"
+                process.cwd()
+              )
+        )
     )
   )
 

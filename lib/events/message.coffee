@@ -25,7 +25,10 @@ module.exports = ->
       message.push Chalk.magenta(msg.name) + ": "
 
     if msg.message
-      message.push msg.message
+      if msg.color
+        message.push Chalk[msg.color] msg.message
+      else
+        message.push msg.message
 
     if msg.fileName
       message.push Chalk.green(msg.fileName)
