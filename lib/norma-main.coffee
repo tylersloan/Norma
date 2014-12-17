@@ -5,6 +5,49 @@
 Chalk = require "chalk"
 Liftoff = require "Liftoff"
 Argv = require("minimist")( process.argv.slice(2) )
+Npm = require "npm"
+Path = require "path"
+
+
+
+
+# UPDATE -----------------------------------------------------------------
+
+# This should only run locally
+if process.env.NODE_ENV is "development"
+
+  # Run npm tasks within load per API found here:
+  # https://docs.npmjs.com/api/load
+  Npm.load( ->
+    Npm.commands.view(["normajs", 'dist-tags.latest'], true, (err, data) ->
+      if err
+        Norma.events.emit "error", err
+
+      try
+        config = require Path.join __dirname, "../package.json"
+      catch e
+
+        Norma.events.emit "error", e
+        return
+
+      currentVersion = config.version
+      availableVersion = currentVersion
+
+      for key of data
+        availableVersion = key
+        break
+
+      if currentVersion isnt availableVersion
+
+        message =
+          severity: "notify"
+          message: "An update is available for Norma"
+
+        # use inquier method for updating Norma here
+
+        Norma.events.emit "message", message
+    )
+  )
 
 
 # CLI configuration ----------------------------------------------------------

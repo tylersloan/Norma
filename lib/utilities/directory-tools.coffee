@@ -38,16 +38,20 @@ copy = (src, dest, cb) ->
   return
 
 
-mapTree = (filename, ignore) ->
+mapTree = (filename, ignore, force) ->
 
   mkdir filename
+
+  if typeof ignore is "boolean"
+    force = ignore
+    ignore = ""
 
   if ignore and ignore.length
     for ignored in ignore
       if whitelist.indexOf(ignored) is -1
         whitelist.push ignored
 
-  if whitelist.indexOf(Path.basename(filename)) is -1
+  if whitelist.indexOf(Path.basename(filename)) is -1 or force
     stats = Fs.lstatSync filename
 
     info =
