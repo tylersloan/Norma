@@ -7,7 +7,6 @@
 Flags = require("minimist")( process.argv.slice(2) )
 Chalk = require "chalk"
 Path = require "path"
-Q = require "kew"
 
 ReadConfig = require "./read-config"
 RegisterPackages = require "./register-packages"
