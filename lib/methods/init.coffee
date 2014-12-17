@@ -8,12 +8,13 @@
 ###
 
 
-_  = require("lodash")
-Inquirer = require("inquirer")
-Fs = require("fs-extra")
-Chalk = require("chalk")
-Path = require("path")
-Scaffold = require("./../utilities/scaffold")
+_  = require "lodash"
+Inquirer = require "inquirer"
+Fs = require "fs-extra"
+Chalk = require "chalk"
+Path = require "path"
+
+Scaffold = require "./../utilities/scaffold"
 MapTree = require("./../utilities/directory-tools").mapTree
 RemoveTree = require("./../utilities/directory-tools").removeTree
 
@@ -108,7 +109,7 @@ module.exports = (tasks, cwd) ->
       else
 
         Norma.events.emit "stop"
-        
+
         process.exit 0
 
   else
