@@ -9,7 +9,7 @@ ReadConfig = require "./read-config"
 
 
 module.exports = (tasks, cwd) ->
-
+  # throw new Error "hello"
 
   normaConfig = ReadConfig process.cwd()
   packageList = new Array

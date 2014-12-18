@@ -18,6 +18,7 @@ ExecCommand = require "./../utilities/execute-command"
 generateTaskList = (types, cb) ->
 
 
+
   saveTask = (location, task) ->
 
     if location.indexOf(task) is -1
@@ -210,9 +211,9 @@ module.exports = (tasks, cwd) ->
 
       )
 
-    process.nextTick( ->
-      Gulp.start ["default"]
-    )
+    # process.nextTick( ->
+    Gulp.start ["default"]
+    # )
 
 
 

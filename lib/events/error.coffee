@@ -44,7 +44,8 @@ module.exports = ->
 
     Norma.events.emit "crash", msg
 
-    errorType.warn msg
+    msg.level = "log"
+    Norma.events.emit "message", msg
 
 
     Norma.events.emit "stop"

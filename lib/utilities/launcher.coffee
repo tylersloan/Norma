@@ -86,6 +86,7 @@ module.exports = (env) ->
     ###
 
     if tasks[0] is "build" or tasks[0] is "test" or tasks[0] is "watch"
+
       packagesReady = RegisterPackages tasks, cwd
     else
       packagesReady = true
@@ -120,7 +121,13 @@ module.exports = (env) ->
   ready = ManageDependencies(tasks, env.cwd)
 
   ready.then( ->
+
     runTasks tasks, env.cwd
+  
+  ).fail( (err) ->
+
+    # Map captured errors back to domain
+    Norma.domain._events.error err
   )
 
   module.exports.run = runTasks
