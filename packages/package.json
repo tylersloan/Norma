@@ -1,0 +1,10 @@
+{
+  "name": "norma-packages",
+  "version": "1.0.0",
+  "description": "place for global norma packages to be installed",
+  "keywords": [
+    "norma",
+    "build"
+  ],
+  "license": "MIT"
+}
