@@ -42,7 +42,7 @@ if process.env.NODE_ENV is "development"
       if !Semver.gt currentVersion, availableVersion
 
         message =
-          severity: "notify"
+          level: "notify"
           message: "An update is available for Norma"
           color: "cyan"
 

@@ -86,6 +86,7 @@ module.exports = (env) ->
     ###
 
     if tasks[0] is "build" or tasks[0] is "test" or tasks[0] is "watch"
+
       packagesReady = RegisterPackages tasks, cwd
     else
       packagesReady = true
@@ -102,16 +103,16 @@ module.exports = (env) ->
 
       try
         task = require "./../methods/#{tasks[0]}"
+
         tasks.shift()
 
         task tasks, cwd
       catch e
-        e.severity = "crash"
+        e.level = "crash"
         Norma.events.emit "error", e
 
-
       # Fire the stop event
-      Norma.events.emit "stop"
+      # Norma.events.emit "stop"
 
 
 
@@ -120,7 +121,13 @@ module.exports = (env) ->
   ready = ManageDependencies(tasks, env.cwd)
 
   ready.then( ->
+
     runTasks tasks, env.cwd
+  
+  ).fail( (err) ->
+
+    # Map captured errors back to domain
+    Norma.domain._events.error err
   )
 
   module.exports.run = runTasks

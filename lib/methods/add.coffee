@@ -19,7 +19,7 @@ module.exports = (tasks, cwd, cb) ->
   if !tasks.length
 
     err =
-      severity: "crash"
+      level: "crash"
       name: "Missing Info"
       message: "Please specify a task or --scaffold <repo>"
 
@@ -59,7 +59,7 @@ module.exports = (tasks, cwd, cb) ->
     message = "No package.json found, please run `npm init` in the root"
 
     err =
-      severity: "crash"
+      level: "crash"
       name: "Missing Info"
       message: message
 
@@ -99,7 +99,7 @@ module.exports = (tasks, cwd, cb) ->
     action = "npm i --save #{taskList}"
 
 
-  if Flags.global
+  if Flags.global or Flags.g
 
     console.log(
       Chalk.green "Installing packages to your global #{Tool}..."

@@ -23,7 +23,7 @@ module.exports = (tasks, cwd) ->
   if !tasks.length
 
     err =
-      severity: "crash"
+      level: "crash"
       name: "Missing Info"
       message: "Please specify a project name"
 

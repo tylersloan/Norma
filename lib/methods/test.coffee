@@ -22,6 +22,7 @@ module.exports = (tasks, cwd) ->
       Chalk.green "✔ Testing your package!"
     )
 
+
     if Flags.watch
 
       Watch tasks, cwd

@@ -9,7 +9,7 @@ ReadConfig = require "./read-config"
 
 
 module.exports = (tasks, cwd) ->
-
+  # throw new Error "hello"
 
   normaConfig = ReadConfig process.cwd()
   packageList = new Array
@@ -20,10 +20,13 @@ module.exports = (tasks, cwd) ->
 
     task = require pkgeCwd
 
-    taskObject = task normaConfig, Path.resolve(__dirname, '../../')
-    taskObject = null
+    if typeof task is "function"
+      taskObject = task normaConfig, Path.resolve(__dirname, '../../')
+      taskObject = null
 
-    packages.push task.tasks
+      packages.push task.tasks
+    else
+      packages.push task
 
 
 
@@ -100,10 +103,9 @@ module.exports = (tasks, cwd) ->
     try
       config = JSON.parse(config)
     catch err
-      err.severity = "crash"
+      err.level = "crash"
 
       Norma.events.emit "error", err
-
 
 
     names = scope.reduce(
