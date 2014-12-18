@@ -39,8 +39,7 @@ if process.env.NODE_ENV is "development"
         availableVersion = key
         break
 
-
-      if !Semver.satisfies currentVersion, availableVersion
+      if !Semver.gt currentVersion, availableVersion
 
         message =
           severity: "notify"
