@@ -19,7 +19,7 @@ module.exports = (tasks, cwd, packages) ->
   if !config.tasks and !config.procceses
 
     err =
-      severity: "crash"
+      level: "crash"
       message: "#{Tool}.json needs a tasks object or a processes object"
       name: "Not Valid"
 

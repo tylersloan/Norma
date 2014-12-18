@@ -12,7 +12,14 @@ module.exports = (tasks, cwd) ->
   # create the deferred
   loaded = Q.defer()
 
+
   node_modules = Path.join cwd, "node_modules"
+  config = Findup "package.json", cwd: cwd
+
+  if !config
+    loaded.resolve("ok")
+    return loaded
+
   installed = MapTree node_modules, true
 
   scope = [
@@ -21,7 +28,7 @@ module.exports = (tasks, cwd) ->
     "peerDependencies"
   ]
 
-  config = Findup "package.json", cwd: cwd
+
   config = require config
 
   added = {}
@@ -97,7 +104,3 @@ module.exports = (tasks, cwd) ->
         loaded.resolve("ok")
       )
   )
-
-
-
-  return loaded

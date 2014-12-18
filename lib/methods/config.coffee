@@ -88,7 +88,7 @@ module.exports = (tasks, cwd) ->
 
     catch err
 
-      err.severity = "crash"
+      err.level = "crash"
 
       err.message "The .#{Tool} file is not valid json. Aborting."
 

@@ -8,7 +8,7 @@ module.exports = (tasks, cwd) ->
   if !tasks.length
 
     err =
-      severity: "crash"
+      level: "crash"
       name: "Missing Info"
       message: "Please specify a package or scaffold to search for"
 
@@ -26,7 +26,7 @@ module.exports = (tasks, cwd) ->
       "No response from NPM. Looks like they may have connection issues"
     )
 
-    err.severity = "crash"
+    err.level = "crash"
 
     Norma.events.emit "error", err
 

@@ -14,7 +14,8 @@ GLOBAL.Tool = "norma"
 GLOBAL.Norma = {
   watchStarted: false,
   reloadTasks: [],
-  events: EventEmitter
+  events: EventEmitter,
+  domain: Domain
 }
 
 
@@ -62,16 +63,17 @@ loadEvents();
 
 Domain.on("error", function(err){
 
-  err.severity = "crash";
+  err.level = "crash";
 
   // handle the error safely
   Norma.events.emit("error", err);
 
 });
 
-Domain.add(Norma.events)
+// Domain.add(Norma.events)
 
 // APPLICATION ----------------------------------------------------------
+
 Domain.run(function(){
 
   // Require main file

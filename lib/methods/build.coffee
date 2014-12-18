@@ -17,6 +17,7 @@ ExecCommand = require "./../utilities/execute-command"
 
 generateTaskList = (types, cb) ->
 
+
   saveTask = (location, task) ->
 
     if location.indexOf(task) is -1
@@ -196,6 +197,17 @@ module.exports = (tasks, cwd) ->
               ->
                 console.log Chalk.magenta "Build Complete"
             )
+
+          else
+
+            message =
+              level: "notify"
+              message: "✔ Complete!"
+              name: "Build"
+              color: "green"
+
+            Norma.events.emit "message", message
+
       )
 
     process.nextTick( ->

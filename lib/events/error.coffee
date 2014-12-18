@@ -3,7 +3,7 @@
   The Norma error event is an event driven method for
   handling operational errors of systems that use
   and depend on the Norma build environment. The error
-  event has three levels of severity which are determined
+  event has three levels of level which are determined
   by the error object passed on the emittance.
 
 ###
@@ -18,7 +18,7 @@ module.exports = ->
   # extra information available.
   errorType.log = (msg) ->
 
-    msg.severity = "log"
+    msg.level = "log"
 
     Norma.events.emit "message", msg
 
@@ -46,9 +46,11 @@ module.exports = ->
 
     errorType.warn msg
 
+
     Norma.events.emit "stop"
 
     process.exit 0
+
 
 
 
@@ -62,12 +64,12 @@ module.exports = ->
 
       error =
         message: error
-        severity: "log"
+        level: "log"
         name: "Log"
 
 
-    if error.severity
-      errorType[error.severity] error
+    if error.level
+      errorType[error.level] error
 
     else
       errorType.log error

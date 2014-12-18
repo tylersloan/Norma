@@ -102,16 +102,16 @@ module.exports = (env) ->
 
       try
         task = require "./../methods/#{tasks[0]}"
+
         tasks.shift()
 
         task tasks, cwd
       catch e
-        e.severity = "crash"
+        e.level = "crash"
         Norma.events.emit "error", e
 
-
       # Fire the stop event
-      Norma.events.emit "stop"
+      # Norma.events.emit "stop"
 
 
 

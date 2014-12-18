@@ -42,6 +42,7 @@ module.exports = (tasks, cwd) ->
   config =
     name: packageName
     type: "package"
+    main: "package.coffee"
     tasks: {}
     processes: {}
 

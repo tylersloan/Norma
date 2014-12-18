@@ -23,7 +23,7 @@ module.exports = (cwd) ->
     if data is `undefined`
 
       err =
-        severity: "crash"
+        level: "crash"
         message: "Cannot find #{Tool}.json. Have you initiated norma?"
         name: "Missing File"
 
@@ -34,7 +34,7 @@ module.exports = (cwd) ->
       config = JSON.parse(data)
     catch err
 
-      err.severity = "crash"
+      err.level = "crash"
 
       Norma.events.emit "error", err
 
@@ -49,7 +49,7 @@ module.exports = (cwd) ->
   try
     file = Fs.readFileSync fileLoc, encoding: "utf8"
   catch err
-    err.severity = "crash"
+    err.level = "crash"
 
     Norma.events.emit "error", err
 

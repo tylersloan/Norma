@@ -72,12 +72,12 @@ module.exports = ->
 
       message =
         message: message
-        severity: "log"
+        level: "log"
         name: "Log"
 
 
-    if message.severity
-      messageType[message.severity] message
+    if message.level
+      messageType[message.level] message
 
     else
       messageType.log message
