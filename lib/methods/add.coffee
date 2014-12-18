@@ -106,7 +106,7 @@ module.exports = (tasks, cwd, cb) ->
     )
 
     # Do work on users global norma
-    process.chdir Path.resolve __dirname, "../../"
+    process.chdir Path.resolve __dirname, "../../packages"
 
     ExecCommand(
       action

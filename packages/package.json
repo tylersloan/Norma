@@ -6,5 +6,8 @@
     "norma",
     "build"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "norma-notify": "^0.1.2"
+  }
 }
