@@ -14,7 +14,7 @@ module.exports = (tasks, cwd) ->
   projectTasks = PkgeLookup tasks, cwd
 
   # Get global packages added to Norma
-  rootGulpTasks = PkgeLookup tasks, (Path.resolve __dirname, "../../")
+  rootGulpTasks = PkgeLookup tasks, (Path.resolve __dirname, "../../packages")
 
 
   combinedTasks = projectTasks.concat rootGulpTasks
