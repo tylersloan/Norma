@@ -40,6 +40,7 @@
     "minimist": "0.2.0",
     "multimatch": "^1.0.0",
     "nconf": "^0.6.9",
+    "norma-notify": "^0.1.2",
     "npm": "^2.1.12",
     "readable-stream": "^1.0.27-1",
     "require-dir": "^0.1.0",
