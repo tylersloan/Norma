@@ -169,9 +169,15 @@ module.exports = (tasks, cwd, cb) ->
         cmdLineInstalls.push "#{Tool}-#{task}"
     else
       if task.global
-        globalInstalls.push "#{Tool}-#{task.name}"
+        if task.endpoint
+          globalInstalls.push task.endpoint
+        else
+          globalInstalls.push "#{Tool}-#{task.name}"
       else
-        localInstalls.push "#{Tool}-#{task.name}"
+        if task.endpoint
+          localInstalls.push task.endpoint
+        else
+          localInstalls.push "#{Tool}-#{task.name}"
 
 
   cmdLineInstalls = cmdLineInstalls.join(" ")

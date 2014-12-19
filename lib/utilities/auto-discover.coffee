@@ -35,6 +35,7 @@ module.exports = (tasks, cwd, packages) ->
       pkge =
         name: key
         global: config.tasks[key].global
+        endpoint: config.tasks[key].endpoint
 
       neededPackages.push pkge
 
@@ -44,6 +45,7 @@ module.exports = (tasks, cwd, packages) ->
       pkge =
         name: key
         global: config.processes[key].global
+        endpoint: config.processes[key].endpoint
 
       neededPackages.push pkge
 
