@@ -43,3 +43,14 @@ module.exports = (tasks, cwd) ->
       console.log result
     )
   )
+
+
+
+# API ----------------------------------------------------------------------
+
+module.exports.api = [
+  {
+    command: "<search-term>"
+    description: "search npm for package or scaffold details"
+  }
+]

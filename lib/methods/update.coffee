@@ -115,3 +115,38 @@ module.exports = (tasks, cwd) ->
       "npm update #{tasks}"
       cwd
     )
+
+
+
+# API ----------------------------------------------------------------------
+
+module.exports.api = [
+  {
+    command: ""
+    description: "a blank update will update Norma globally"
+  }
+  {
+    command: "all"
+    description: "update all packages for Norma locally"
+  }
+  {
+    command: "all --global"
+    description: "update all packages for Norma globally"
+  }
+  {
+    command: "<package>"
+    description: "update a package for Norma locally"
+  }
+  {
+    command: "<package> --global"
+    description: "update a package for Norma globally"
+  }
+  {
+    command: "<package> <package>"
+    description: "update multiple packages for Norma locally"
+  }
+  {
+    command: "<package> <package> --global"
+    description: "update multiple packages for Norma globally"
+  }
+]
