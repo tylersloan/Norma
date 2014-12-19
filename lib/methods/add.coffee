@@ -50,21 +50,7 @@ module.exports = (tasks, cwd, cb) ->
     return
 
 
-  # PACKAGES ---------------------------------------------------------------
-
-  config = Findup "package.json", cwd: process.cwd()
-
-  if !config
-
-    message = "No package.json found, please run `npm init` in the root"
-
-    err =
-      level: "crash"
-      name: "Missing Info"
-      message: message
-
-    Norma.events.emit "error", err
-
+  # INSTALL ----------------------------------------------------------------
 
   ###
 
@@ -75,31 +61,20 @@ module.exports = (tasks, cwd, cb) ->
     and it will add all of them with a norma- prepended prior
     to the npm install
 
-  ###
-
-  # Quick add method for norma
-  taskList = (
-    "#{Tool}-#{task}" for task in tasks
-  )
-
-  tasks = taskList.join(" ")
-
-
-  ###
-
     @note
 
       As of Norma alpha, the npm package does not support dev installing.
       Once it does, it will replace the child proccess method done below
 
   ###
-  if Flags.dev
-    action = "npm i --save-dev #{taskList}"
-  else
-    action = "npm i --save #{taskList}"
 
 
-  if Flags.global or Flags.g
+  globalAdd = (list) ->
+
+    if Flags.dev
+      action = "npm i --save-dev #{list}"
+    else
+      action = "npm i --save #{list}"
 
     console.log(
       Chalk.green "Installing packages to your global #{Tool}..."
@@ -125,7 +100,13 @@ module.exports = (tasks, cwd, cb) ->
 
     )
 
-  else
+
+  localAdd = (list) ->
+
+    if Flags.dev
+      action = "npm i --save-dev #{list}"
+    else
+      action = "npm i --save #{list}"
 
     console.log(
       Chalk.green "Installing packages to your local #{Tool}..."
@@ -145,6 +126,63 @@ module.exports = (tasks, cwd, cb) ->
           cb()
 
     )
+
+
+  # PACKAGES ---------------------------------------------------------------
+
+  config = Findup "package.json", cwd: process.cwd()
+
+  if !config
+
+    message = "No package.json found, please run `npm init` in the root"
+
+    err =
+      level: "crash"
+      name: "Missing Info"
+      message: message
+
+    Norma.events.emit "error", err
+
+  cmdLineInstalls = new Array
+  localInstalls = new Array
+  globalInstalls = new Array
+
+  # Quick add method for norma
+  for task in tasks
+    if typeof task is "string"
+      cmdLineInstalls.push "#{Tool}-#{task}"
+    else
+      if task.global
+        globalInstalls.push "#{Tool}-#{task.name}"
+      else
+        localInstalls.push "#{Tool}-#{task.name}"
+
+
+  cmdLineInstalls = cmdLineInstalls.join(" ")
+  localInstalls = localInstalls.join(" ")
+  globalInstalls = globalInstalls.join(" ")
+
+
+  # installed via command line
+  if cmdLineInstalls.length
+    if Flags.global or Flags.g
+
+      globalAdd cmdLineInstalls
+
+    else
+      localAdd cmdLineInstalls
+
+
+  # no global flags in package.json
+  if localInstalls.length
+
+    localAdd localInstalls
+
+
+  # Global flags in package.json
+  if globalInstalls.length
+
+    globalAdd globalInstalls
 
 
 
