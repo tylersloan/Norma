@@ -32,28 +32,41 @@ module.exports = (tasks, cwd, packages) ->
   # collect all missing tasks into array
   for key of config.tasks
     if packages[key] is undefined
-      neededPackages.push key
+      pkge =
+        name: key
+        global: config.tasks[key].global
+
+      neededPackages.push pkge
 
   # collect all missing procceses into array
   for key of config.processes
     if packages[key] is undefined
-      neededPackages.push key
+      pkge =
+        name: key
+        global: config.processes[key].global
+
+      neededPackages.push pkge
 
 
   # verify unique package (don't download duplicates)
   neededPackges = _.uniq neededPackages
 
-
   if neededPackages.length
 
+    # add then run norma again
     Add neededPackages, cwd, ->
       Launcher.run tasks, cwd
+
+    prettyPrint = new Array
+
+    for pkge in neededPackages
+      prettyPrint.push pkge.name
 
     console.log(
       Chalk.green(
         "Installing the following packages:"
       )
-      Chalk.magenta "#{neededPackages.join(', ')}"
+      Chalk.magenta "#{prettyPrint.join(', ')}"
     )
 
     return true
