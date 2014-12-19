@@ -146,16 +146,38 @@ module.exports = (tasks, cwd, cb) ->
   cmdLineInstalls = new Array
   localInstalls = new Array
   globalInstalls = new Array
+  gitInstalls = new Array
 
   # Quick add method for norma
   for task in tasks
     if typeof task is "string"
-      cmdLineInstalls.push "#{Tool}-#{task}"
+
+
+      ###
+
+        @todo
+
+          This should be a real check for git method, maybe look
+          into npm source code to find it
+
+      ###
+      # super rough test to check git url
+      if task.match /\//g
+        cmdLineInstalls.push task
+      else
+
+        cmdLineInstalls.push "#{Tool}-#{task}"
     else
       if task.global
-        globalInstalls.push "#{Tool}-#{task.name}"
+        if task.endpoint
+          globalInstalls.push task.endpoint
+        else
+          globalInstalls.push "#{Tool}-#{task.name}"
       else
-        localInstalls.push "#{Tool}-#{task.name}"
+        if task.endpoint
+          localInstalls.push task.endpoint
+        else
+          localInstalls.push "#{Tool}-#{task.name}"
 
 
   cmdLineInstalls = cmdLineInstalls.join(" ")
