@@ -9,85 +9,14 @@ Gulp = require "gulp"
 MapTree = require("./../utilities/directory-tools").mapTree
 ReadConfig = require "./../utilities/read-config"
 ExecCommand = require "./../utilities/execute-command"
-
-
-
-
-# TASKLIST --------------------------------------------------------------
-
-generateTaskList = (types, cb) ->
-
-
-
-  saveTask = (location, task) ->
-
-    if location.indexOf(task) is -1
-      location.push task
-
-
-  ###
-
-    @note
-
-      Task are run in three phases, each with a sync run and an async
-      run. The order is as follows:
-        1. Pre Compile
-        2. Main Compile
-        3. Post compile.
-      This taskList object is where those tasks are mapped. The type of
-      taks is defined within each gulp task.
-
-      An example of a full task set would be:
-        1. Pre Compile - sync task would be starting a mongodb.
-        2. Main Compile - actually compile the project
-        3. Post Compile - start local project server
-  ###
-  taskList =
-    pre :
-      sync: []
-      async: []
-    main:
-      sync: []
-      async: []
-    post:
-      sync: []
-      async: []
-
-  ###
-
-    The cyclomatic complexity of this statement is way too high.
-    Need to break it apart into smaller, more efficent tasks.
-
-  ###
-  for task of Gulp.tasks
-
-    if Gulp.tasks[task].ext
-
-      for type in types
-
-        if Gulp.tasks[task].ext.indexOf(type) > -1
-
-          if Gulp.tasks[task].order
-
-            Gulp.tasks[task].type = Gulp.tasks[task].type or "async"
-
-            saveTask(
-              taskList[Gulp.tasks[task].order][Gulp.tasks[task].type]
-              task
-            )
-
-          else
-            saveTask taskList.main.async, task
-
-
-  cb taskList
+GenerateTaskList = require "./../utilities/generate-task-list"
 
 
 ###
 
   The through task is a way to run a full sequence even
   when sequence tasks aren"t defined. It feels kinda hacky but gulp
-  isn"t really meant to be used in this way. When gulp moves to full
+  isn't really meant to be used in this way. When gulp moves to full
   orchestrator support, this tool will need a serious revist.
 
   @todo - Update to Gulp 4.0 and see what happens
@@ -97,7 +26,6 @@ Gulp.task "through", (cb) ->
   cb null
 
 
-
 module.exports = (tasks, cwd) ->
 
   # Load config
@@ -105,6 +33,13 @@ module.exports = (tasks, cwd) ->
 
   # Set emtpy array for fileTypes
   fileTypes = new Array
+
+  # After task is done message
+  completeMessage =
+    level: "notify"
+    message: "✔ Complete!"
+    name: "Build"
+    color: "green"
 
 
   # CONFIG-FILE-TYPES ----------------------------------------------------
@@ -158,6 +93,7 @@ module.exports = (tasks, cwd) ->
   getFileTypes folders
 
 
+
   # TASK-MANGEMENT ------------------------------------------------------
 
   buildList = (list) ->
@@ -167,10 +103,17 @@ module.exports = (tasks, cwd) ->
     for taskOrder of list
       for task of list[taskOrder]
 
-        if list[taskOrder][task].length <= 0
+        if list[taskOrder][task].length is 0
           list[taskOrder][task][0] = "through"
 
-        builtList.push list[taskOrder][task]
+        # add each sync task for dynamic sequence running
+        if task is "sync"
+          for syncTask in list[taskOrder][task]
+            builtList.push syncTask
+
+        else
+
+          builtList.push list[taskOrder][task]
 
     return builtList
 
@@ -179,48 +122,32 @@ module.exports = (tasks, cwd) ->
 
     builtList = buildList(list)
 
-    Gulp.task "default", () ->
+    Gulp.task "final", () ->
 
-      Sequence(
-        builtList[0]
-        builtList[1]
-        builtList[2]
-        builtList[3]
-        builtList[4]
-        builtList[5]
-      ,
-        ->
-          if config.scripts and config.scripts.custom
-            ExecCommand(
-              config.scripts.custom
-              process.cwd()
-            ,
-              ->
-                console.log Chalk.magenta "Build Complete"
-            )
+      if config.scripts and config.scripts.custom
+        ExecCommand(
+          config.scripts.custom
+          process.cwd()
+        ,
+          ->
+            Norma.events.emit "message", completeMessage
+        )
 
-          else
+      else
 
-            message =
-              level: "notify"
-              message: "✔ Complete!"
-              name: "Build"
-              color: "green"
+        Norma.events.emit "message", completeMessage
 
-            Norma.events.emit "message", message
 
-      )
+    builtList.push "final"
 
-    # process.nextTick( ->
-    Gulp.start ["default"]
-    # )
+    Sequence.apply null, builtList
 
 
 
   # GENERATE-LIST -------------------------------------------------------
 
   if !tasks.length
-    generateTaskList(fileTypes, build)
+    GenerateTaskList(config, fileTypes, build)
 
   else
 
@@ -229,9 +156,12 @@ module.exports = (tasks, cwd) ->
 
     for task in tasks
       if !Gulp.tasks[task]
-        console.log(
-          Chalk.red "#{task} is not a known package"
-        )
+        msg =
+          color: "red"
+          message: "#{task} is not a known package"
+
+        Norma.events.emit "message", msg
+
         return
 
     Gulp.task "default", tasks, ->
@@ -242,12 +172,12 @@ module.exports = (tasks, cwd) ->
           process.cwd()
         ,
           ->
-            console.log Chalk.magenta "Build Complete"
+            Norma.events.emit "message", completeMessage
         )
 
-    process.nextTick( ->
-      Gulp.start ["default"]
-    )
+    # process.nextTick( ->
+    Gulp.start ["default"]
+    # )
 
 
 

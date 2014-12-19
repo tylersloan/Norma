@@ -118,12 +118,14 @@ module.exports = (env) ->
 
   # DEPENDENCIES ------------------------------------------------------------
 
+  Norma.events.emit "message", "Making sure everything is in place..."
+
   ready = ManageDependencies(tasks, env.cwd)
 
   ready.then( ->
 
     runTasks tasks, env.cwd
-  
+
   ).fail( (err) ->
 
     # Map captured errors back to domain
