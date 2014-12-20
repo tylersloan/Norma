@@ -5,7 +5,8 @@ _ = require "underscore"
 
 module.exports = (config, types, cb) ->
 
-
+  # allow wildcard package types
+  types.push "*"
 
   saveTask = (location, task) ->
 
