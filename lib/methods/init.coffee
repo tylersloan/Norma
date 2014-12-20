@@ -6,9 +6,6 @@
   user and then execute the scaffold script.
 
 ###
-
-
-_  = require "lodash"
 Inquirer = require "inquirer"
 Fs = require "fs-extra"
 Chalk = require "chalk"

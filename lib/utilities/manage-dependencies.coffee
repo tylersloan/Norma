@@ -8,7 +8,7 @@ Q = require "kew"
 MapTree = require("./directory-tools").mapTree
 
 module.exports = (tasks, cwd) ->
-  
+
   # create the deferred
   loaded = Q.defer()
 
@@ -84,6 +84,10 @@ module.exports = (tasks, cwd) ->
 
 
       if alreadyInstalled[addedName]
+        # git url
+        if added[addedName].match /\//g
+          continue
+
         if !Semver.satisfies alreadyInstalled[addedName], added[addedName]
 
           message =
