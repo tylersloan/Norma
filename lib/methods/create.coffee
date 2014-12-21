@@ -28,7 +28,7 @@ module.exports = (tasks, cwd) ->
       message: "Please specify a project name"
 
     Norma.events.emit "error", err
-    
+
 
 
   packageName = tasks[0]
@@ -65,7 +65,7 @@ module.exports = (tasks, cwd) ->
         scripts:
           test: "echo \"Error: no test specified\" && exit 1"
         author: ""
-        license: "ISC"
+        license: "MIT"
 
 
       Fs.writeFile 'package.json', JSON.stringify(defaultPackageData, null, 2)
