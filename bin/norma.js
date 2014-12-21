@@ -21,6 +21,15 @@ GLOBAL.Norma = {
 
 // EVENTS ---------------------------------------------------------------
 
+// Event shorthand
+Norma.subscribe = function(evt, cb) {
+  return Norma.events.on(evt, cb);
+};
+
+Norma.emit = function(evt, obj) {
+  return Norma.events.emit(evt, obj);
+};
+
 var MapTree = require("./../lib/utilities/directory-tools").mapTree
 
 var loadEvents = function() {
