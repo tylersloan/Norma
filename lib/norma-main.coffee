@@ -7,6 +7,7 @@ Liftoff = require "Liftoff"
 Argv = require("minimist")( process.argv.slice(2) )
 Npm = require "npm"
 Path = require "path"
+Fs = require "fs-extra"
 Semver = require "semver"
 Inquirer = require "inquirer"
 
@@ -73,7 +74,24 @@ if process.env.NODE_ENV is "development"
   )
 
 
-# CLI configuration ----------------------------------------------------------
+
+# GLOBAL-PACKAGES -----------------------------------------------------------
+
+globalPackage = Path.join __dirname, "../../packages/package.json"
+
+if !Fs.existsSync globalPackage
+
+  globalPackageData =
+    name: "global-packages"
+    version: "1.0.0"
+    description: "All global packages are installed here"
+    license: "MIT"
+
+  Fs.writeFile globalPackage, JSON.stringify(globalPackageData, null, 2)
+
+
+
+# CLI configuration ---------------------------------------------------------
 
 cli = new Liftoff({
   name: Tool
