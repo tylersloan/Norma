@@ -2,8 +2,5 @@
   "name": "global-packages",
   "version": "1.0.0",
   "description": "place to store all global packages",
-  "license": "MIT",
-  "dependencies": {
-    "norma-javascript": "^0.1.2"
-  }
+  "license": "MIT"
 }
