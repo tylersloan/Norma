@@ -40,7 +40,7 @@ if process.env.NODE_ENV isnt "production"
         availableVersion = key
         break
 
-      if !Semver.gt currentVersion, availableVersion
+      if !Semver.gte currentVersion, availableVersion
 
         message =
           level: "notify"
