@@ -1,7 +1,7 @@
 # Gulp is the only requried dependency
 Gulp = require "gulp"
 
-module.exports = (config, root) ->
+module.exports = (config, tasks) ->
 
 
   ###

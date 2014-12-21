@@ -16,7 +16,8 @@ ManageDependencies = require "./manage-dependencies"
 
 module.exports = (env) ->
 
-  Norma.cwd = Path.resolve __dirname, "../../"
+  Norma.root = Path.resolve __dirname, "../../"
+
 
   # VARIABLES ----------------------------------------------------------------
 
@@ -25,6 +26,11 @@ module.exports = (env) ->
 
   # Bind tasks to variable for easy passing
   tasks = Flags._
+
+  # Bind flags to global Norma
+  for key of Flags
+    if !Norma[key]
+      Norma[key] = Flags[key]
 
 
 
@@ -51,14 +57,6 @@ module.exports = (env) ->
     process.exit 0
 
 
-  if Flags.verbose
-    Norma.verbose = true
-
-
-  if Flags.debug
-    Norma.debug = true
-
-
   ###
 
     Change directory to where norma was called from.
@@ -70,6 +68,23 @@ module.exports = (env) ->
     console.log(
       Chalk.cyan("Working directory changed to", Chalk.magenta(env.cwd))
     )
+
+
+
+  # CONFIG ------------------------------------------------------------------
+
+  # norma.json for local project
+  Norma.getConfig = (cwd) ->
+
+    config = {}
+
+    if !cwd
+      config = ReadConfig process.cwd()
+
+    else
+      config = ReadConfig cwd
+
+    return config
 
 
 
