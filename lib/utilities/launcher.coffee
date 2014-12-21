@@ -12,6 +12,7 @@ ReadConfig = require "./read-config"
 RegisterPackages = require "./register-packages"
 Logger = require "./../logging/logger"
 ManageDependencies = require "./manage-dependencies"
+ReadSettings = require "./../utilities/read-settings"
 
 
 module.exports = (env) ->
@@ -74,7 +75,7 @@ module.exports = (env) ->
   # CONFIG ------------------------------------------------------------------
 
   # norma.json for local project
-  Norma.getConfig = (cwd) ->
+  Norma.config = (cwd) ->
 
     config = {}
 
@@ -86,6 +87,10 @@ module.exports = (env) ->
 
     return config
 
+
+  # SETTINGS ---------------------------------------------------------------
+
+  Norma.settings = ReadSettings
 
 
 
