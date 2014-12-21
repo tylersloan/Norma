@@ -13,3 +13,4 @@ test/watch-*.txt
 workbench
 .norma
 scaffolds/**
+./packages/
