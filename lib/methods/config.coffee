@@ -41,8 +41,7 @@ module.exports = (tasks, cwd) ->
   # If no file, then we create a new one with some preset items
   if !configExists
     config =
-      Path: process.cwd()
-      message : "Write custom config items in this file"
+      path: process.cwd()
 
     # Save config
     Fs.writeFileSync(

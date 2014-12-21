@@ -83,7 +83,7 @@ doAfterPreInstall = (project, scaffoldConfig) ->
 
   # Before compiling, remove the nspignore folder
   Fs.remove Path.join(process.cwd(), '/norma-ignore')
-  BuildTasks [ "build" ], process.cwd()
+  BuildTasks [], process.cwd()
 
   # Run post installation scripts
   if scaffoldConfig.scripts and scaffoldConfig.scripts.postinstall
