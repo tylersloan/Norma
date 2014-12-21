@@ -75,22 +75,6 @@ if process.env.NODE_ENV is "development"
 
 
 
-# GLOBAL-PACKAGES -----------------------------------------------------------
-
-globalPackage = Path.join __dirname, "../../packages/package.json"
-
-if !Fs.existsSync globalPackage
-
-  globalPackageData =
-    name: "global-packages"
-    version: "1.0.0"
-    description: "All global packages are installed here"
-    license: "MIT"
-
-  Fs.writeFile globalPackage, JSON.stringify(globalPackageData, null, 2)
-
-
-
 # CLI configuration ---------------------------------------------------------
 
 cli = new Liftoff({
