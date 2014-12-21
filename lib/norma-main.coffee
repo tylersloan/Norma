@@ -17,7 +17,7 @@ ExecCommand = require "./utilities/execute-command"
 # UPDATE -----------------------------------------------------------------
 
 # This should only run locally
-if process.env.NODE_ENV is "development"
+if process.env.NODE_ENV isnt "production"
 
   # Run npm tasks within load per API found here:
   # https://docs.npmjs.com/api/load

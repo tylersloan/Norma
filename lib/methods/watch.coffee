@@ -58,11 +58,11 @@ module.exports = (tasks, cwd) ->
             "was #{event.type}"
           )
 
-          event[task] = taskName
+        event[task] = taskName
 
-          Sequence taskName
+        Sequence taskName
 
-          Norma.events.emit 'file-change', event
+        Norma.events.emit 'file-change', event
 
     )
 
