@@ -16,37 +16,6 @@ MapTree = require("./../utilities/directory-tools").mapTree
 RemoveTree = require("./../utilities/directory-tools").removeTree
 
 
-doInit = (scaffoldNames, scaffolds) ->
-
-  Inquirer.prompt([
-    {
-      type: "list"
-      message: "What type of project do you want to build?"
-      name: "scaffold"
-      choices: scaffoldNames
-    }
-    {
-      type: "input"
-      message: "What do you want your project to be named?"
-      name: "project"
-      default: "My Awesome Project"
-    }
-    ],
-    (answer) ->
-
-      # Faster filter method
-      projects = (p for p in scaffolds.children when p.name is answer.scaffold)
-
-      # Use first match if one was found
-      if projects.length
-
-        Scaffold projects[0], answer.project
-        return
-
-      console.log(
-        Chalk.red 'That scaffold was not found. Try "norma list --scaffold"'
-      )
-  )
 
 
 module.exports = (tasks, cwd) ->
@@ -67,51 +36,100 @@ module.exports = (tasks, cwd) ->
   # Create list of scaffold names for prompt
   scaffoldNames = (scaffold.name for scaffold in scaffolds.children)
 
-  # Generate list of current files in directory (auto excludes "." and "..")
-  cwdIsEmpty = (Fs.readdirSync cwd).length is 0
 
-  # Failsafe to make sure project is empty on creation of new folder
-  if (not cwdIsEmpty) and (tasks[0] isnt 'init')
+  ###
 
-    Inquirer.prompt
-      type: "confirm"
-      message: "Initializing will empty the current directory. Continue?"
-      name: "override"
-      default: false
-    , (answer) ->
+    @todo
+      This needs major cleanup and refactoring into smaller code
 
-      if answer.override
+  ###
 
-        # Make really really sure that the user wants this
-        Inquirer.prompt
-          type: "confirm"
-          message: "Removed files are gone forever. Continue?"
-          name: "overridconfirm"
-          default: false
-        , (answer) ->
+  # INIT ------------------------------------------------------------------
 
-          if answer.overridconfirm
+  doInit = (scaffoldNames, scaffolds) ->
 
-            # Clean up directory
-            console.log Chalk.grey("Emptying current directory")
-            RemoveTree cwd, true
-            doInit scaffoldNames, scaffolds
+    Inquirer.prompt([
+      {
+        type: "list"
+        message: "What type of project do you want to build?"
+        name: "scaffold"
+        choices: scaffoldNames
+      }
+      {
+        type: "input"
+        message: "What do you want your project to be named?"
+        name: "project"
+        default: "My Awesome Project"
+      }
+      ],
+      (answer) ->
 
-          else
+        # Faster filter method
+        projects = (p for p in scaffolds.children when p.name is answer.scaffold)
 
-            Norma.events.emit "stop"
+        # Use first match if one was found
+        if !projects.length
+          console.log(
+            Chalk.red 'That scaffold was not found. Try "norma list --scaffold"'
+          )
+          return
 
-            process.exit 0
+        if answer.project is "custom"
+          # Generate list of current files in directory (auto excludes "." and "..")
+          cwdIsEmpty = (Fs.readdirSync cwd).length is 0
 
-      else
+          # Failsafe to make sure project is empty on creation of new folder
+          if cwdIsEmpty
+            return
 
-        Norma.events.emit "stop"
+          Inquirer.prompt
+            type: "confirm"
+            message: "Initializing will empty the current directory. Continue?"
+            name: "override"
+            default: false
+          , (answer) ->
 
-        process.exit 0
+            if answer.override
 
-  else
+              # Make really really sure that the user wants this
+              Inquirer.prompt
+                type: "confirm"
+                message: "Removed files are gone forever. Continue?"
+                name: "overridconfirm"
+                default: false
+              , (answer) ->
 
-    doInit scaffoldNames, scaffolds
+                if answer.overridconfirm
+
+                  # Clean up directory
+                  console.log Chalk.grey("Emptying current directory")
+                  RemoveTree cwd, true
+                  Scaffold projects[0], answer.project
+                  return
+
+                else
+
+                  Norma.events.emit "stop"
+
+                  process.exit 0
+
+            else
+
+              Norma.events.emit "stop"
+
+              process.exit 0
+
+
+        else
+
+          Scaffold projects[0], answer.project
+          return
+
+
+    )
+
+
+  doInit scaffoldNames, scaffolds
 
 
 # API ----------------------------------------------------------------------
