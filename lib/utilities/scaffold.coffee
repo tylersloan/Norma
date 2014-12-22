@@ -97,7 +97,7 @@ module.exports = (project, name) ->
     scaffoldConfig =
       name: name
       tasks: {}
-      processes: {}
+
 
   if scaffoldConfig.scripts and scaffoldConfig.scripts.preinstall?
 
