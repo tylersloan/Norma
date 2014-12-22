@@ -50,9 +50,6 @@
   "bin": {
     "norma": "./bin/norma.js"
   },
-  "scripts": {
-    "postinstall": "node ./lib/postinstall/main.js"
-  },
   "preferglobal": true,
   "engineStrict": true,
   "homepage": "https://github.com/NewSpring/norma"
