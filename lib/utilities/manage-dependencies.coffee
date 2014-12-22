@@ -55,7 +55,7 @@ module.exports = (tasks, cwd) ->
   for existing in installed.children
     if !existing.children
       continue
-      
+
     for child in existing.children
       if child.name is "package.json"
         getPkgeDetails child
@@ -63,51 +63,70 @@ module.exports = (tasks, cwd) ->
 
 
   # COMPARE -----------------------------------------------------------------
-  npmReady = Q.defer()
 
-  Npm.load npmReady.makeNodeResolver()
 
-  npmReady.promise.then( ->
+  installs = []
 
-    installs = []
+  npmLoaded = false
 
-    for addedName of added
+  loadNPM = (cb) ->
 
-      update = (name, message) ->
+    if npmLoaded
+      cb()
+      return
 
-        Norma.events.emit "message", message
+    npmReady = Q.defer()
 
-        obj = {}
+    Npm.load npmReady.makeNodeResolver()
 
-        obj[name] = Q.defer()
+    npmReady.promise.then( ->
 
+      npmLoaded = false
+      cb()
+    )
+
+  for addedName of added
+
+    update = (name, message) ->
+
+      Norma.events.emit "message", message
+
+      obj = {}
+
+      obj[name] = Q.defer()
+
+      install = ->
         Npm.commands.install [name], obj[name].makeNodeResolver()
 
-        installs.push obj[name]
+      loadNPM install
+
+      installs.push obj[name]
 
 
-      if alreadyInstalled[addedName]
-        # git url
-        if added[addedName].match /\//g
-          continue
+    if alreadyInstalled[addedName]
+      # git url
+      if added[addedName].match /\//g
+        continue
 
-        if !Semver.satisfies alreadyInstalled[addedName], added[addedName]
+      if !Semver.satisfies alreadyInstalled[addedName], added[addedName]
 
-          message =
-            name: addedName
-            message: "needs updating"
-
-          update addedName, message
-
-      else
         message =
           name: addedName
-          message: "needs installing"
+          message: "needs updating"
 
         update addedName, message
 
-    Q.all(installs)
-      .then( ->
-        loaded.resolve("ok")
-      )
-  )
+    else
+      message =
+        name: addedName
+        message: "needs installing"
+
+      update addedName, message
+
+
+  Q.all(installs)
+    .then( ->
+      loaded.resolve("ok")
+    )
+
+  return loaded
