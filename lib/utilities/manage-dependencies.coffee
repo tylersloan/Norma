@@ -53,6 +53,9 @@ module.exports = (tasks, cwd) ->
 
 
   for existing in installed.children
+    if !existing.children
+      continue
+      
     for child in existing.children
       if child.name is "package.json"
         getPkgeDetails child

@@ -1,6 +1,6 @@
 {
   "name": "normajs",
-  "version": "0.2.29",
+  "version": "0.2.30",
   "description": "Auto Discover Build Utility",
   "repository": {
     "type": "git",
@@ -51,7 +51,7 @@
     "norma": "./bin/norma.js"
   },
   "scripts": {
-    "postinstall": "npm i -g local-tld"
+    "postinstall": "node ./lib/postinstall/main.js"
   },
   "preferglobal": true,
   "engineStrict": true,
