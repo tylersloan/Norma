@@ -34,7 +34,9 @@ module.exports = (tasks, cwd) ->
     children: []
 
   # Create list of scaffold names for prompt
-  scaffoldNames = (scaffold.name for scaffold in scaffolds.children)
+  scaffoldNames = (
+    scaffold.name for scaffold in scaffolds.children when scaffold.children
+  )
 
 
   ###
