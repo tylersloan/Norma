@@ -12,6 +12,7 @@ Semver = require "semver"
 Inquirer = require "inquirer"
 
 ExecCommand = require "./utilities/execute-command"
+Launcher = require "./utilities/launcher"
 
 
 # UPDATE -----------------------------------------------------------------
@@ -63,11 +64,18 @@ if process.env.NODE_ENV isnt "production"
           (answer) ->
             if answer.update is "yes"
 
-              process.chdir Path.resolve __dirname, "../"
-
               ExecCommand(
                 "npm update -g normajs"
                 process.cwd()
+                ,
+                  ->
+                    console.log(
+                      Chalk.magenta "Norma updated!"
+                    )
+
+                    Launcher.run ["watch"], process.cwd()
+
+
               )
         )
     )
