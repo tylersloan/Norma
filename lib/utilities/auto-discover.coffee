@@ -15,12 +15,12 @@ module.exports = (tasks, cwd, packages) ->
   config = ReadConfig cwd
   neededPackages = []
 
-  # If there are not tasks or processes we can't do much, so exit with error
-  if !config.tasks and !config.procceses
+  # If there are no tasks so we can't do much, so exit with error
+  if !config.tasks
 
     err =
       level: "crash"
-      message: "#{Tool}.json needs a tasks object or a processes object"
+      message: "#{Tool}.json needs a tasks object"
       name: "Not Valid"
 
     Norma.events.emit "error", err
@@ -36,16 +36,6 @@ module.exports = (tasks, cwd, packages) ->
         name: key
         global: config.tasks[key].global
         endpoint: config.tasks[key].endpoint
-
-      neededPackages.push pkge
-
-  # collect all missing procceses into array
-  for key of config.processes
-    if packages[key] is undefined
-      pkge =
-        name: key
-        global: config.processes[key].global
-        endpoint: config.processes[key].endpoint
 
       neededPackages.push pkge
 

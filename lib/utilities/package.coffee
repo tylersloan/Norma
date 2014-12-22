@@ -44,7 +44,6 @@ module.exports = (tasks, cwd) ->
     type: "package"
     main: "package.coffee"
     tasks: {}
-    processes: {}
 
   # Save config
   Fs.writeFileSync(
