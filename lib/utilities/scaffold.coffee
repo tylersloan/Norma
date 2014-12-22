@@ -13,12 +13,63 @@ Fs       = require "fs-extra"
 Path     = require "path"
 Exec     = require('child_process').exec
 Argv     = require('minimist')( process.argv.slice(2) )
+
 ReadConfig   = require "./read-config"
 ExecCommand = require "./execute-command"
 BuildTasks = require './../methods/build'
 
 
+doAfterPreInstall = (project, scaffoldConfig) ->
+
+  if project.path isnt process.cwd()
+
+    # Copy over all of the things
+    Fs.copySync project.path, process.cwd()
+
+  # Save config
+  Fs.writeFileSync(
+    Path.join(process.cwd(), "#{Tool}.json")
+    JSON.stringify(scaffoldConfig, null, 2)
+  )
+
+  if not Fs.existsSync('package.json')
+
+    defaultPackageData =
+      name: scaffoldConfig.name
+      version: "0.0.0"
+      description: ""
+      main: "index.js"
+      scripts:
+        test: "echo \"Error: no test specified\" && exit 1"
+      author: ""
+      license: "MIT"
+
+
+    Fs.writeFile 'package.json', JSON.stringify(defaultPackageData, null, 2)
+
+
+  if scaffoldConfig.scripts
+
+    for action of scaffoldConfig.scripts
+
+      if action isnt 'preinstall' and action isnt 'postinstall' and
+        action isnt 'custom'
+
+          ExecCommand scaffoldConfig.scripts[action], process.cwd()
+
+  # Before compiling, remove the nspignore folder
+  Fs.remove Path.join(process.cwd(), '/norma-ignore')
+  BuildTasks [], process.cwd()
+
+  # Run post installation scripts
+  if scaffoldConfig.scripts and scaffoldConfig.scripts.postinstall
+
+    ExecCommand(scaffoldConfig.scripts.postinstall, project.path)
+
+
 module.exports = (project, name) ->
+
+
 
   # name = "My awesome project" or some other cool name
   # project = { path: '/Users/.../Norma/scaffolds/ee-multisite',
@@ -57,35 +108,3 @@ module.exports = (project, name) ->
   else
 
     doAfterPreInstall project, scaffoldConfig
-
-
-doAfterPreInstall = (project, scaffoldConfig) ->
-
-  if project.path isnt process.cwd()
-
-    # Copy over all of the things
-    Fs.copySync project.path, process.cwd()
-
-  # Save config
-  Fs.writeFileSync(
-    Path.join(process.cwd(), "#{Tool}.json")
-    JSON.stringify(scaffoldConfig, null, 2)
-  )
-
-  if scaffoldConfig.scripts
-
-    for action of scaffoldConfig.scripts
-
-      if action isnt 'preinstall' and action isnt 'postinstall' and
-        action isnt 'custom'
-
-          ExecCommand scaffoldConfig.scripts[action], process.cwd()
-
-  # Before compiling, remove the nspignore folder
-  Fs.remove Path.join(process.cwd(), '/norma-ignore')
-  BuildTasks [], process.cwd()
-
-  # Run post installation scripts
-  if scaffoldConfig.scripts and scaffoldConfig.scripts.postinstall
-
-    ExecCommand(scaffoldConfig.scripts.postinstall, project.path)

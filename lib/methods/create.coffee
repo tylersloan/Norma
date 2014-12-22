@@ -55,21 +55,6 @@ module.exports = (tasks, cwd) ->
 
     Init tasks, process.cwd()
 
-    if not Fs.existsSync('package.json')
-
-      defaultPackageData =
-        name: packageName
-        version: "0.0.0"
-        description: ""
-        main: "index.js"
-        scripts:
-          test: "echo \"Error: no test specified\" && exit 1"
-        author: ""
-        license: "MIT"
-
-
-      Fs.writeFile 'package.json', JSON.stringify(defaultPackageData, null, 2)
-
 
 # API ----------------------------------------------------------------------
 
