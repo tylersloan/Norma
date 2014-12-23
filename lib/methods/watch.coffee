@@ -70,13 +70,7 @@ module.exports = (tasks, cwd) ->
     createWatch(task) if Gulp.tasks[task].ext?
 
 
-  Norma.events.emit 'watch-start'
-
-  if config.server
-    if config.server.host and config.server.port
-
-      LocalTld.remove config.server.port
-      LocalTld.add config.server.host, config.server.port
+  Norma.emit 'watch-start'
 
 
 
