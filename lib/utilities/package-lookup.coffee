@@ -62,8 +62,10 @@ module.exports = (tasks, cwd) ->
   # Package testing (used in building and testing packages)
   if normaConfig.type is "package"
 
+
     # verify we aren't in root
-    if cwd isnt Path.resolve __dirname, '../../'
+    if cwd isnt Path.resolve __dirname, '../../packages'
+
       pkges = MapTree process.cwd()
 
       checkFile pkges
@@ -115,11 +117,13 @@ module.exports = (tasks, cwd) ->
       []
     )
 
+
     Multimatch(names, pattern).forEach (name) ->
 
       packageList.push Path.resolve(node_modules, name)
 
       return
+
 
     for pkge in packageList
       packageList[pkge] = mapPkge pkge

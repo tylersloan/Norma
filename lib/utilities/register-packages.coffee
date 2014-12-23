@@ -10,8 +10,10 @@ AutoDiscover = require "./auto-discover"
 
 module.exports = (tasks, cwd) ->
 
+
   # Get any project specific packages (from package.json)
   projectTasks = PkgeLookup tasks, cwd
+
 
   # Get global packages added to Norma
   rootGulpTasks = PkgeLookup tasks, (Path.resolve __dirname, "../../packages")

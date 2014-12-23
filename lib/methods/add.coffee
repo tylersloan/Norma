@@ -7,10 +7,7 @@ Findup = require "findup-sync"
 
 ExecCommand = require "./../utilities/execute-command"
 
-
-
 module.exports = (tasks, cwd, cb) ->
-
 
 
   # LOGS -------------------------------------------------------------------
