@@ -23,7 +23,7 @@ module.exports = (tasks, cwd) ->
 
   exit = ->
     err = new Error(
-      "No response from NPM. Looks like they may have connection issues"
+      "No response from NPM after 10s. Looks like there may be a connection issue"
     )
 
     err.level = "crash"
@@ -39,8 +39,7 @@ module.exports = (tasks, cwd) ->
   Npm.load( ->
     Norma.events.emit "message", "searching..."
     Npm.commands.search(tasks, (result) ->
-      console.log "returned"
-      console.log result
+      process.exit 0
     )
   )
 
