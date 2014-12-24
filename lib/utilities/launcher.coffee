@@ -13,49 +13,14 @@ RegisterPackages = require "./register-packages"
 Logger = require "./../logging/logger"
 ManageDependencies = require "./manage-dependencies"
 ReadSettings = require "./../utilities/read-settings"
+BindModes = require "./../utilities/bind-modes"
+AutoUpdate = require "./../utilities/auto-update"
+
 
 
 module.exports = (env) ->
 
   Norma.root = Path.resolve __dirname, "../../"
-
-
-  # VARIABLES ----------------------------------------------------------------
-
-  # Get the package.json for norma info
-  cliPackage = require Path.join __dirname, "../../package.json"
-
-  # Bind tasks to variable for easy passing
-  tasks = Flags._
-
-  # Bind flags to global Norma
-  for key of Flags
-    if !Norma[key]
-      Norma[key] = Flags[key]
-
-
-
-  # UTILITY ------------------------------------------------------------------
-
-  # Check for version flag and report version
-  if Flags.v or Flags.version
-
-    console.log "#{Tool} CLI version", Chalk.cyan(cliPackage.version)
-
-    # exit
-    process.exit 0
-
-  # set default task to watch if running bare
-  if tasks.length is 0
-    tasks = ["watch"]
-
-
-  # See if help or h task is trying to be run
-  if Flags.help or Flags.h
-
-    Logger.logInfo(cliPackage)
-
-    process.exit 0
 
 
   ###
@@ -69,7 +34,6 @@ module.exports = (env) ->
     console.log(
       Chalk.cyan("Working directory changed to", Chalk.magenta(env.cwd))
     )
-
 
 
   # CONFIG ------------------------------------------------------------------
@@ -88,9 +52,55 @@ module.exports = (env) ->
     return config
 
 
+
   # SETTINGS ---------------------------------------------------------------
 
   Norma.settings = ReadSettings
+
+
+
+  # VARIABLES ---------------------------------------------------------------
+
+  # Get the package.json for norma info
+  cliPackage = require Path.join __dirname, "../../package.json"
+
+  # Bind tasks to variable for easy passing
+  tasks = Flags._
+
+  BindModes()
+
+
+
+  # AUTOUPDATE --------------------------------------------------------------
+
+  # This should only run locally
+  if !Norma.production
+
+    AutoUpdate()
+
+
+
+  # UTILITY -----------------------------------------------------------------
+
+  # Check for version flag and report version
+  if Norma.version
+
+    console.log "#{Tool} CLI version", Chalk.cyan(cliPackage.version)
+
+    # exit
+    process.exit 0
+
+  # set default task to watch if running bare
+  if tasks.length is 0
+    tasks = ["watch"]
+
+
+  # See if help or h task is trying to be run
+  if Norma.help
+
+    Logger.logInfo(cliPackage)
+
+    process.exit 0
 
 
 
@@ -112,7 +122,7 @@ module.exports = (env) ->
       packagesReady = true
 
 
-    # TASKS -------------------------------------------------------------------
+    # TASKS -----------------------------------------------------------------
 
 
     if packagesReady
