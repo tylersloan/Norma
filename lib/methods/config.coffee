@@ -10,13 +10,16 @@
 ###
 
 Fs    = require "fs-extra"
-Nconf = require "nconf"
 Flags = require("minimist")(process.argv.slice(2))
 Chalk = require "chalk"
 Path = require "path"
 
 
 module.exports = (tasks, cwd) ->
+
+  # remove memory settings to use just files
+  Norma.settings._.remove('memory')
+
 
   # CONFIG-TYPE -----------------------------------------------------------
 
@@ -27,48 +30,10 @@ module.exports = (tasks, cwd) ->
     directory level to create and use config (local)
 
   ###
-  if Flags.global or Flags.g
-    useDir = Path.resolve __dirname, "../../"
+  if Norma.global
+    Norma.settings._.remove "local"
   else
-    useDir = process.cwd()
-
-  # See if a config file already exists (for local files)
-  configExists = Fs.existsSync Path.join(useDir, ".#{Tool}")
-
-
-  # CONFIG-CREATE ---------------------------------------------------------
-
-  # If no file, then we create a new one with some preset items
-  if !configExists
-    config =
-      path: process.cwd()
-
-    # Save config
-    Fs.writeFileSync(
-      Path.join(useDir, ".#{Tool}")
-      JSON.stringify(config, null, 2)
-    )
-
-
-
-  # CONFIG-READ -----------------------------------------------------------
-
-  ###
-
-    Setup Nconf to use (in-order):
-      1. Command-line arguments
-      2. Environment variables
-      3. A file located at "Path/to/config.json"
-
-  ###
-  Nconf
-    .env()
-    .argv()
-    .file("project", {
-      file: ".#{Tool}",
-      dir: useDir,
-      search: true
-    })
+    Norma.settings._.remove "global"
 
 
 
@@ -77,20 +42,7 @@ module.exports = (tasks, cwd) ->
   # Empty config command returns print out of config
   if !tasks.length
 
-    # Set directory
-    dir = Path.join useDir, ".#{Tool}"
-
-    try
-      file = Fs.readFileSync dir, encoding: "utf8"
-
-      configData = JSON.parse file
-
-    catch err
-
-      err.level = "crash"
-
-      err.message "The .#{Tool} file is not valid json. Aborting."
-
+    configData = Norma.settings()
 
     # Print out cofing data for easy lookup
     console.log configData
@@ -106,10 +58,10 @@ module.exports = (tasks, cwd) ->
     if !Flags.remove
       console.log(
         Chalk.cyan( tasks[0] + ": ")
-        Chalk.magenta( Nconf.get(tasks[0]))
+        Chalk.magenta( Norma.settings.get(tasks[0]))
       )
     else
-      Nconf.clear tasks[0]
+      Norma.settings._.clear tasks[0]
 
 
 
@@ -117,7 +69,7 @@ module.exports = (tasks, cwd) ->
 
   # Save config with value
   if tasks[1]
-    Nconf.set tasks[0], tasks[1]
+    Norma.settings._.set tasks[0], tasks[1]
 
 
 
@@ -125,14 +77,16 @@ module.exports = (tasks, cwd) ->
 
   # Reset clears entire Nconf file
   if Flags.reset
-    Nconf.reset()
+    Norma.settings._.reset()
 
 
   # CONFIG-SAVE -----------------------------------------------------------
 
+
   # Save the configuration object to file
-  Nconf.save (err) ->
+  Norma.settings._.save (err, data) ->
     throw err if err
+
 
 
 
