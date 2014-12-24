@@ -16,6 +16,10 @@ module.exports = (tasks, cwd) ->
 
   normaConfig = ReadConfig process.cwd()
 
+  # Force verbose and debug
+  Norma.verbose = true
+  Norma.debug = true
+
   if normaConfig.type is "package"
 
     console.log(
