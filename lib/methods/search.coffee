@@ -1,4 +1,4 @@
-Npm = require "npm"
+Exec = require('child_process').exec
 
 module.exports = (tasks, cwd) ->
 
@@ -32,16 +32,42 @@ module.exports = (tasks, cwd) ->
 
 
 
-  setTimeout exit, 10000
+  timeout = setTimeout exit, 10000
 
-  # Run npm tasks within load per API found here:
-  # https://docs.npmjs.com/api/load
-  Npm.load( ->
-    Norma.events.emit "message", "searching..."
-    Npm.commands.search(tasks, (result) ->
-      process.exit 0
-    )
+
+  Norma.events.emit "message", "searching..."
+
+  child = Exec("npm search #{tasks}", (err, stdout, stderr) ->
+
+    throw err if err
+
   )
+
+  child.stdout.setEncoding("utf8")
+
+  child.stdout.on "data", (data) ->
+
+    clearTimeout timeout
+
+    str = data.toString()
+    lines = str.split(/(\r?\n)/g)
+
+    i = 0
+    while i < lines.length
+      if !lines[i].match "\n"
+        message = lines[i].split("] ")
+
+        if message.length > 1
+          message.splice(0, 1)
+
+        message = message.join(" ")
+
+        console.log message
+      i++
+
+    return
+
+
 
 
 
