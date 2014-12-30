@@ -14,3 +14,4 @@ workbench
 .norma
 scaffolds/**
 packages/package.json
+workbench.coffee

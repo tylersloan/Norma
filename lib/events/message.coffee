@@ -18,11 +18,11 @@ module.exports = ->
   # extra information available.
   messageType.log = (msg) ->
 
-    message = []
+    message = [Chalk.grey(Norma.prefix)]
 
     # Build the error message by priority
-    if msg.name
-      message.push Chalk.magenta(msg.name) + ": "
+    # if msg.name
+    #   message.push Chalk.grey(Norma.prefix + msg.name + ": ")
 
     if msg.message
       if msg.color

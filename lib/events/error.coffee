@@ -50,8 +50,6 @@ module.exports = ->
 
     Norma.events.emit "stop"
 
-    process.exit 0
-
 
 
 
