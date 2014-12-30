@@ -9,7 +9,6 @@ ReadConfig = require "./read-config"
 
 
 module.exports = (tasks, cwd) ->
-  # throw new Error "hello"
 
   normaConfig = ReadConfig process.cwd()
   packageList = new Array
@@ -20,8 +19,9 @@ module.exports = (tasks, cwd) ->
 
     task = require pkgeCwd
 
+
     if typeof task is "function"
-      taskObject = task normaConfig, Path.resolve(__dirname, '../../')
+      taskObject = task normaConfig, tasks
       taskObject = null
 
       packages.push task.tasks

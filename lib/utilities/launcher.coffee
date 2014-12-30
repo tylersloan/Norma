@@ -114,35 +114,51 @@ module.exports = (env) ->
       to running any tasks
 
     ###
+    noPackageTasks = [
+      "add"
+      "config"
+      "create"
+      "init"
+      "remove"
+      "search"
+      "update"
+    ]
 
-    if tasks[0] is "build" or tasks[0] is "test" or tasks[0] is "watch"
+    if noPackageTasks.indexOf tasks[0] is -1
+      pkges = RegisterPackages tasks, cwd
 
-      packagesReady = RegisterPackages tasks, cwd
     else
-      packagesReady = true
-
+      pkges = {}
 
     # TASKS -----------------------------------------------------------------
 
+    # Fire the start event
+    Norma.events.emit "start"
 
-    if packagesReady
+    try
+      task = require "./../methods/#{tasks[0]}"
+      tasks.shift()
+      task tasks, cwd
 
-      # Fire the start event
-      Norma.events.emit "start"
+    catch e
+
+      pkge = tasks.shift()
+
+      method = pkge
+
+      if tasks.length
+        method += "-#{tasks[0]}"
 
 
-      try
-        task = require "./../methods/#{tasks[0]}"
-
-        tasks.shift()
-
-        task tasks, cwd
-      catch e
+      if pkges[method]
+        pkges[method].fn ->
+          return
+      else
         e.level = "crash"
         Norma.events.emit "error", e
 
-      # Fire the stop event
-      # Norma.events.emit "stop"
+    # Fire the stop event
+    # Norma.events.emit "stop"
 
 
 

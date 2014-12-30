@@ -3,63 +3,69 @@ Fs    = require "fs-extra"
 Path = require "path"
 Nconf = require "nconf"
 
-# CONFIG-TYPE -----------------------------------------------------------
-
-###
-
-  If command has been run with --global or --g then
-  swich to the global config, otherwise use current
-  directory level to create and use config (local)
-
-###
-
-global = Path.resolve __dirname, "../../", ".#{Tool}"
-local = Path.join process.cwd(), ".#{Tool}"
 
 
-# See if a config file already exists (for global files)
-globalConfigExists = Fs.existsSync global
+initialize = ->
+  # CONFIG-TYPE -----------------------------------------------------------
 
-# See if a config file already exists (for local files)
-localConfigExists = Fs.existsSync local
+  ###
 
+    If command has been run with --global or --g then
+    swich to the global config, otherwise use current
+    directory level to create and use config (local)
 
-# CONFIG-CREATE -------------------------------------------------------------
+  ###
 
-# If no file, then we create a new one with some preset items
-if !globalConfigExists
-  config =
-    path: global
-
-  # Save config
-  Fs.writeFileSync(
-    global
-    JSON.stringify(config, null, 2)
-  )
-
-# If no file, then we create a new one with some preset items
-if !localConfigExists
-  config =
-    path: local
-
-  # Save config
-  Fs.writeFileSync(
-    local
-    JSON.stringify(config, null, 2)
-  )
+  global = Path.resolve __dirname, "../../", ".#{Tool}"
+  local = Path.join process.cwd(), ".#{Tool}"
 
 
-# CONFIG-SET ---------------------------------------------------------------
+  # See if a config file already exists (for global files)
+  globalConfigExists = Fs.existsSync global
+
+  # See if a config file already exists (for local files)
+  localConfigExists = Fs.existsSync local
 
 
-Nconf.use "memory"
-  .file "local", local
-  .file "global", global
+  # CONFIG-CREATE -------------------------------------------------------------
+
+  # If no file, then we create a new one with some preset items
+  if !globalConfigExists
+    config =
+      path: global
+
+    # Save config
+    Fs.writeFileSync(
+      global
+      JSON.stringify(config, null, 2)
+    )
+
+  # If no file, then we create a new one with some preset items
+  if !localConfigExists
+    config =
+      path: local
+
+    # Save config
+    Fs.writeFileSync(
+      local
+      JSON.stringify(config, null, 2)
+    )
+
+
+  # CONFIG-SET ---------------------------------------------------------------
+
+
+  Nconf.use "memory"
+    .file "local", local
+    .file "global", global
+
+  return Nconf
 
 
 
 
 get = (getter) ->
+  initialize()
   return Nconf.get getter
 
 
@@ -68,7 +74,7 @@ get = (getter) ->
 #   return Nconf.set setter, value
 
 
-module.exports = Nconf.get
+module.exports = get
 module.exports._ = Nconf
 module.exports.get = get
 # module.exports.set = set
