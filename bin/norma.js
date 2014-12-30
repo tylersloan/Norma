@@ -15,7 +15,11 @@ GLOBAL.Norma = {
   watchStarted: false,
   reloadTasks: [],
   events: EventEmitter,
-  domain: Domain
+  domain: Domain,
+  prefix: "Ø ",
+  stop: function(){
+    process.exit(0)
+  }
 }
 
 
