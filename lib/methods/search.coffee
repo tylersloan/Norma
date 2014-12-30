@@ -23,17 +23,15 @@ module.exports = (tasks, cwd) ->
       tasks[_i] = "norma-#{task}"
 
   exit = ->
-    err = new Error(
-      "No response from NPM after 10s. Looks like there may be a connection issue or a long task being run. To exit #{Tool}, press ctrl + c"
-    )
+    msg =
+      message: "No response from NPM after 30s. Looks like there may be a connection issue or a long task being run. To exit #{Tool}, press ctrl + c"
+      level: "log"
 
-    err.level = "warn"
-
-    Norma.events.emit "error", err
+    Norma.emit "error", msg
 
 
 
-  timeout = setTimeout exit, 10000
+  timeout = setTimeout exit, 30000
 
 
   Norma.events.emit "message", "searching..."

@@ -87,6 +87,10 @@ Domain.on("error", function(err){
 
 // APPLICATION ----------------------------------------------------------
 
+process.on('exit', function() {
+  Norma.events.emit("stop");
+});
+
 Domain.run(function(){
 
   // Require main file
