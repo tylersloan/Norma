@@ -17,7 +17,7 @@ Path = require "path"
 
 module.exports = (tasks, cwd) ->
 
-  # remove memory settings to use just files
+  # remove memory settings to use just files for CLI usage
   Norma.settings._.remove('memory')
 
 

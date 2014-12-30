@@ -31,4 +31,4 @@ module.exports = (tasks, cwd) ->
 
   return false if isMissingTasks
 
-  return true
+  return Gulp.tasks
