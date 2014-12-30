@@ -124,7 +124,9 @@ module.exports = (env) ->
       "update"
     ]
 
-    if noPackageTasks.indexOf tasks[0] is -1
+
+    if noPackageTasks.indexOf(tasks[0]) is -1
+
       pkges = RegisterPackages tasks, cwd
 
     else
