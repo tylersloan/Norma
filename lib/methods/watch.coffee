@@ -138,13 +138,13 @@ module.exports = (tasks, cwd) ->
     prompt()
     return
 
-  ).on "close", ->
+  ).on( "close", ->
 
     Norma.emit "message", "Have a great day!"
     Norma.stop()
     return
 
-
+  )
 
   # START ------------------------------------------------------------------
 
