@@ -16,10 +16,7 @@ GLOBAL.Norma = {
   reloadTasks: [],
   events: EventEmitter,
   domain: Domain,
-  prefix: "Ø ",
-  stop: function(){
-    process.exit(0)
-  }
+  prefix: "Ø "
 }
 
 
@@ -87,7 +84,7 @@ Domain.on("error", function(err){
 
 // APPLICATION ----------------------------------------------------------
 
-process.on('exit', function() {
+process.on('SIGINT', function() {
   Norma.events.emit("stop");
 });
 
