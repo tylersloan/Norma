@@ -25,8 +25,11 @@ module.exports = (tasks, cwd) ->
       taskObject = null
 
       packages.push task.tasks
+
     else
       packages.push task
+
+
 
 
 
@@ -37,7 +40,7 @@ module.exports = (tasks, cwd) ->
 
       if pkgeConfig.type is "package" and pkgeConfig.main
         entry = Path.resolve file.path, "../", pkgeConfig.main
-
+        Norma.packages.push pkgeConfig.name
         mapPkge entry
 
     else if file.children
@@ -120,12 +123,15 @@ module.exports = (tasks, cwd) ->
 
     Multimatch(names, pattern).forEach (name) ->
 
+      Norma.packages.push name
+
       packageList.push Path.resolve(node_modules, name)
 
       return
 
 
     for pkge in packageList
+
       packageList[pkge] = mapPkge pkge
 
 
