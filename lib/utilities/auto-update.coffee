@@ -34,6 +34,13 @@ module.exports = ->
 
       if !Semver.gte currentVersion, availableVersion
 
+        skippedVersion = Norma.settings.get "version"
+
+        if skippedVersion and Semver.gte skippedVersion, availableVersion
+          if Norma.prompt._.initialized
+            Norma.prompt()
+          return
+
         message =
           level: "notify"
           message: "An update is available for Norma"
@@ -62,7 +69,7 @@ module.exports = ->
                   ->
                     msg =
                       message: "Norma updated!"
-                      color: "magenta"
+                      color: "cyan"
 
                     Norma.emit "message", msg
 
@@ -73,9 +80,19 @@ module.exports = ->
 
             else
               if Norma.prompt._.initialized
-                Norma.emit "message", "will ask again next update"
+                msg =
+                  message: "#{Norma.prefix}OK, I will ask again next update"
+                  color: "cyan"
 
+                Norma.emit "message", msg
 
+              # isolate settings to global scale
+              Norma.settings._.remove('memory')
+              Norma.settings._.remove "local"
+              Norma.settings._.set "version", availableVersion
+              # Save the configuration object to file
+              Norma.settings._.save (err, data) ->
+                throw err if err
         )
 
 
