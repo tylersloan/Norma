@@ -41,7 +41,7 @@ module.exports = (tasks, cwd, cb) ->
       scaffoldLocation + "/"
     ).on "end", ->
       Exec "tree", (err, stdout, sderr) ->
-        console.log "Scaffold ready!"
+        Norma.emit "message", "Scaffold ready!"
         return
 
     return
@@ -73,9 +73,8 @@ module.exports = (tasks, cwd, cb) ->
     else
       action = "npm i --save #{list}"
 
-    console.log(
-      Chalk.green "Installing packages to your global #{Tool}..."
-    )
+
+    Norma.emit "message", "Installing packages to your global #{Tool}..."
 
     # Do work on users global norma
     process.chdir Path.resolve __dirname, "../../packages"
@@ -88,9 +87,7 @@ module.exports = (tasks, cwd, cb) ->
         # Change back to project cwd for further tasks
         process.chdir cwd
 
-        console.log(
-          Chalk.magenta "Packages installed!"
-        )
+        Norma.emit "message", "Packages installed!"
 
         if typeof cb is 'function'
           cb()
@@ -105,9 +102,7 @@ module.exports = (tasks, cwd, cb) ->
     else
       action = "npm i --save #{list}"
 
-    console.log(
-      Chalk.green "Installing packages to your local #{Tool}..."
-    )
+    Norma.emit "message", "Installing packages to your local #{Tool}..."
 
     ExecCommand(
       action
@@ -115,9 +110,7 @@ module.exports = (tasks, cwd, cb) ->
     ,
       ->
 
-        console.log(
-          Chalk.magenta "Packages installed!"
-        )
+        Norma.emit "message", "Packages installed!"
 
         if typeof cb is 'function'
           cb()

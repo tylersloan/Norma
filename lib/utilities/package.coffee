@@ -22,7 +22,7 @@ module.exports = (tasks, cwd) ->
   # cwd = absolute path of directory where package is to be created
   # tasks = [ <appName> ] - flags are not included in the array
 
-  console.log Chalk.green "Creating your package..."
+  Norma.emit "message", "Creating your package..."
 
   # PACKAGE-TEMPLATE ----------------------------------------------------
 
@@ -74,5 +74,5 @@ module.exports = (tasks, cwd) ->
     process.cwd()
   ,
     ->
-      console.log Chalk.magenta "Package Ready!"
+      Norma.emit "message", "Package Ready!"
   )

@@ -107,9 +107,7 @@ copyTree = (src, dest, cb) ->
 
       Fs.symlinkSync symlink, Path.join(dest, files[i])
     else
-      copy(Path.join(src, files[i]), Path.join(dest, files[i]), (dest) ->
-        console.log dest + 'has been moved over '
-      )
+      copy(Path.join(src, files[i]), Path.join(dest, files[i]))
 
 
     i++

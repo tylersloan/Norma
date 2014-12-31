@@ -61,7 +61,7 @@ module.exports = (tasks, cwd) ->
 
         message = message.join(" ")
 
-        console.log message
+        Norma.emit "message", message
       i++
 
     return

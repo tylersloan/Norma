@@ -42,9 +42,11 @@ module.exports = (tasks, cwd) ->
   createWatch = (task) ->
 
     if Norma.debug
-      console.log(
-        Chalk.red( "Task: #{task.toUpperCase()} added to watch" )
-      )
+      msg =
+        level: "debug"
+        message: "Task: #{task.toUpperCase()} added to watch"
+        
+      Norma.emit "message", msg
 
     src = if config.tasks[task]? then config.tasks[task].src else "./**/*/"
 

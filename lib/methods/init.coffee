@@ -71,9 +71,12 @@ module.exports = (tasks, cwd) ->
 
         # Use first match if one was found
         if !projects.length
-          console.log(
-            Chalk.red 'That scaffold was not found. Try "norma list --scaffold"'
-          )
+
+          err =
+            level: "warn"
+            message:"That scaffold was not found. Try 'norma list --scaffold'"
+
+          Norma.emit "error", err
           return
 
         if answer.project is "custom"
@@ -104,7 +107,7 @@ module.exports = (tasks, cwd) ->
                 if answer.overridconfirm
 
                   # Clean up directory
-                  console.log Chalk.grey("Emptying current directory")
+                  Norma.emit "message", Chalk.grey("Emptying current directory")
                   RemoveTree cwd, true
                   Scaffold projects[0], answer.project
                   return

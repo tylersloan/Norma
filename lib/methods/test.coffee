@@ -22,9 +22,12 @@ module.exports = (tasks, cwd) ->
 
   if normaConfig.type is "package"
 
-    console.log(
-      Chalk.green "✔ Testing your package!"
-    )
+
+    msg =
+      color: "green"
+      message: "✔ Testing your package!"
+
+    Norma.emit "message", msg
 
 
     if Flags.watch

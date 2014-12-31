@@ -53,12 +53,11 @@ module.exports = (tasks, cwd, packages) ->
     for pkge in neededPackages
       prettyPrint.push pkge.name
 
-    console.log(
-      Chalk.green(
-        "Installing the following packages:"
-      )
-      Chalk.magenta "#{prettyPrint.join(', ')}"
-    )
+
+    msg = Chalk.green("Installing the following packages:") +
+      "#{prettyPrint.join(', ')}"
+
+    Norma.emit "message", msg
 
     return true
 
