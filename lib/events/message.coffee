@@ -56,6 +56,12 @@ module.exports = ->
       Norma.prompt()
 
 
+  messageType.debug = (msg) ->
+    
+    if Norma.debug
+      msg.color = "red"
+      messageType.log msg
+
   # The notify level should try to let the developer know of the message
   # the norma-notify package is a great example of this event usage
   messageType.notify = (msg) ->

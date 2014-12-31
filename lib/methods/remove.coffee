@@ -81,9 +81,7 @@ module.exports = (tasks, cwd) ->
 
   if Flags.global or Flags.g
 
-    console.log(
-      Chalk.green "Removing packages to your global #{Tool}..."
-    )
+    Norma.emit "message", "Removing packages to your global #{Tool}..."
 
     # Do work on users global norma
     process.chdir Path.resolve __dirname, "../../packages"
@@ -96,9 +94,7 @@ module.exports = (tasks, cwd) ->
         # Change back to project cwd for further tasks
         process.chdir cwd
 
-        console.log(
-          Chalk.magenta "Packages removed!"
-        )
+        Norma.emit "message", "Packages removed!"
 
         if typeof cb is 'function'
           cb()
@@ -107,9 +103,7 @@ module.exports = (tasks, cwd) ->
 
   else
 
-    console.log(
-      Chalk.green "Removing packages to your local #{Tool}..."
-    )
+    Norma.emit "message", "Removing packages to your local #{Tool}..."
 
     ExecCommand(
       action
@@ -117,9 +111,7 @@ module.exports = (tasks, cwd) ->
     ,
       ->
 
-        console.log(
-          Chalk.magenta "Packages removed!"
-        )
+        Norma.emit "message", "Packages removed!"
 
         if typeof cb is 'function'
           cb()

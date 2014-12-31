@@ -48,7 +48,7 @@ module.exports = (action, cwd, cb) ->
 
           message = message.join(" ")
 
-          console.log message
+          Norma.emit "message", message
         i++
 
       return

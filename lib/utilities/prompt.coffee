@@ -70,10 +70,6 @@ initialize = ->
     switch line.toLowerCase().trim()
       when "help"
         Util.puts(Chalk.grey(help.join("\n")))
-      when "who are you"
-        console.log Chalk.green("I am Norma!")
-      when "i just want to build websites"
-        console.log Chalk.green("I can help with that!")
       when "exit", "e", "quit", "q"
         rl.close()
       when "all"

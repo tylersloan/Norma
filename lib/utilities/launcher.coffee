@@ -32,9 +32,6 @@ module.exports = (env) ->
   ###
   if process.cwd() isnt env.cwd
     process.chdir env.cwd
-    console.log(
-      Chalk.cyan("Working directory changed to", Chalk.magenta(env.cwd))
-    )
 
 
   # CONFIG -----------------------------------------------------------------
@@ -91,8 +88,8 @@ module.exports = (env) ->
 
   # Check for version flag and report version
   if Norma.version
-
-    console.log "#{Tool} CLI version", Chalk.cyan(cliPackage.version)
+    versionString = "#{Tool} CLI version: #{Chalk.cyan(cliPackage.version)}"
+    Norma.emit "message", versionString
 
     # exit
     process.exit 0

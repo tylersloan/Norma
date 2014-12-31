@@ -56,10 +56,10 @@ module.exports = (tasks, cwd) ->
 
     # Gives users the options to remove config items
     if !Flags.remove
-      console.log(
-        Chalk.cyan( tasks[0] + ": ")
-        Chalk.magenta( Norma.settings.get(tasks[0]))
-      )
+      msg = Chalk.cyan( tasks[0] + ": ") +
+        Norma.settings.get(tasks[0])
+        
+      Norma.emit "message", msg
     else
       Norma.settings._.clear tasks[0]
 
