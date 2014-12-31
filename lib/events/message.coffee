@@ -20,6 +20,10 @@ module.exports = ->
 
     message = [Chalk.grey(Norma.prefix)]
 
+    if Norma.prompt._.initialized and Norma.prompt.open
+      Norma.prompt.pause()
+      message = []
+
     # Build the error message by priority
     # if msg.name
     #   message.push Chalk.grey(Norma.prefix + msg.name + ": ")
@@ -30,8 +34,10 @@ module.exports = ->
       else
         message.push msg.message
 
+
     if msg.fileName
       message.push Chalk.green(msg.fileName)
+
 
     if msg.lineNumber
       if msg.fileName
@@ -39,11 +45,15 @@ module.exports = ->
       else
         message.push "Line: #{msg.lineNumber} \n"
 
+
     if msg.stack
       message.push msg.stack
 
 
     console.log message.join ""
+
+    if Norma.prompt._.initialized and !Norma.prompt.open
+      Norma.prompt()
 
 
   # The notify level should try to let the developer know of the message
