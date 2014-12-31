@@ -1,7 +1,7 @@
 Path = require "path"
 Fs = require "fs-extra"
-Flags = require("minimist")( process.argv.slice(2) )
 Chalk = require "chalk"
+_ = require "underscore"
 
 MapTree = require("./../utilities/directory-tools").mapTree
 PkgeLookup = require "./../utilities/package-lookup"
@@ -23,12 +23,18 @@ module.exports = (tasks, cwd) ->
     return scaffoldList
 
 
-  if Flags.scaffold or Flags.scaffolds
+  if Norma.scaffold or Norma.scaffolds
 
     types = listTypes "/../../scaffolds", "folder"
-    Norma.emit "message", types
+    
+    if types.length
+      Norma.emit "message", types
+    else
+      Norma.emit "message", "No scaffolds installed"
 
-
+  else
+    pkgs = _.uniq(Norma.packages).join ", "
+    Norma.emit "message", pkgs
 
 
 
@@ -38,7 +44,7 @@ module.exports = (tasks, cwd) ->
 module.exports.api = [
   # {
   #   command: ""
-  #   description: "list all available packages"
+  #   description: "list all installed packages"
   # }
   {
     command: "--scaffold"

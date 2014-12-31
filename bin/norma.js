@@ -13,10 +13,10 @@ GLOBAL.Tool = "norma"
 
 GLOBAL.Norma = {
   watchStarted: false,
-  reloadTasks: [],
   events: EventEmitter,
   domain: Domain,
-  prefix: "Ø "
+  prefix: "Ø ",
+  packages: []
 }
 
 
