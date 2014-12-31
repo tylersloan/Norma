@@ -70,6 +70,14 @@ module.exports = ->
 
 
               )
+
+            else
+              if Norma.prompt._.initialized
+                Norma.emit "message", "will ask again next update"
+
+
         )
+
+
     )
   )

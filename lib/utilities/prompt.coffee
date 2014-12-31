@@ -47,7 +47,7 @@ interactive = (line) ->
     c  if c.indexOf(line) is 0
 
   [
-    (if hits and hits.length then hits else completions)
+    (if hits and hits.length then hits else autocomplete)
     line
   ]
 
