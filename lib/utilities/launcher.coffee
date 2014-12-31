@@ -12,9 +12,10 @@ ReadConfig = require "./read-config"
 RegisterPackages = require "./register-packages"
 Logger = require "./../logging/logger"
 ManageDependencies = require "./manage-dependencies"
-ReadSettings = require "./../utilities/read-settings"
-BindModes = require "./../utilities/bind-modes"
-AutoUpdate = require "./../utilities/auto-update"
+ReadSettings = require "./read-settings"
+BindModes = require "./bind-modes"
+AutoUpdate = require "./auto-update"
+Prompt = require "./prompt"
 
 
 
@@ -36,7 +37,7 @@ module.exports = (env) ->
     )
 
 
-  # CONFIG ------------------------------------------------------------------
+  # CONFIG -----------------------------------------------------------------
 
   # norma.json for local project
   Norma.config = (cwd) ->
@@ -59,7 +60,13 @@ module.exports = (env) ->
 
 
 
-  # VARIABLES ---------------------------------------------------------------
+  # PROMPT -----------------------------------------------------------------
+
+  Norma.prompt = Prompt
+
+
+
+  # VARIABLES --------------------------------------------------------------
 
   # Get the package.json for norma info
   cliPackage = require Path.join __dirname, "../../package.json"
