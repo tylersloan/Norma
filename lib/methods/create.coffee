@@ -8,7 +8,7 @@
 ###
 
 
-Fs = require("fs-extra")
+Fs = require("fs")
 Chalk  = require("chalk")
 Flags = require("minimist")( process.argv.slice(2) )
 Init = require("./init")

@@ -1,5 +1,5 @@
 Path = require "path"
-Fs = require "fs-extra"
+Fs = require "fs"
 Exec = require('child_process').exec
 
 

@@ -7,7 +7,7 @@
 
 ###
 Inquirer = require "inquirer"
-Fs = require "fs-extra"
+Fs = require "fs"
 Chalk = require "chalk"
 Path = require "path"
 

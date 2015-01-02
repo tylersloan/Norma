@@ -9,7 +9,7 @@
 ###
 
 
-Fs       = require "fs-extra"
+Fs       = require "fs"
 Path     = require "path"
 Exec     = require('child_process').exec
 Argv     = require('minimist')( process.argv.slice(2) )
@@ -17,6 +17,7 @@ Argv     = require('minimist')( process.argv.slice(2) )
 ReadConfig   = require "./read-config"
 ExecCommand = require "./execute-command"
 BuildTasks = require './../methods/build'
+CopySync = require("./directory-tools").copySync
 
 
 doAfterPreInstall = (project, scaffoldConfig) ->
@@ -24,7 +25,7 @@ doAfterPreInstall = (project, scaffoldConfig) ->
   if project.path isnt process.cwd()
 
     # Copy over all of the things
-    Fs.copySync project.path, process.cwd()
+    CopySync project.path, process.cwd()
 
   # Save config
   Fs.writeFileSync(

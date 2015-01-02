@@ -1,6 +1,6 @@
 
 Path = require "path"
-Fs = require "fs-extra"
+Fs = require "fs"
 Sequence = require "run-sequence"
 Chalk = require "chalk"
 _ = require "underscore"

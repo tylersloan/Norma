@@ -1,6 +1,5 @@
 Path = require "path"
-Fs = require "fs-extra"
-Findup = require "findup-sync"
+Fs = require "fs"
 Semver = require "semver"
 Npm = require "npm"
 Q = require "kew"
@@ -13,8 +12,8 @@ module.exports = (tasks, cwd) ->
   loaded = Q.defer()
 
 
-  node_modules = Path.join cwd, "node_modules"
-  config = Findup "package.json", cwd: cwd
+  node_modules = Path.resolve cwd, "node_modules"
+  config = Path.resolve cwd, "package.json"
 
   if !config
     loaded.resolve("ok")

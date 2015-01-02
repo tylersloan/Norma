@@ -1,7 +1,7 @@
 
 Npm = require "npm"
 Path = require "path"
-Fs = require "fs-extra"
+Fs = require "fs"
 Semver = require "semver"
 Inquirer = require "inquirer"
 

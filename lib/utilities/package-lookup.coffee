@@ -1,8 +1,7 @@
 
 Path = require "path"
-Fs = require "fs-extra"
+Fs = require "fs"
 Multimatch = require "multimatch"
-Findup = require "findup-sync"
 
 MapTree = require("./directory-tools").mapTree
 ReadConfig = require "./read-config"
@@ -82,9 +81,9 @@ module.exports = (tasks, cwd) ->
   ]
 
 
-  config = Findup "package.json", cwd: cwd
+  config = Path.resolve cwd, "package.json"
 
-  node_modules = Findup "node_modules", cwd: cwd
+  node_modules = Path.resolve cwd, "node_modules"
 
   scope = [
     "dependencies"

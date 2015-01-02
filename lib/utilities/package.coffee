@@ -9,11 +9,12 @@
 
 
 Path = require "path"
-Fs = require "fs-extra"
+Fs = require "fs"
 Chalk = require "chalk"
 Gulp = require "gulp"
 _ = require "underscore"
 
+CopySync = require("./directory-tools").copySync
 ExecCommand = require "./execute-command"
 
 
@@ -27,7 +28,7 @@ module.exports = (tasks, cwd) ->
   # PACKAGE-TEMPLATE ----------------------------------------------------
 
   # __dirname is the directory that the currently executing script resides in
-  Fs.copySync(
+  CopySync(
     Path.resolve __dirname , "./base-package.coffee"
     Path.join process.cwd(), "package.coffee"
   )

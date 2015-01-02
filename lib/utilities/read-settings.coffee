@@ -1,5 +1,5 @@
 
-Fs    = require "fs-extra"
+Fs    = require "fs"
 Path = require "path"
 Nconf = require "nconf"
 

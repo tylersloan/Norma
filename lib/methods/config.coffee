@@ -9,7 +9,7 @@
 
 ###
 
-Fs    = require "fs-extra"
+Fs    = require "fs"
 Flags = require("minimist")(process.argv.slice(2))
 Chalk = require "chalk"
 Path = require "path"

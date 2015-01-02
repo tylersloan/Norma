@@ -141,7 +141,28 @@ removeTree = (dirPath, keep) ->
   unless keep then Fs.rmdirSync dirPath
   return
 
+
+BUF_LENGTH = 64 * 1024
+
+_buff = new Buffer(BUF_LENGTH)
+
+# taken from fs-extra
+copySync = (srcFile, destFile) ->
+  fdr = Fs.openSync(srcFile, "r")
+  stat = Fs.fstatSync(fdr)
+  fdw = Fs.openSync(destFile, "w", stat.mode)
+  bytesRead = 1
+  pos = 0
+  while bytesRead > 0
+    bytesRead = Fs.readSync(fdr, _buff, 0, BUF_LENGTH, pos)
+    Fs.writeSync fdw, _buff, 0, bytesRead
+    pos += bytesRead
+  Fs.closeSync fdr
+  Fs.closeSync fdw
+
+
 module.exports.mapTree = mapTree
 module.exports.copyTree = copyTree
 module.exports.copy = copy
+module.exports.copySync = copySync
 module.exports.removeTree = removeTree

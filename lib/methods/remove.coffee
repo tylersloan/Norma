@@ -1,7 +1,5 @@
-Fs = require "fs-extra"
+Fs = require "fs"
 Path = require "path"
-Flags = require('minimist')( process.argv.slice(2) )
-Findup = require "findup-sync"
 Chalk = require "chalk"
 
 ReadConfig = require "./../utilities/read-config"
@@ -27,8 +25,8 @@ module.exports = (tasks, cwd) ->
 
   # SCAFFOLD ---------------------------------------------------------------
 
-  if Flags.scaffold
-    tasks[1] = Flags.scaffold
+  if Norma.scaffold
+    tasks[1] = Norma.scaffold
 
     scaffoldLocation = Path.resolve __dirname, "../../scaffolds/", tasks[1]
 
@@ -38,7 +36,7 @@ module.exports = (tasks, cwd) ->
 
   # PACKAGES ---------------------------------------------------------------
 
-  config = Findup "package.json", cwd: process.cwd()
+  config = Path.resolve process.cwd(), "package.json"
 
   if !config
 
@@ -73,13 +71,13 @@ module.exports = (tasks, cwd) ->
       As of Norma alpha, the npm package does not support dev installing.
       Once it does, it will replace the child proccess method done below
   ###
-  if Flags.dev
+  if Norma.dev
     action = "npm uninstall --save-dev #{taskList}"
   else
     action = "npm uninstall --save #{taskList}"
 
 
-  if Flags.global or Flags.g
+  if Norma.global or Norma.g
 
     Norma.emit "message", "Removing packages to your global #{Tool}..."
 

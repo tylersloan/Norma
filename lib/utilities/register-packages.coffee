@@ -1,7 +1,7 @@
 
 Path = require "path"
 Gulp = require "gulp"
-Fs = require "fs-extra"
+Fs = require "fs"
 _ = require "underscore"
 
 PkgeLookup = require "./package-lookup"

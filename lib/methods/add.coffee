@@ -3,7 +3,6 @@ Exec = require("child_process").exec
 Chalk = require "chalk"
 Flags = require("minimist")( process.argv.slice(2) )
 Ghdownload = require "github-download"
-Findup = require "findup-sync"
 
 ExecCommand = require "./../utilities/execute-command"
 
@@ -120,7 +119,7 @@ module.exports = (tasks, cwd, cb) ->
 
   # PACKAGES ---------------------------------------------------------------
 
-  config = Findup "package.json", cwd: process.cwd()
+  config = Path.resolve process.cwd(), "package.json"
 
   if !config
 
