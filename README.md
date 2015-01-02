@@ -146,6 +146,7 @@ __Bug lifecycle__
 6. Filer agrees that it's fixed -- bug is closed, and its milestone is set to the release the fix landed in
 
 __Bug review__
+
 We review all new issues on a regular basis. Several things typically happen as part of review:
 
 - Ping the filer for clarification if needed.
@@ -157,6 +158,7 @@ We review all new issues on a regular basis. Several things typically happen as 
 Some bugs may be closed without fixing - see "Hey! My bug wasn't fixed!" below.
 
 __Hey! My bug wasn't fixed!__
+
 Yeah, what's up with that? There are a number of reasons an issue might get closed without being fixed:
 
 - Tagged 'move to backlog' - It's not forgotten! Look for a link in the comment thread to our feature backlog.
@@ -169,6 +171,7 @@ Yeah, what's up with that? There are a number of reasons an issue might get clos
 If you disagree with a bug being closed, feel free to post a comment asking for clarification or re-evaluation. The more new/updated info you can provide, the better.
 
 __Can I help fix a bug?__
+
 Yes please! But first...
 
 - Make sure no one else is already working on it -- if the bug has a milestone assigned or is tagged 'fix in progress', then it's already under way. Otherwise, post a comment on the bug to let others know you're starting to work on it.
