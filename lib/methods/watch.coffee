@@ -67,13 +67,13 @@ module.exports = (tasks, cwd) ->
 
         if Norma.verbose
           msg = Chalk.cyan(taskName.toUpperCase()) +
-            "saw" +
+            " saw" +
             Chalk.magenta(fileName) +
-            "was #{event.type}"
+            " was #{event.type}"
 
           Norma.emit "message", msg
 
-        runTask event[task]
+        runTask task
         Norma.events.emit 'file-change', event
 
     )
