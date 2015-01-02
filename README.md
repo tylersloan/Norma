@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/newspring/norma.svg?label=ready&title=Ready)](http://waffle.io/newspring/norma)
 
 # Norma
 Norma is a developer assistant, _your_ developer assistant.
