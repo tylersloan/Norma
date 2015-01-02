@@ -1,6 +1,6 @@
 {
   "name": "normajs",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Auto Discover Build Utility",
   "repository": {
     "type": "git",
@@ -37,6 +37,7 @@
     "multimatch": "^1.0.0",
     "nconf": "^0.6.9",
     "npm": "^2.1.12",
+    "rimraf": "^2.2.8",
     "run-sequence": "^0.3.6",
     "semver": "^4.1.0",
     "underscore": "^1.7.0"

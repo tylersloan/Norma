@@ -18,6 +18,7 @@ ReadConfig   = require "./read-config"
 ExecCommand = require "./execute-command"
 BuildTasks = require './../methods/build'
 CopySync = require("./directory-tools").copySync
+Remove = require("./directory-tools").remove
 
 
 doAfterPreInstall = (project, scaffoldConfig) ->
@@ -59,7 +60,7 @@ doAfterPreInstall = (project, scaffoldConfig) ->
           ExecCommand scaffoldConfig.scripts[action], process.cwd()
 
   # Before compiling, remove the nspignore folder
-  Fs.remove Path.join(process.cwd(), '/norma-ignore')
+  Remove Path.join(process.cwd(), '/norma-ignore')
   BuildTasks [], process.cwd()
 
   # Run post installation scripts

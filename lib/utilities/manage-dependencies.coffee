@@ -15,7 +15,7 @@ module.exports = (tasks, cwd) ->
   node_modules = Path.resolve cwd, "node_modules"
   config = Path.resolve cwd, "package.json"
 
-  if !config
+  if !Fs.existsSync config
     loaded.resolve("ok")
     return loaded
 

@@ -1,21 +1,22 @@
 
-Fs = require 'fs'
-Path = require 'path'
+Fs = require "fs"
+Path = require "path"
+Rimraf = require "rimraf"
 
 
 # Set up a basic whitelist
 whitelist = [
-  '.git'
-  'node_modules'
-  '#{Tool}_packages'
-  '.DS_Store'
+  ".git"
+  "node_modules"
+  "#{Tool}_packages"
+  ".DS_Store"
 ]
 
 mkdir = (dir) ->
 
   # making directory without exception if exists
   try
-    Fs.mkdirSync dir, '0755'
+    Fs.mkdirSync dir, "0755"
   catch e
     throw e  unless e.code is "EEXIST"
 
@@ -29,7 +30,7 @@ copy = (src, dest, cb) ->
 
   oldFile
     .pipe(newFile)
-    .on('close', (err) ->
+    .on("close", (err) ->
       throw err if err
 
       if cb then cb dest
@@ -69,7 +70,7 @@ mapTree = (filename, ignore, force) ->
 
 
     else
-      # Assuming it's a file. In real life it could be a symlink or
+      # Assuming it"s a file. In real life it could be a symlink or
       # something else!
       info.type = "file"
 
@@ -161,8 +162,19 @@ copySync = (srcFile, destFile) ->
   Fs.closeSync fdw
 
 
-module.exports.mapTree = mapTree
-module.exports.copyTree = copyTree
-module.exports.copy = copy
-module.exports.copySync = copySync
-module.exports.removeTree = removeTree
+removeSync = (dir) ->
+  Rimraf.sync dir
+
+remove = (dir, callback) ->
+  (if callback then Rimraf(dir, callback) else Rimraf(dir, ->
+  ))
+
+
+module.exports =
+  remove: remove
+  removeSync: removeSync
+  mapTree: mapTree
+  copyTree: copyTree
+  copy: copy
+  copySync: copySync
+  removeTree: removeTree
