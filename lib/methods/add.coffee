@@ -89,7 +89,7 @@ module.exports = (tasks, cwd, cb) ->
         Norma.emit "message", "Packages installed!"
 
         if typeof cb is 'function'
-          cb()
+          cb null
 
     )
 
@@ -112,7 +112,7 @@ module.exports = (tasks, cwd, cb) ->
         Norma.emit "message", "Packages installed!"
 
         if typeof cb is 'function'
-          cb()
+          cb null
 
     )
 

@@ -94,10 +94,6 @@ module.exports = (env) ->
     # exit
     process.exit 0
 
-  # set default task to watch if running bare
-  if tasks.length is 0
-    tasks = ["watch"]
-
 
   # See if help or h task is trying to be run
   if Norma.help
@@ -110,7 +106,11 @@ module.exports = (env) ->
 
   # REGISTER ---------------------------------------------------------------
 
-  runTasks = (tasks, cwd) ->
+  runTasks = (_tasks, cwd) ->
+
+    # set default task to watch if running bare
+    if _tasks.length is 0
+      _tasks = ["watch"]
 
     ###
 
@@ -130,9 +130,9 @@ module.exports = (env) ->
     ]
 
 
-    if noPackageTasks.indexOf(tasks[0]) is -1
+    if noPackageTasks.indexOf(_tasks[0]) is -1
 
-      pkges = RegisterPackages tasks, cwd
+      pkges = RegisterPackages _tasks, cwd
 
     else
       pkges = {}
@@ -143,18 +143,18 @@ module.exports = (env) ->
     Norma.events.emit "start"
 
     try
-      task = require "./../methods/#{tasks[0]}"
-      tasks.shift()
-      task tasks, cwd
+      task = require "./../methods/#{_tasks[0]}"
+      _tasks.shift()
+      task _tasks, cwd
 
     catch e
 
-      pkge = tasks.shift()
+      pkge = _tasks.shift()
 
       method = pkge
 
-      if tasks.length
-        method += "-#{tasks[0]}"
+      if _tasks.length
+        method += "-#{_tasks[0]}"
 
 
       if pkges[method]
