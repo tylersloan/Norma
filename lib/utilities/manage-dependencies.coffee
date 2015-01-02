@@ -11,6 +11,11 @@ module.exports = (tasks, cwd) ->
   # create the deferred
   loaded = Q.defer()
 
+  update = Norma.settings.get("autoUpdate")
+
+  if update is "false" or update is false
+    loaded.resolve("ok")
+    return loaded
 
   node_modules = Path.resolve cwd, "node_modules"
   config = Path.resolve cwd, "package.json"
@@ -18,6 +23,8 @@ module.exports = (tasks, cwd) ->
   if !Fs.existsSync config
     loaded.resolve("ok")
     return loaded
+
+
 
   installed = MapTree node_modules, true
 
