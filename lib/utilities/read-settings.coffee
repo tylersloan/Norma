@@ -4,6 +4,7 @@ Path = require "path"
 Nconf = require "nconf"
 
 
+intialized = false
 
 initialize = ->
   # CONFIG-TYPE -----------------------------------------------------------
@@ -59,22 +60,26 @@ initialize = ->
     .file "local", local
     .file "global", global
 
+  intialized = true
+
   return Nconf
 
 
 
 
 get = (getter) ->
-  initialize()
+  if !intialized
+    initialize()
+    
   return Nconf.get getter
 
 
 
-# set = (setter, value) ->
-#   return Nconf.set setter, value
+set = (setter, value) ->
+  return Nconf.set setter, value
 
 
 module.exports = get
 module.exports._ = Nconf
 module.exports.get = get
-# module.exports.set = set
+module.exports.set = set
