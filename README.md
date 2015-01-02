@@ -14,9 +14,12 @@ Norma has 5 core principles
 
 These core principles drive development and interactions with Norma.
 
+=========
 #### Requirements
 Currently Norma has only been tested on Mac OS, although support for Windows and Linux are planned. Besides that, the only other requirement is to have node installed (which is covered in the installation section below.
 
+
+=========
 ### Installation
 Getting started with Norma is easy enough if you have every worked with node before. Norma is available on npmjs.org and can be installed with `$ npm install normajs -g`.
 
@@ -28,6 +31,7 @@ If you have never worked with node before, you can install it [here](http://node
 
 > You can also use home-brew for mac to install node. This is the preferred manner of the author but not the official method per nodejs. To install home-brew, go [here](http://brew.sh/) and go to the install instructions at the bottom of the page. They should look like this: `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`. After home-brew is installed, run `$ brew update; brew install node`. After this is done, you have node and can install Norma.
 
+=========
 ### Getting Started
 
 Before we get to far into the abilities and workings of Norma, lets create a project to see how she works…
@@ -65,13 +69,12 @@ Now, all we have to do is tell Norma we want to work. This is done in a number o
 
 All it took to get to work was to tell Norma what you wanted to do in one place!
 
-
+=========
 ### Further exploration
 Norma has a ton more to offer and a lot more power than what was just shown. Not that you have the basics, explore these docs to see what else Norma can help you with! Don’t forget to check out the contribution guidelines and issue reporting sections to help make Norma the best assistant you could want!
 
-
+=========
 ### Contributing to Norma
-
 First, thank you for contributing to the Norma project!
 
 #### How to contribute
@@ -100,6 +103,8 @@ Private harassment is also unacceptable. No matter who you are, if you feel you 
 
 Likewise any spamming, trolling, flaming, baiting or other attention-stealing behavior is not welcome.
 
+
+=========
 ### Issue Reporting
 
 If you've found an issue with Norma here's how to report the problem...
