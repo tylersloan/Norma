@@ -119,12 +119,4 @@ module.exports.api = [
     command: ""
     description: "watch for changes"
   }
-  {
-    command: "--open"
-    description: "open your browser to site"
-  }
-  {
-    command: "--editor"
-    description: "open your editor to current project root"
-  }
 ]
