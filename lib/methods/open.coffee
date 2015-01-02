@@ -19,7 +19,6 @@ module.exports = (tasks, cwd) ->
   else
     editor = tasks[0]
 
-
   Open cwd, editor
 
 

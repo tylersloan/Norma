@@ -10,7 +10,6 @@ AutoDiscover = require "./auto-discover"
 
 module.exports = (tasks, cwd) ->
 
-
   # Get any project specific packages (from package.json)
   projectTasks = PkgeLookup tasks, cwd
 
@@ -24,6 +23,7 @@ module.exports = (tasks, cwd) ->
   # Combine all tasks list in order of local - local npm - global npm
   for task in combinedTasks
     _.extend Gulp.tasks, task
+
 
   # see if we need to download any packages
   isMissingTasks = AutoDiscover tasks, cwd, Gulp.tasks

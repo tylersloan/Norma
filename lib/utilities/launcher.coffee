@@ -144,12 +144,15 @@ module.exports = (env) ->
 
     try
       task = require "./../methods/#{_tasks[0]}"
-      _tasks.shift()
-      task _tasks, cwd
+      action = _tasks.slice()
+      action.shift()
+
+      task action, cwd
 
     catch e
 
-      pkge = _tasks.shift()
+      pkge = _tasks.slice()
+      pkge.shift()
 
       method = pkge
 

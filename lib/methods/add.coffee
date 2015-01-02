@@ -6,7 +6,7 @@ Ghdownload = require "github-download"
 
 ExecCommand = require "./../utilities/execute-command"
 
-module.exports = (tasks, cwd, cb) ->
+module.exports = (tasks, cwd, callback) ->
 
 
   # LOGS -------------------------------------------------------------------
@@ -88,8 +88,8 @@ module.exports = (tasks, cwd, cb) ->
 
         Norma.emit "message", "Packages installed!"
 
-        if typeof cb is 'function'
-          cb null
+        if typeof callback is "function"
+          callback null
 
     )
 
@@ -111,8 +111,8 @@ module.exports = (tasks, cwd, cb) ->
 
         Norma.emit "message", "Packages installed!"
 
-        if typeof cb is 'function'
-          cb null
+        if typeof callback is "function"
+          callback null
 
     )
 
