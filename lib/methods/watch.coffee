@@ -8,7 +8,6 @@ Gulp = require "gulp"
 
 ReadConfig = require "./../utilities/read-config"
 PkgeLookup = require "./../utilities/package-lookup"
-LocalTld = require "./../utilities/local-tld"
 Build = require "./build"
 Prompt = require "./../utilities/prompt"
 
@@ -45,7 +44,7 @@ module.exports = (tasks, cwd) ->
       msg =
         level: "debug"
         message: "Task: #{task.toUpperCase()} added to watch"
-        
+
       Norma.emit "message", msg
 
     src = if config.tasks[task]? then config.tasks[task].src else "./**/*/"
