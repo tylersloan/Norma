@@ -123,6 +123,7 @@ module.exports = (env) ->
       "config"
       "create"
       "init"
+      "open"
       "remove"
       "search"
       "update"

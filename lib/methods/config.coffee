@@ -58,7 +58,7 @@ module.exports = (tasks, cwd) ->
     if !Flags.remove
       msg = Chalk.cyan( tasks[0] + ": ") +
         Norma.settings.get(tasks[0])
-        
+
       Norma.emit "message", msg
     else
       Norma.settings._.clear tasks[0]
