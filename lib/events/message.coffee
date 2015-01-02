@@ -57,7 +57,7 @@ module.exports = ->
 
 
   messageType.debug = (msg) ->
-    
+
     if Norma.debug
       msg.color = "red"
       messageType.log msg
@@ -84,12 +84,16 @@ module.exports = ->
 
   Norma.events.on "message", (message) ->
 
+
     if typeof message is "string"
 
       message =
         message: message
         level: "log"
         name: "Log"
+
+    if Norma.silent and message.type isnt "alert"
+      return
 
 
     if message.level
