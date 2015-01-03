@@ -122,6 +122,7 @@ module.exports = (env) ->
       "add"
       "config"
       "create"
+      "help"
       "init"
       "open"
       "remove"
