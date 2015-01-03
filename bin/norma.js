@@ -73,7 +73,7 @@ loadEvents();
 
 Domain.on("error", function(err){
 
-  err.level = "crash";
+  // err.level = "crash";
 
   // handle the error safely
   Norma.events.emit("error", err);

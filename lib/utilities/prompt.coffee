@@ -4,6 +4,8 @@ Util = require "util"
 Chalk = require "chalk"
 _ = require "underscore"
 
+Build = require "./../methods/build"
+
 
 # HELP --------------------------------------------------------------------
 

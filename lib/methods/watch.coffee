@@ -8,7 +8,6 @@ Gulp = require "gulp"
 
 ReadConfig = require "./../utilities/read-config"
 PkgeLookup = require "./../utilities/package-lookup"
-Build = require "./build"
 Prompt = require "./../utilities/prompt"
 
 
@@ -67,7 +66,7 @@ module.exports = (tasks, cwd) ->
 
         if Norma.verbose
           msg = Chalk.cyan(taskName.toUpperCase()) +
-            " saw" +
+            " saw " +
             Chalk.magenta(fileName) +
             " was #{event.type}"
 

@@ -55,9 +55,8 @@ module.exports = ->
 
   Norma.events.on "error", (error) ->
 
-
-    if error.domainThrown
-      errorType.crash error
+    # if error.domainThrown
+    #   errorType.crash error
 
     if typeof error is "string"
 
