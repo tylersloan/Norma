@@ -175,7 +175,10 @@ module.exports = (env) ->
 
   # DEPENDENCIES ------------------------------------------------------------
 
-  Norma.events.emit "message", "Making sure everything is in place..."
+  name = Norma.settings.get "user:name"
+  if name then name = " " + name else name = ""
+
+  Norma.events.emit "message", "I'm getting everything ready#{name}..."
 
   ready = ManageDependencies(tasks, env.cwd)
 
