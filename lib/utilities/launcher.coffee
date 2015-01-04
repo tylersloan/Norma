@@ -143,30 +143,30 @@ module.exports = (env) ->
     # Fire the start event
     Norma.events.emit "start"
 
-    try
-      task = require "./../methods/#{_tasks[0]}"
-      action = _tasks.slice()
-      action.shift()
+    if pkges
 
-      task action, cwd
+      try
+        task = require "./../methods/#{_tasks[0]}"
+        action = _tasks.slice()
+        action.shift()
 
-    catch e
-      pkge = _tasks.slice()
+        task action, cwd
 
-      method = pkge[0]
-      pkge.shift()
+      catch e
+        pkge = _tasks.slice()
 
-      if pkge.length
-        method += "-#{pkge[0]}"
+        method = pkge[0]
+        pkge.shift()
 
-      console.log method
+        if pkge.length
+          method += "-#{pkge[0]}"
 
-      if pkges[method]
-        pkges[method].fn ->
-          return
-      else
-        e.level = "crash"
-        Norma.events.emit "error", e
+        if pkges[method]
+          pkges[method].fn ->
+            return
+        else
+          e.level = "crash"
+          Norma.events.emit "error", e
 
     # Fire the stop event
     # Norma.events.emit "stop"
