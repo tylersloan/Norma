@@ -151,15 +151,15 @@ module.exports = (env) ->
       task action, cwd
 
     catch e
-
       pkge = _tasks.slice()
+
+      method = pkge[0]
       pkge.shift()
 
-      method = pkge
+      if pkge.length
+        method += "-#{pkge[0]}"
 
-      if _tasks.length
-        method += "-#{_tasks[0]}"
-
+      console.log method
 
       if pkges[method]
         pkges[method].fn ->
