@@ -23,8 +23,8 @@ module.exports = (tasks, cwd) ->
   # cwd = path where norma package to be init'ed (same as process cwd)
   # tasks = [ 'create', <appName> ] - flags are not included in the array
 
-  # __dirname is this script files' directory
-  scaffolds = MapTree Path.join __dirname, "/../../scaffolds"
+  # Norma.userHome is this script files' directory
+  scaffolds = MapTree Path.join Norma.userHome, "/scaffolds"
 
   # Add in custom option to list of scaffolds available
   scaffolds.children.push custom =

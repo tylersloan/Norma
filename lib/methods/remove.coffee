@@ -28,7 +28,7 @@ module.exports = (tasks, cwd) ->
   if Norma.scaffold
     tasks[1] = Norma.scaffold
 
-    scaffoldLocation = Path.resolve __dirname, "../../scaffolds/", tasks[1]
+    scaffoldLocation = Path.resolve Norma.userHome, "scaffolds/", tasks[1]
 
     RemoveTree scaffoldLocation
 
@@ -80,9 +80,10 @@ module.exports = (tasks, cwd) ->
   if Norma.global or Norma.g
 
     Norma.emit "message", "Removing packages to your global #{Tool}..."
+  
 
     # Do work on users global norma
-    process.chdir Path.resolve __dirname, "../../packages"
+    process.chdir Path.resolve Norma.userHome, "packages"
 
     ExecCommand(
       action

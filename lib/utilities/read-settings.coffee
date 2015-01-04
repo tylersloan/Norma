@@ -17,7 +17,7 @@ initialize = ->
 
   ###
 
-  global = Path.resolve __dirname, "../../", ".#{Tool}"
+  global = Path.resolve Norma.userHome, ".#{Tool}"
   local = Path.join process.cwd(), ".#{Tool}"
 
 
@@ -70,7 +70,7 @@ initialize = ->
 get = (getter) ->
   if !intialized
     initialize()
-    
+
   return Nconf.get getter
 
 

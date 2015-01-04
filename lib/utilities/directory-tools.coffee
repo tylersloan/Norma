@@ -174,6 +174,7 @@ module.exports =
   remove: remove
   removeSync: removeSync
   mapTree: mapTree
+  mkdir: mkdir
   copyTree: copyTree
   copy: copy
   copySync: copySync

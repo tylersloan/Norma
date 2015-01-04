@@ -66,7 +66,7 @@ module.exports = (tasks, cwd) ->
 
 
     # verify we aren't in root
-    if cwd isnt Path.resolve __dirname, '../../packages'
+    if cwd isnt Path.resolve Norma.userHome, 'packages'
 
       pkges = MapTree process.cwd()
 

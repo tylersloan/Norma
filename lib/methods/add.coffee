@@ -3,8 +3,10 @@ Exec = require("child_process").exec
 Chalk = require "chalk"
 Flags = require("minimist")( process.argv.slice(2) )
 Ghdownload = require "github-download"
+Fs = require "fs"
 
 ExecCommand = require "./../utilities/execute-command"
+MkDir = require("./../utilities/directory-tools").mkdir
 
 module.exports = (tasks, cwd, callback) ->
 
@@ -31,8 +33,10 @@ module.exports = (tasks, cwd, callback) ->
     finalLoc = tasks[0].split "norma-"
     finalLoc = finalLoc[1]
 
+    MkDir Path.resolve Norma.userHome, "scaffolds"
+
     # Get final resting place of global scaffolds
-    scaffoldLocation = Path.resolve __dirname, "../../scaffolds/", finalLoc
+    scaffoldLocation = Path.resolve Norma.userHome, "scaffolds", finalLoc
 
     # Download from github
     Ghdownload(
@@ -75,8 +79,28 @@ module.exports = (tasks, cwd, callback) ->
 
     Norma.emit "message", "Installing packages to your global #{Tool}..."
 
+
+    MkDir Path.resolve Norma.userHome, "packages"
+
+    pgkeJSON = Path.resolve(Norma.userHome, "package.json")
+
+    if !Fs.existsSync( pgkeJSON )
+
+      defaultPackageData =
+        name: "global-packages"
+        version: "1.0.0"
+        description: ""
+        main: "index.js"
+        scripts:
+          test: "echo \"Error: no test specified\" && exit 1"
+        author: ""
+        license: "MIT"
+
+      Fs.writeFile pgkeJSON, JSON.stringify(defaultPackageData, null, 2)
+
+
     # Do work on users global norma
-    process.chdir Path.resolve __dirname, "../../packages"
+    process.chdir Path.resolve Norma.userHome, "packages"
 
     ExecCommand(
       action

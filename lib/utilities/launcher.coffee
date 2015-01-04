@@ -7,6 +7,8 @@
 Flags = require("minimist")( process.argv.slice(2) )
 Chalk = require "chalk"
 Path = require "path"
+Home = require "user-home"
+Fs = require "fs"
 
 ReadConfig = require "./read-config"
 RegisterPackages = require "./register-packages"
@@ -16,12 +18,23 @@ ReadSettings = require "./read-settings"
 BindModes = require "./bind-modes"
 AutoUpdate = require "./auto-update"
 Prompt = require "./prompt"
+MkDir = require("./directory-tools").mkdir
 
 
 
 module.exports = (env) ->
 
   Norma.root = Path.resolve __dirname, "../../"
+
+  if Home
+
+    MkDir Path.resolve Home, "#{Tool}"
+    Norma.userHome = Path.resolve Home, "#{Tool}"
+
+  else
+
+    MkDir Path.resolve __dirname, "../../../${Tool}"
+    Norma.userHome = Path.resolve __dirname, "../../../${Tool}"
 
 
   ###
@@ -80,7 +93,7 @@ module.exports = (env) ->
   # This should only run locally
   if !Norma.production
 
-    AutoUpdate()
+    AutoUpdate tasks
 
 
 
@@ -176,6 +189,7 @@ module.exports = (env) ->
   # DEPENDENCIES ------------------------------------------------------------
 
   name = Norma.settings.get "user:name"
+
   if name then name = " " + name else name = ""
 
   Norma.events.emit "message", "I'm getting everything ready#{name}..."

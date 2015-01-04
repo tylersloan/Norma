@@ -14,6 +14,7 @@ Flags = require("minimist")( process.argv.slice(2) )
 Init = require("./init")
 Package = require "./../utilities/package"
 
+MkDir = require("./../utilities/directory-tools").mkdir
 
 module.exports = (tasks, cwd) ->
 
@@ -39,10 +40,7 @@ module.exports = (tasks, cwd) ->
     packageName = "#{Tool}-#{packageName}"
 
   # If packageName declared, create directory, else create in place
-  try
-    Fs.mkdirSync packageName, '0755'
-  catch e
-    throw e unless e.code is "EEXIST"
+  MkDir packageName
 
   # At this point we are in the project's directory root
   process.chdir packageName

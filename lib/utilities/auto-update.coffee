@@ -7,7 +7,7 @@ Inquirer = require "inquirer"
 
 ExecCommand = require "./execute-command"
 
-module.exports = ->
+module.exports = (tasks) ->
 
   # UPDATE ------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ module.exports = ->
 
                     Norma.emit "message", msg
 
-                    Launcher.run ["watch"], process.cwd()
+                    Launcher.run tasks, process.cwd()
 
 
               )
