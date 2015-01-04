@@ -82,7 +82,7 @@ module.exports = (tasks, cwd, callback) ->
 
     MkDir Path.resolve Norma.userHome, "packages"
 
-    pgkeJSON = Path.resolve(Norma.userHome, "package.json")
+    pgkeJSON = Path.resolve(Norma.userHome, "packages/package.json")
 
     if !Fs.existsSync( pgkeJSON )
 
