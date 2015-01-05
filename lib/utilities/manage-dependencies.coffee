@@ -118,14 +118,14 @@ module.exports = (tasks, cwd) ->
 
         message =
           name: addedName
-          message: "needs updating"
+          message: "#{addedName} needs updating"
 
         update addedName, message
 
     else
       message =
         name: addedName
-        message: "needs installing"
+        message: "#{addedName} needs installing"
 
       update addedName, message
 

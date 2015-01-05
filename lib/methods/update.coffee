@@ -110,11 +110,10 @@ module.exports = (tasks, cwd) ->
 
     Norma.events.emit "message", msg
 
-    console.log tasks
-    # ExecCommand(
-    #   "npm update #{tasks}"
-    #   cwd
-    # )
+    ExecCommand(
+      "npm update #{tasks}"
+      cwd
+    )
 
 
 
