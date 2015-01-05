@@ -1,5 +1,5 @@
 
-Chalk = require "chalk"
+Q = require "kew"
 
 
 module.exports = ->
@@ -7,12 +7,27 @@ module.exports = ->
   Norma.end = ->
     process.exit(0)
 
+
   Norma.stop  = ->
-    Norma.emit "stop"
 
-  Norma.events.on "stop", ->
+    promiseFunctions = new Array
+    functions =  Norma.events.listeners "stop"
 
-    if Norma.verbose
-      Norma.emit "message", Chalk.grey("exiting...")
+    obj = {}
+    count = 1
 
-    Norma.end()
+    # Build dynamic list of defered functions
+    for fn in functions
+      count++
+      obj[count] = Q.defer()
+
+      fn obj[count].makeNodeResolver()
+      promiseFunctions.push obj[count]
+
+    # once all stop events are done exit
+    Q.all(promiseFunctions)
+      .then( ->
+        if Norma.verbose
+          Norma.emit "message", "exiting..."
+        Norma.end()
+      )
