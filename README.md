@@ -72,7 +72,7 @@ All it took to get to work was to tell Norma what you wanted to do in one place!
 
 =========
 ### Further exploration
-Norma has a ton more to offer and a lot more power than what was just shown. Not that you have the basics, explore these docs to see what else Norma can help you with! Don’t forget to check out the contribution guidelines and issue reporting sections to help make Norma the best assistant you could want!
+Norma has a ton more to offer and a lot more power than what was just shown. Now that you have the basics, explore these docs to see what else Norma can help you with! Don’t forget to check out the contribution guidelines and issue reporting sections to help make Norma the best assistant you could want!
 
 =========
 ### Contributing to Norma
