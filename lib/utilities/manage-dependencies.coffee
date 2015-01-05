@@ -1,6 +1,5 @@
 Path = require "path"
-Fs = require "fs-extra"
-Findup = require "findup-sync"
+Fs = require "fs"
 Semver = require "semver"
 Npm = require "npm"
 Q = require "kew"
@@ -12,13 +11,20 @@ module.exports = (tasks, cwd) ->
   # create the deferred
   loaded = Q.defer()
 
+  update = Norma.settings.get("autoUpdate")
 
-  node_modules = Path.join cwd, "node_modules"
-  config = Findup "package.json", cwd: cwd
-
-  if !config
+  if update is "false" or update is false
     loaded.resolve("ok")
     return loaded
+
+  node_modules = Path.resolve cwd, "node_modules"
+  config = Path.resolve cwd, "package.json"
+
+  if !Fs.existsSync config
+    loaded.resolve("ok")
+    return loaded
+
+
 
   installed = MapTree node_modules, true
 
@@ -112,14 +118,14 @@ module.exports = (tasks, cwd) ->
 
         message =
           name: addedName
-          message: "needs updating"
+          message: "#{addedName} needs updating"
 
         update addedName, message
 
     else
       message =
         name: addedName
-        message: "needs installing"
+        message: "#{addedName} needs installing"
 
       update addedName, message
 

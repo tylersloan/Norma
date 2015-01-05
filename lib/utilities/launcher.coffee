@@ -7,20 +7,34 @@
 Flags = require("minimist")( process.argv.slice(2) )
 Chalk = require "chalk"
 Path = require "path"
+Home = require "user-home"
+Fs = require "fs"
 
 ReadConfig = require "./read-config"
 RegisterPackages = require "./register-packages"
 Logger = require "./../logging/logger"
 ManageDependencies = require "./manage-dependencies"
-ReadSettings = require "./../utilities/read-settings"
-BindModes = require "./../utilities/bind-modes"
-AutoUpdate = require "./../utilities/auto-update"
+ReadSettings = require "./read-settings"
+BindModes = require "./bind-modes"
+AutoUpdate = require "./auto-update"
+Prompt = require "./prompt"
+MkDir = require("./directory-tools").mkdir
 
 
 
 module.exports = (env) ->
 
   Norma.root = Path.resolve __dirname, "../../"
+
+  if Home
+
+    MkDir Path.resolve Home, "#{Tool}"
+    Norma.userHome = Path.resolve Home, "#{Tool}"
+
+  else
+
+    MkDir Path.resolve __dirname, "../../../${Tool}"
+    Norma.userHome = Path.resolve __dirname, "../../../${Tool}"
 
 
   ###
@@ -31,12 +45,9 @@ module.exports = (env) ->
   ###
   if process.cwd() isnt env.cwd
     process.chdir env.cwd
-    console.log(
-      Chalk.cyan("Working directory changed to", Chalk.magenta(env.cwd))
-    )
 
 
-  # CONFIG ------------------------------------------------------------------
+  # CONFIG -----------------------------------------------------------------
 
   # norma.json for local project
   Norma.config = (cwd) ->
@@ -59,7 +70,13 @@ module.exports = (env) ->
 
 
 
-  # VARIABLES ---------------------------------------------------------------
+  # PROMPT -----------------------------------------------------------------
+
+  Norma.prompt = Prompt
+
+
+
+  # VARIABLES --------------------------------------------------------------
 
   # Get the package.json for norma info
   cliPackage = require Path.join __dirname, "../../package.json"
@@ -76,7 +93,7 @@ module.exports = (env) ->
   # This should only run locally
   if !Norma.production
 
-    AutoUpdate()
+    AutoUpdate tasks
 
 
 
@@ -84,15 +101,11 @@ module.exports = (env) ->
 
   # Check for version flag and report version
   if Norma.version
-
-    console.log "#{Tool} CLI version", Chalk.cyan(cliPackage.version)
+    versionString = "#{Tool} CLI version: #{Chalk.cyan(cliPackage.version)}"
+    Norma.emit "message", versionString
 
     # exit
     process.exit 0
-
-  # set default task to watch if running bare
-  if tasks.length is 0
-    tasks = ["watch"]
 
 
   # See if help or h task is trying to be run
@@ -106,7 +119,11 @@ module.exports = (env) ->
 
   # REGISTER ---------------------------------------------------------------
 
-  runTasks = (tasks, cwd) ->
+  runTasks = (_tasks, cwd) ->
+
+    # set default task to watch if running bare
+    if _tasks.length is 0
+      _tasks = ["watch"]
 
     ###
 
@@ -118,16 +135,18 @@ module.exports = (env) ->
       "add"
       "config"
       "create"
+      "help"
       "init"
+      "open"
       "remove"
       "search"
       "update"
     ]
 
 
-    if noPackageTasks.indexOf(tasks[0]) is -1
+    if noPackageTasks.indexOf(_tasks[0]) is -1
 
-      pkges = RegisterPackages tasks, cwd
+      pkges = RegisterPackages _tasks, cwd
 
     else
       pkges = {}
@@ -137,27 +156,30 @@ module.exports = (env) ->
     # Fire the start event
     Norma.events.emit "start"
 
-    try
-      task = require "./../methods/#{tasks[0]}"
-      tasks.shift()
-      task tasks, cwd
+    if pkges
 
-    catch e
+      try
+        task = require "./../methods/#{_tasks[0]}"
+        action = _tasks.slice()
+        action.shift()
 
-      pkge = tasks.shift()
+        task action, cwd
 
-      method = pkge
+      catch e
+        pkge = _tasks.slice()
 
-      if tasks.length
-        method += "-#{tasks[0]}"
+        method = pkge[0]
+        pkge.shift()
 
+        if pkge.length
+          method += "-#{pkge[0]}"
 
-      if pkges[method]
-        pkges[method].fn ->
-          return
-      else
-        e.level = "crash"
-        Norma.events.emit "error", e
+        if pkges[method]
+          pkges[method].fn ->
+            return
+        else
+          e.level = "crash"
+          Norma.events.emit "error", e
 
     # Fire the stop event
     # Norma.events.emit "stop"
@@ -166,7 +188,11 @@ module.exports = (env) ->
 
   # DEPENDENCIES ------------------------------------------------------------
 
-  Norma.events.emit "message", "Making sure everything is in place..."
+  name = Norma.settings.get "user:name"
+
+  if name then name = " " + name else name = ""
+
+  Norma.events.emit "message", "I'm getting everything ready#{name}..."
 
   ready = ManageDependencies(tasks, env.cwd)
 

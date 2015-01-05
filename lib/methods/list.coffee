@@ -1,7 +1,7 @@
 Path = require "path"
-Fs = require "fs-extra"
-Flags = require("minimist")( process.argv.slice(2) )
+Fs = require "fs"
 Chalk = require "chalk"
+_ = require "underscore"
 
 MapTree = require("./../utilities/directory-tools").mapTree
 PkgeLookup = require "./../utilities/package-lookup"
@@ -23,51 +23,20 @@ module.exports = (tasks, cwd) ->
     return scaffoldList
 
 
-  if Flags.scaffold or Flags.scaffolds
+  if Norma.scaffold or Norma.scaffolds
 
-    console.log listTypes "/../../scaffolds", "folder"
+    types = listTypes "/../../scaffolds", "folder"
+    
+    if types.length
+      Norma.emit "message", types
+    else
+      Norma.emit "message", "No scaffolds installed"
 
   else
-
-    # # Get any project specific packages (from package.json)
-    # projectTasks = PkgeLookup tasks, cwd
-    #
-    # # Get global packages added to Norma
-    # rootGulpTasks = PkgeLookup tasks, Path.resolve(__dirname, "../../")
-    #
-    # # See if there are any project packages (from norma-packages dir)
-    # # Should this check be in the PgkeLookup file?
-    # customPackages = Fs.existsSync Path.join(cwd, "#{Tool}-packages")
-    #
-    # if customPackages
-    #
-    #   # Look for project specific packages (from norma-packages dir)
-    #   customPackages = PkgeLookup tasks, Path.join(cwd, "#{Tool}-packages")
-    #
-    #   projectTasks = customPackages.concat projectTasks
-    #
-    #
-    # combinedTasks = projectTasks.concat rootGulpTasks
-    #
-    # console.log rootGulpTasks
-    #
-    # for task in combinedTasks
-    #   for taskKey of task
-    #     console.log task[taskKey].name
+    pkgs = _.uniq(Norma.packages).join ", "
+    Norma.emit "message", pkgs
 
 
-    # list = listTypes "/../../tasks", "file"
-    #
-    # cleanedList = (
-    #   name.split(".")[0] for name in list when name isnt ".DS_Store"
-    # )
-    #
-    # console.log cleanedList
-
-    console.log Chalk.red "Need to build out list for packages still"
-
-    # packages = PkgeLookup tasks, (Path.resolve __dirname, "../../")
-    # console.log packages
 
 
 # API ----------------------------------------------------------------------
@@ -75,7 +44,7 @@ module.exports = (tasks, cwd) ->
 module.exports.api = [
   # {
   #   command: ""
-  #   description: "list all available packages"
+  #   description: "list all installed packages"
   # }
   {
     command: "--scaffold"

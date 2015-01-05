@@ -12,7 +12,7 @@ module.exports = (config, tasks) ->
 
   ###
   Gulp.task "sample", (cb) ->
-    console.log "Your scripts go here"
+    Norma.emit "message", "Your scripts go here"
 
     cb null
 

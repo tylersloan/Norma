@@ -1,7 +1,6 @@
 Path = require "path"
-Fs = require "fs-extra"
+Fs = require "fs"
 Multimatch = require "multimatch"
-Findup = require "findup-sync"
 
 ExecCommand = require "./../utilities/execute-command"
 
@@ -37,9 +36,9 @@ module.exports = (tasks, cwd) ->
     ]
 
 
-    config = Findup "package.json", cwd: cwd
+    config = Path.resolve cwd, "package.json"
 
-    node_modules = Findup "node_modules", cwd: cwd
+    node_modules = Path.resolve cwd, "node_modules"
 
     scope = [
       "dependencies"
@@ -50,7 +49,7 @@ module.exports = (tasks, cwd) ->
     replaceString = /^norma(-|\.)/
 
 
-    if config and node_modules
+    if Fs.existsSync(config) and Fs.existsSync(node_modules)
 
       # Using the require method keeps the same in memory, instead we use
       # a synchronous fileread of the JSON. This should probably be in a try

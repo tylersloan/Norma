@@ -13,10 +13,10 @@ GLOBAL.Tool = "norma"
 
 GLOBAL.Norma = {
   watchStarted: false,
-  reloadTasks: [],
   events: EventEmitter,
   domain: Domain,
-  prefix: "Ø "
+  prefix: "Ø ",
+  packages: []
 }
 
 
@@ -73,7 +73,7 @@ loadEvents();
 
 Domain.on("error", function(err){
 
-  err.level = "crash";
+  // err.level = "crash";
 
   // handle the error safely
   Norma.events.emit("error", err);

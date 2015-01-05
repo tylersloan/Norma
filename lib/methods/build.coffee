@@ -1,6 +1,6 @@
 
 Path = require "path"
-Fs = require "fs-extra"
+Fs = require "fs"
 Sequence = require "run-sequence"
 Chalk = require "chalk"
 _ = require "underscore"
@@ -11,19 +11,6 @@ ReadConfig = require "./../utilities/read-config"
 ExecCommand = require "./../utilities/execute-command"
 GenerateTaskList = require "./../utilities/generate-task-list"
 
-
-###
-
-  The through task is a way to run a full sequence even
-  when sequence tasks aren"t defined. It feels kinda hacky but gulp
-  isn't really meant to be used in this way. When gulp moves to full
-  orchestrator support, this tool will need a serious revist.
-
-  @todo - Update to Gulp 4.0 and see what happens
-
-###
-Gulp.task "through", (cb) ->
-  cb null
 
 
 module.exports = (tasks, cwd) ->
@@ -103,8 +90,8 @@ module.exports = (tasks, cwd) ->
     for taskOrder of list
       for task of list[taskOrder]
 
-        if list[taskOrder][task].length is 0
-          list[taskOrder][task][0] = "through"
+        if !list[taskOrder][task].length
+          continue
 
         # add each sync task for dynamic sequence running
         if task is "sync"
@@ -112,8 +99,8 @@ module.exports = (tasks, cwd) ->
             builtList.push syncTask
 
         else
-
           builtList.push list[taskOrder][task]
+
 
     return builtList
 
@@ -164,7 +151,7 @@ module.exports = (tasks, cwd) ->
 
         return
 
-    Gulp.task "default", tasks, ->
+    Gulp.task "final", () ->
 
       if config.scripts and config.scripts.custom
         ExecCommand(
@@ -175,8 +162,16 @@ module.exports = (tasks, cwd) ->
             Norma.events.emit "message", completeMessage
         )
 
+      else
+
+        Norma.events.emit "message", completeMessage
+
+
+    tasks.push "final"
+
+
     # process.nextTick( ->
-    Gulp.start ["default"]
+    Sequence.apply null, tasks
     # )
 
 

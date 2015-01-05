@@ -6,7 +6,7 @@
 ###
 
 # Require packages
-Fs = require "fs-extra"
+Fs = require "fs"
 Path = require "path"
 Chalk = require "chalk"
 

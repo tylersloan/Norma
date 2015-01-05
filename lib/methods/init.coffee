@@ -7,7 +7,7 @@
 
 ###
 Inquirer = require "inquirer"
-Fs = require "fs-extra"
+Fs = require "fs"
 Chalk = require "chalk"
 Path = require "path"
 
@@ -23,8 +23,8 @@ module.exports = (tasks, cwd) ->
   # cwd = path where norma package to be init'ed (same as process cwd)
   # tasks = [ 'create', <appName> ] - flags are not included in the array
 
-  # __dirname is this script files' directory
-  scaffolds = MapTree Path.join __dirname, "/../../scaffolds"
+  # Norma.userHome is this script files' directory
+  scaffolds = MapTree Path.join Norma.userHome, "/scaffolds"
 
   # Add in custom option to list of scaffolds available
   scaffolds.children.push custom =
@@ -71,9 +71,12 @@ module.exports = (tasks, cwd) ->
 
         # Use first match if one was found
         if !projects.length
-          console.log(
-            Chalk.red 'That scaffold was not found. Try "norma list --scaffold"'
-          )
+
+          err =
+            level: "warn"
+            message:"That scaffold was not found. Try 'norma list --scaffold'"
+
+          Norma.emit "error", err
           return
 
         if answer.project is "custom"
@@ -104,7 +107,7 @@ module.exports = (tasks, cwd) ->
                 if answer.overridconfirm
 
                   # Clean up directory
-                  console.log Chalk.grey("Emptying current directory")
+                  Norma.emit "message", Chalk.grey("Emptying current directory")
                   RemoveTree cwd, true
                   Scaffold projects[0], answer.project
                   return

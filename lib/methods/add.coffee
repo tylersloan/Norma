@@ -3,11 +3,12 @@ Exec = require("child_process").exec
 Chalk = require "chalk"
 Flags = require("minimist")( process.argv.slice(2) )
 Ghdownload = require "github-download"
-Findup = require "findup-sync"
+Fs = require "fs"
 
 ExecCommand = require "./../utilities/execute-command"
+MkDir = require("./../utilities/directory-tools").mkdir
 
-module.exports = (tasks, cwd, cb) ->
+module.exports = (tasks, cwd, callback) ->
 
 
   # LOGS -------------------------------------------------------------------
@@ -32,8 +33,10 @@ module.exports = (tasks, cwd, cb) ->
     finalLoc = tasks[0].split "norma-"
     finalLoc = finalLoc[1]
 
+    MkDir Path.resolve Norma.userHome, "scaffolds"
+
     # Get final resting place of global scaffolds
-    scaffoldLocation = Path.resolve __dirname, "../../scaffolds/", finalLoc
+    scaffoldLocation = Path.resolve Norma.userHome, "scaffolds", finalLoc
 
     # Download from github
     Ghdownload(
@@ -41,7 +44,7 @@ module.exports = (tasks, cwd, cb) ->
       scaffoldLocation + "/"
     ).on "end", ->
       Exec "tree", (err, stdout, sderr) ->
-        console.log "Scaffold ready!"
+        Norma.emit "message", "Scaffold ready!"
         return
 
     return
@@ -73,12 +76,31 @@ module.exports = (tasks, cwd, cb) ->
     else
       action = "npm i --save #{list}"
 
-    console.log(
-      Chalk.green "Installing packages to your global #{Tool}..."
-    )
+
+    Norma.emit "message", "Installing packages to your global #{Tool}..."
+
+
+    MkDir Path.resolve Norma.userHome, "packages"
+
+    pgkeJSON = Path.resolve(Norma.userHome, "packages/package.json")
+
+    if !Fs.existsSync( pgkeJSON )
+
+      defaultPackageData =
+        name: "global-packages"
+        version: "1.0.0"
+        description: ""
+        main: "index.js"
+        scripts:
+          test: "echo \"Error: no test specified\" && exit 1"
+        author: ""
+        license: "MIT"
+
+      Fs.writeFile pgkeJSON, JSON.stringify(defaultPackageData, null, 2)
+
 
     # Do work on users global norma
-    process.chdir Path.resolve __dirname, "../../packages"
+    process.chdir Path.resolve Norma.userHome, "packages"
 
     ExecCommand(
       action
@@ -88,12 +110,10 @@ module.exports = (tasks, cwd, cb) ->
         # Change back to project cwd for further tasks
         process.chdir cwd
 
-        console.log(
-          Chalk.magenta "Packages installed!"
-        )
+        Norma.emit "message", "Packages installed!"
 
-        if typeof cb is 'function'
-          cb()
+        if typeof callback is "function"
+          callback null
 
     )
 
@@ -105,9 +125,7 @@ module.exports = (tasks, cwd, cb) ->
     else
       action = "npm i --save #{list}"
 
-    console.log(
-      Chalk.green "Installing packages to your local #{Tool}..."
-    )
+    Norma.emit "message", "Installing packages to your local #{Tool}..."
 
     ExecCommand(
       action
@@ -115,19 +133,17 @@ module.exports = (tasks, cwd, cb) ->
     ,
       ->
 
-        console.log(
-          Chalk.magenta "Packages installed!"
-        )
+        Norma.emit "message", "Packages installed!"
 
-        if typeof cb is 'function'
-          cb()
+        if typeof callback is "function"
+          callback null
 
     )
 
 
   # PACKAGES ---------------------------------------------------------------
 
-  config = Findup "package.json", cwd: process.cwd()
+  config = Path.resolve process.cwd(), "package.json"
 
   if !config
 

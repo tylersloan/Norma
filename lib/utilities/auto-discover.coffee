@@ -10,6 +10,7 @@ module.exports = (tasks, cwd, packages) ->
 
   Launcher = require "./launcher"
 
+
   # set needed variables
   config = ReadConfig cwd
   neededPackages = []
@@ -46,6 +47,7 @@ module.exports = (tasks, cwd, packages) ->
 
     # add then run norma again
     Add neededPackages, cwd, ->
+
       Launcher.run tasks, cwd
 
     prettyPrint = new Array
@@ -53,12 +55,11 @@ module.exports = (tasks, cwd, packages) ->
     for pkge in neededPackages
       prettyPrint.push pkge.name
 
-    console.log(
-      Chalk.green(
-        "Installing the following packages:"
-      )
-      Chalk.magenta "#{prettyPrint.join(', ')}"
-    )
+
+    msg = Chalk.green("Installing the following packages:") +
+      "#{prettyPrint.join(', ')}"
+
+    Norma.emit "message", msg
 
     return true
 

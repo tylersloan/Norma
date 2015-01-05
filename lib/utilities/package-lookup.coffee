@@ -1,8 +1,7 @@
 
 Path = require "path"
-Fs = require "fs-extra"
+Fs = require "fs"
 Multimatch = require "multimatch"
-Findup = require "findup-sync"
 
 MapTree = require("./directory-tools").mapTree
 ReadConfig = require "./read-config"
@@ -25,8 +24,11 @@ module.exports = (tasks, cwd) ->
       taskObject = null
 
       packages.push task.tasks
+
     else
       packages.push task
+
+
 
 
 
@@ -37,7 +39,7 @@ module.exports = (tasks, cwd) ->
 
       if pkgeConfig.type is "package" and pkgeConfig.main
         entry = Path.resolve file.path, "../", pkgeConfig.main
-
+        Norma.packages.push pkgeConfig.name
         mapPkge entry
 
     else if file.children
@@ -64,7 +66,7 @@ module.exports = (tasks, cwd) ->
 
 
     # verify we aren't in root
-    if cwd isnt Path.resolve __dirname, '../../packages'
+    if cwd isnt Path.resolve Norma.userHome, 'packages'
 
       pkges = MapTree process.cwd()
 
@@ -79,9 +81,9 @@ module.exports = (tasks, cwd) ->
   ]
 
 
-  config = Findup "package.json", cwd: cwd
+  config = Path.resolve cwd, "package.json"
 
-  node_modules = Findup "node_modules", cwd: cwd
+  node_modules = Path.resolve cwd, "node_modules"
 
   scope = [
     "dependencies"
@@ -92,7 +94,7 @@ module.exports = (tasks, cwd) ->
   replaceString = /^norma(-|\.)/
 
 
-  if config and node_modules
+  if Fs.existsSync(config) and Fs.existsSync(node_modules)
 
     # Using the require method keeps the same in memory, instead we use
     # a synchronous fileread of the JSON. This should probably be in a try
@@ -120,12 +122,15 @@ module.exports = (tasks, cwd) ->
 
     Multimatch(names, pattern).forEach (name) ->
 
+      Norma.packages.push name
+
       packageList.push Path.resolve(node_modules, name)
 
       return
 
 
     for pkge in packageList
+
       packageList[pkge] = mapPkge pkge
 
 

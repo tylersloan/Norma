@@ -1,9 +1,10 @@
 
-Fs    = require "fs-extra"
+Fs    = require "fs"
 Path = require "path"
 Nconf = require "nconf"
 
 
+intialized = false
 
 initialize = ->
   # CONFIG-TYPE -----------------------------------------------------------
@@ -16,7 +17,7 @@ initialize = ->
 
   ###
 
-  global = Path.resolve __dirname, "../../", ".#{Tool}"
+  global = Path.resolve Norma.userHome, ".#{Tool}"
   local = Path.join process.cwd(), ".#{Tool}"
 
 
@@ -59,22 +60,26 @@ initialize = ->
     .file "local", local
     .file "global", global
 
+  intialized = true
+
   return Nconf
 
 
 
 
 get = (getter) ->
-  initialize()
+  if !intialized
+    initialize()
+
   return Nconf.get getter
 
 
 
-# set = (setter, value) ->
-#   return Nconf.set setter, value
+set = (setter, value) ->
+  return Nconf.set setter, value
 
 
 module.exports = get
 module.exports._ = Nconf
 module.exports.get = get
-# module.exports.set = set
+module.exports.set = set

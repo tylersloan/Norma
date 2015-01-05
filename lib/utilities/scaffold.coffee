@@ -9,7 +9,7 @@
 ###
 
 
-Fs       = require "fs-extra"
+Fs       = require "fs"
 Path     = require "path"
 Exec     = require('child_process').exec
 Argv     = require('minimist')( process.argv.slice(2) )
@@ -17,6 +17,8 @@ Argv     = require('minimist')( process.argv.slice(2) )
 ReadConfig   = require "./read-config"
 ExecCommand = require "./execute-command"
 BuildTasks = require './../methods/build'
+CopySync = require("./directory-tools").copySync
+Remove = require("./directory-tools").remove
 
 
 doAfterPreInstall = (project, scaffoldConfig) ->
@@ -24,7 +26,7 @@ doAfterPreInstall = (project, scaffoldConfig) ->
   if project.path isnt process.cwd()
 
     # Copy over all of the things
-    Fs.copySync project.path, process.cwd()
+    CopySync project.path, process.cwd()
 
   # Save config
   Fs.writeFileSync(
@@ -58,7 +60,7 @@ doAfterPreInstall = (project, scaffoldConfig) ->
           ExecCommand scaffoldConfig.scripts[action], process.cwd()
 
   # Before compiling, remove the nspignore folder
-  Fs.remove Path.join(process.cwd(), '/norma-ignore')
+  Remove Path.join(process.cwd(), '/norma-ignore')
   BuildTasks [], process.cwd()
 
   # Run post installation scripts

@@ -1,7 +1,7 @@
 
 Path = require "path"
 Gulp = require "gulp"
-Fs = require "fs-extra"
+Fs = require "fs"
 _ = require "underscore"
 
 PkgeLookup = require "./package-lookup"
@@ -10,13 +10,12 @@ AutoDiscover = require "./auto-discover"
 
 module.exports = (tasks, cwd) ->
 
-
   # Get any project specific packages (from package.json)
   projectTasks = PkgeLookup tasks, cwd
 
 
   # Get global packages added to Norma
-  rootGulpTasks = PkgeLookup tasks, (Path.resolve __dirname, "../../packages")
+  rootGulpTasks = PkgeLookup tasks, (Path.resolve Norma.userHome, "packages")
 
 
   combinedTasks = projectTasks.concat rootGulpTasks
@@ -24,6 +23,7 @@ module.exports = (tasks, cwd) ->
   # Combine all tasks list in order of local - local npm - global npm
   for task in combinedTasks
     _.extend Gulp.tasks, task
+
 
   # see if we need to download any packages
   isMissingTasks = AutoDiscover tasks, cwd, Gulp.tasks

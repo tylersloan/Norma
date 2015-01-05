@@ -1,21 +1,22 @@
 
-Fs = require 'fs'
-Path = require 'path'
+Fs = require "fs"
+Path = require "path"
+Rimraf = require "rimraf"
 
 
 # Set up a basic whitelist
 whitelist = [
-  '.git'
-  'node_modules'
-  '#{Tool}_packages'
-  '.DS_Store'
+  ".git"
+  "node_modules"
+  "#{Tool}_packages"
+  ".DS_Store"
 ]
 
 mkdir = (dir) ->
 
   # making directory without exception if exists
   try
-    Fs.mkdirSync dir, '0755'
+    Fs.mkdirSync dir, "0755"
   catch e
     throw e  unless e.code is "EEXIST"
 
@@ -29,7 +30,7 @@ copy = (src, dest, cb) ->
 
   oldFile
     .pipe(newFile)
-    .on('close', (err) ->
+    .on("close", (err) ->
       throw err if err
 
       if cb then cb dest
@@ -69,7 +70,7 @@ mapTree = (filename, ignore, force) ->
 
 
     else
-      # Assuming it's a file. In real life it could be a symlink or
+      # Assuming it"s a file. In real life it could be a symlink or
       # something else!
       info.type = "file"
 
@@ -107,9 +108,7 @@ copyTree = (src, dest, cb) ->
 
       Fs.symlinkSync symlink, Path.join(dest, files[i])
     else
-      copy(Path.join(src, files[i]), Path.join(dest, files[i]), (dest) ->
-        console.log dest + 'has been moved over '
-      )
+      copy(Path.join(src, files[i]), Path.join(dest, files[i]))
 
 
     i++
@@ -143,7 +142,40 @@ removeTree = (dirPath, keep) ->
   unless keep then Fs.rmdirSync dirPath
   return
 
-module.exports.mapTree = mapTree
-module.exports.copyTree = copyTree
-module.exports.copy = copy
-module.exports.removeTree = removeTree
+
+BUF_LENGTH = 64 * 1024
+
+_buff = new Buffer(BUF_LENGTH)
+
+# taken from fs-extra
+copySync = (srcFile, destFile) ->
+  fdr = Fs.openSync(srcFile, "r")
+  stat = Fs.fstatSync(fdr)
+  fdw = Fs.openSync(destFile, "w", stat.mode)
+  bytesRead = 1
+  pos = 0
+  while bytesRead > 0
+    bytesRead = Fs.readSync(fdr, _buff, 0, BUF_LENGTH, pos)
+    Fs.writeSync fdw, _buff, 0, bytesRead
+    pos += bytesRead
+  Fs.closeSync fdr
+  Fs.closeSync fdw
+
+
+removeSync = (dir) ->
+  Rimraf.sync dir
+
+remove = (dir, callback) ->
+  (if callback then Rimraf(dir, callback) else Rimraf(dir, ->
+  ))
+
+
+module.exports =
+  remove: remove
+  removeSync: removeSync
+  mapTree: mapTree
+  mkdir: mkdir
+  copyTree: copyTree
+  copy: copy
+  copySync: copySync
+  removeTree: removeTree

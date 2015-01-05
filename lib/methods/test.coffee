@@ -1,14 +1,10 @@
 Path = require "path"
-Multimatch = require "multimatch"
-Findup = require "findup-sync"
 Chalk = require "chalk"
-Gulp = require "gulp"
-Flags = require("minimist")( process.argv.slice(2) )
 _ = require "underscore"
+
 
 Build = require "./../methods/build"
 Watch = require "./../methods/watch"
-
 ReadConfig = require "./../utilities/read-config"
 
 
@@ -22,12 +18,15 @@ module.exports = (tasks, cwd) ->
 
   if normaConfig.type is "package"
 
-    console.log(
-      Chalk.green "✔ Testing your package!"
-    )
+
+    msg =
+      color: "green"
+      message: "✔ Testing your package!"
+
+    Norma.emit "message", msg
 
 
-    if Flags.watch
+    if Norma.watch
 
       Watch tasks, cwd
 

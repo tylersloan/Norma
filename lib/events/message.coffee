@@ -20,6 +20,10 @@ module.exports = ->
 
     message = [Chalk.grey(Norma.prefix)]
 
+    if Norma.prompt._.initialized and Norma.prompt.open
+      Norma.prompt.pause()
+      message = []
+
     # Build the error message by priority
     # if msg.name
     #   message.push Chalk.grey(Norma.prefix + msg.name + ": ")
@@ -30,8 +34,10 @@ module.exports = ->
       else
         message.push msg.message
 
+
     if msg.fileName
       message.push Chalk.green(msg.fileName)
+
 
     if msg.lineNumber
       if msg.fileName
@@ -39,12 +45,22 @@ module.exports = ->
       else
         message.push "Line: #{msg.lineNumber} \n"
 
+
     if msg.stack
       message.push msg.stack
 
 
     console.log message.join ""
 
+    if Norma.prompt._.initialized and !Norma.prompt.open
+      Norma.prompt()
+
+
+  messageType.debug = (msg) ->
+
+    if Norma.debug
+      msg.color = "red"
+      messageType.log msg
 
   # The notify level should try to let the developer know of the message
   # the norma-notify package is a great example of this event usage
@@ -68,12 +84,16 @@ module.exports = ->
 
   Norma.events.on "message", (message) ->
 
+
     if typeof message is "string"
 
       message =
         message: message
         level: "log"
         name: "Log"
+
+    if Norma.silent and message.type isnt "alert"
+      return
 
 
     if message.level

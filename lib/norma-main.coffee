@@ -15,21 +15,6 @@ Launcher = require "./utilities/launcher"
 cli = new Liftoff({
   name: Tool
 })
-  .on("require", (name, module) ->
-
-    # Handling of extenal modules via Liftoff's require method
-
-    console.log Chalk.grey("Requiring external module: " + name + "...")
-
-    if name is "coffee-script"
-      module.register()
-
-  )
-  .on( "requireFail", (name, err) ->
-
-    # Handle failures
-    console.log Chalk.black.bgRed("Unable to load:", name, err)
-  )
 
 
 # Launch CLI -----------------------------------------------------------------
@@ -45,8 +30,6 @@ invoke = require("./utilities/launcher")
 cli.launch(
   cwd: Flags.cwd
   configPath: Flags[Tool]
-  require: Flags.require
-  completion: Flags.completion
   verbose: Flags.verbose
   ,
     invoke

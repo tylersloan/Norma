@@ -9,11 +9,12 @@
 
 
 Path = require "path"
-Fs = require "fs-extra"
+Fs = require "fs"
 Chalk = require "chalk"
 Gulp = require "gulp"
 _ = require "underscore"
 
+CopySync = require("./directory-tools").copySync
 ExecCommand = require "./execute-command"
 
 
@@ -22,12 +23,12 @@ module.exports = (tasks, cwd) ->
   # cwd = absolute path of directory where package is to be created
   # tasks = [ <appName> ] - flags are not included in the array
 
-  console.log Chalk.green "Creating your package..."
+  Norma.emit "message", "Creating your package..."
 
   # PACKAGE-TEMPLATE ----------------------------------------------------
 
   # __dirname is the directory that the currently executing script resides in
-  Fs.copySync(
+  CopySync(
     Path.resolve __dirname , "./base-package.coffee"
     Path.join process.cwd(), "package.coffee"
   )
@@ -74,5 +75,5 @@ module.exports = (tasks, cwd) ->
     process.cwd()
   ,
     ->
-      console.log Chalk.magenta "Package Ready!"
+      Norma.emit "message", "Package Ready!"
   )

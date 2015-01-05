@@ -1,5 +1,5 @@
 Path = require "path"
-Fs = require "fs-extra"
+Fs = require "fs"
 Exec = require('child_process').exec
 
 
@@ -48,7 +48,7 @@ module.exports = (action, cwd, cb) ->
 
           message = message.join(" ")
 
-          console.log message
+          Norma.emit "message", message
         i++
 
       return
