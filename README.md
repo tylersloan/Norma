@@ -17,7 +17,7 @@ These core principles drive development and interactions with Norma.
 
 =========
 #### Requirements
-Currently Norma has only been tested on Mac OS, although support for Windows and Linux are planned. Besides that, the only other requirement is to have node installed (which is covered in the installation section below.
+Currently Norma has only been tested on Mac OS and Windows 8.1, although support for Linux is planned. Besides that, the only other requirement is to have node installed (which is covered in the installation section below.)
 
 
 =========
