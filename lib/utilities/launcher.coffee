@@ -19,6 +19,7 @@ BindModes = require "./bind-modes"
 AutoUpdate = require "./auto-update"
 Prompt = require "./prompt"
 MkDir = require("./directory-tools").mkdir
+Ask = require ("./ask")
 
 
 
@@ -63,6 +64,12 @@ module.exports = (env) ->
   # PROMPT -----------------------------------------------------------------
 
   Norma.prompt = Prompt
+
+  
+
+  # QUESTIONS --------------------------------------------------------------
+
+  Norma.ask = Ask
 
 
 
