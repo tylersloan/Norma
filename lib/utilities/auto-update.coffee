@@ -8,9 +8,28 @@ Inquirer = require "inquirer"
 
 ExecCommand = require "./execute-command"
 
-module.exports = (tasks) ->
+module.exports = (tasks, preference) ->
 
   Launcher = require "./launcher"
+
+  update = ->
+
+    ExecCommand(
+      "npm update -g normajs"
+      process.cwd()
+      ,
+        ->
+          msg =
+            message: "Norma updated!"
+            color: "cyan"
+
+          Norma.emit "message", msg
+
+          Launcher.run tasks, process.cwd()
+
+
+    )
+
 
   # UPDATE ------------------------------------------------------------------
 
@@ -41,8 +60,14 @@ module.exports = (tasks) ->
 
         if skippedVersion and Semver.gte skippedVersion, availableVersion
           if Norma.prompt._.initialized
-            Norma.prompt()
+            Norma.prompt.pause()
           return
+
+        # Dont ask because user always wants latest and greatest
+        if preference is "auto"
+          update()
+          return
+
 
         message =
           level: "notify"
@@ -65,33 +90,22 @@ module.exports = (tasks) ->
           (answer) ->
             if answer.update is "yes"
 
-              ExecCommand(
-                "npm update -g normajs"
-                process.cwd()
-                ,
-                  ->
-                    msg =
-                      message: "Norma updated!"
-                      color: "cyan"
-
-                    Norma.emit "message", msg
-
-                    Launcher.run tasks, process.cwd()
-
-
-              )
+              update()
 
             else
-              if Norma.prompt._.initialized
-                msg =
-                  message: "#{Norma.prefix}OK, I will ask again next update"
-                  color: "cyan"
 
-                Norma.emit "message", msg
+              msg =
+                message: "#{Norma.prefix}OK, I will ask again next update"
+                color: "cyan"
+
+              Norma.emit "message", msg
+
 
               # isolate settings to global scale
-              Norma.settings._.remove('memory')
+              Norma.settings._.remove "memory"
               Norma.settings._.remove "local"
+
+
               Norma.settings._.set "version", availableVersion
               # Save the configuration object to file
               Norma.settings._.save (err, data) ->

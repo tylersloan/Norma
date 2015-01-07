@@ -65,7 +65,7 @@ module.exports = (env) ->
 
   Norma.prompt = Prompt
 
-  
+
 
   # QUESTIONS --------------------------------------------------------------
 
@@ -87,10 +87,12 @@ module.exports = (env) ->
 
   # AUTOUPDATE --------------------------------------------------------------
 
-  # This should only run locally
-  if !Norma.production
+  update = Norma.settings.get "autoupdate"
 
-    AutoUpdate tasks
+  # This should only run locally
+  if !Norma.production or update is "false"
+
+    AutoUpdate tasks, update
 
 
 
