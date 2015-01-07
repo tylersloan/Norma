@@ -4,11 +4,13 @@ Path = require "path"
 Fs = require "fs"
 Semver = require "semver"
 Inquirer = require "inquirer"
-Launcher = require "./launcher"
+
 
 ExecCommand = require "./execute-command"
 
 module.exports = (tasks) ->
+
+  Launcher = require "./launcher"
 
   # UPDATE ------------------------------------------------------------------
 
