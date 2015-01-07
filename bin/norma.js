@@ -85,7 +85,7 @@ Domain.on("error", function(err){
 // APPLICATION ----------------------------------------------------------
 
 process.on('SIGINT', function() {
-  Norma.events.emit("stop");
+  Norma.stop();
 });
 
 Domain.run(function(){

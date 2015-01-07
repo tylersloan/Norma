@@ -32,7 +32,7 @@ module.exports = ->
       if msg.color
         message.push Chalk[msg.color] msg.message
       else
-        message.push msg.message
+        message.push Chalk.grey msg.message
 
 
     if msg.fileName
