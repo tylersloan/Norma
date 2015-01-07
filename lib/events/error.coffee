@@ -64,7 +64,9 @@ module.exports = ->
         message: error
         level: "log"
         name: "Log"
+        color: "red"
 
+    if !error.color then error.color = "red"
 
     if error.level
       errorType[error.level] error
