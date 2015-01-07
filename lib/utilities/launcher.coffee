@@ -50,17 +50,7 @@ module.exports = (env) ->
   # CONFIG -----------------------------------------------------------------
 
   # norma.json for local project
-  Norma.config = (cwd) ->
-
-    config = {}
-
-    if !cwd
-      config = ReadConfig process.cwd()
-
-    else
-      config = ReadConfig cwd
-
-    return config
+  Norma.config = ReadConfig
 
 
 
