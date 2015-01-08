@@ -6,7 +6,6 @@
   user and then execute the scaffold script.
 
 ###
-Inquirer = require "inquirer"
 Fs = require "fs"
 Chalk = require "chalk"
 Path = require "path"
@@ -50,7 +49,7 @@ module.exports = (tasks, cwd) ->
 
   doInit = (scaffoldNames, scaffolds) ->
 
-    Inquirer.prompt([
+    Norma.ask([
       {
         type: "list"
         message: "What type of project do you want to build?"
@@ -87,7 +86,7 @@ module.exports = (tasks, cwd) ->
           if cwdIsEmpty
             return
 
-          Inquirer.prompt
+          Norma.ask
             type: "confirm"
             message: "Initializing will empty the current directory. Continue?"
             name: "override"
@@ -97,7 +96,7 @@ module.exports = (tasks, cwd) ->
             if answer.override
 
               # Make really really sure that the user wants this
-              Inquirer.prompt
+              Norma.ask
                 type: "confirm"
                 message: "Removed files are gone forever. Continue?"
                 name: "overridconfirm"

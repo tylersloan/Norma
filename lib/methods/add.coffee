@@ -52,6 +52,25 @@ module.exports = (tasks, cwd, callback) ->
 
   # INSTALL ----------------------------------------------------------------
 
+  continueTask = (list) ->
+
+    oldConfig = Norma.config()
+
+    for item in list.split(" ")
+
+      item = item.replace("#{Tool}-", "")
+
+      if !oldConfig.tasks[item]
+
+        oldConfig.tasks[item] = {}
+
+    Norma.config.save oldConfig
+
+    Norma.emit "message", "Packages installed!"
+
+    if typeof callback is "function"
+      callback null
+
   ###
 
     Here we allow users to specify a number of pacakges to be added
@@ -133,10 +152,7 @@ module.exports = (tasks, cwd, callback) ->
     ,
       ->
 
-        Norma.emit "message", "Packages installed!"
-
-        if typeof callback is "function"
-          callback null
+        continueTask list
 
     )
 

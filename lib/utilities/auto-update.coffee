@@ -3,7 +3,6 @@ Npm = require "npm"
 Path = require "path"
 Fs = require "fs"
 Semver = require "semver"
-Inquirer = require "inquirer"
 
 
 ExecCommand = require "./execute-command"
@@ -78,7 +77,7 @@ module.exports = (tasks, preference) ->
 
         Norma.events.emit "message", message
 
-        Inquirer.prompt([
+        Norma.ask([
           {
             type: "list"
             message: "Would you like to update #{Tool}?"
