@@ -54,9 +54,14 @@ module.exports = (tasks, cwd) ->
       ext.replace(".", "") for ext in Gulp.tasks[task].ext
     )
 
+    if exts.length > 1
+      exts  = "{#{exts.join(",")}}"
+    else
+      exts = "#{exts.join(",")}"
+
     Gulp.watch(
       [
-        "#{src}/*.{#{exts}}"
+        "#{src}/*.#{exts}"
         "!node_modules/**/*"
         "!.git/**/*"
       ], (event) ->
