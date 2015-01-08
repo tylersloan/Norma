@@ -69,7 +69,7 @@ module.exports = (env) ->
 
   # QUESTIONS --------------------------------------------------------------
 
-  Norma.ask = Ask
+  # Inquirer.prompt = Ask
 
 
 

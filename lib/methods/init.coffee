@@ -9,6 +9,7 @@
 Fs = require "fs"
 Chalk = require "chalk"
 Path = require "path"
+Inquirer = require "inquirer"
 
 Scaffold = require "./../utilities/scaffold"
 MapTree = require("./../utilities/directory-tools").mapTree
@@ -49,7 +50,7 @@ module.exports = (tasks, cwd) ->
 
   doInit = (scaffoldNames, scaffolds) ->
 
-    Norma.ask([
+    Inquirer.prompt([
       {
         type: "list"
         message: "What type of project do you want to build?"
@@ -86,7 +87,7 @@ module.exports = (tasks, cwd) ->
           if cwdIsEmpty
             return
 
-          Norma.ask
+          Inquirer.prompt
             type: "confirm"
             message: "Initializing will empty the current directory. Continue?"
             name: "override"
@@ -96,7 +97,7 @@ module.exports = (tasks, cwd) ->
             if answer.override
 
               # Make really really sure that the user wants this
-              Norma.ask
+              Inquirer.prompt
                 type: "confirm"
                 message: "Removed files are gone forever. Continue?"
                 name: "overridconfirm"

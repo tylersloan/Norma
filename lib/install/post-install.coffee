@@ -3,6 +3,7 @@ Chalk = require "chalk"
 Inquirer = require "inquirer"
 Path = require "path"
 Home = require "user-home"
+Inquirer = require "inquirer"
 
 MkDir = require("./../utilities/directory-tools").mkdir
 Settings = require "./../utilities/read-settings"
