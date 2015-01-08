@@ -1,8 +1,8 @@
 [![Stories in Ready](https://badge.waffle.io/newspring/norma.svg?label=ready&title=Ready)](http://waffle.io/newspring/norma)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NewSpring/Norma?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # Norma
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NewSpring/Norma?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Norma is a developer assistant, _your_ developer assistant.
 
 Building software should be about the product, not about the process of being able to build. Norma wants to remove the time between idea and execution by handling all of the tasks and processes related to creating modern software.
