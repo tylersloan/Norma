@@ -4,29 +4,32 @@ Fs = require "fs"
 Multimatch = require "multimatch"
 
 MapTree = require("./directory-tools").mapTree
-ReadConfig = require "./read-config"
+
 
 
 module.exports = (tasks, cwd) ->
 
-  normaConfig = ReadConfig process.cwd()
+  # Get config for task comparison
+  normaConfig = Norma.config()
   packageList = new Array
   packages = new Array
 
 
+  # Load package and see if it has any task
   mapPkge = (pkgeCwd) ->
 
+    # load package
     task = require pkgeCwd
 
-
+    # push task to packages
     if typeof task is "function"
       taskObject = task normaConfig, tasks
       taskObject = null
 
       packages.push task.tasks
-
-    else
-      packages.push task
+    #
+    # else
+    #   packages.push task
 
 
 
@@ -35,7 +38,7 @@ module.exports = (tasks, cwd) ->
   checkFile = (file) ->
 
     if file.name is "norma.json"
-      pkgeConfig = ReadConfig Path.resolve file.path, "../"
+      pkgeConfig = Norma.config Path.resolve file.path, "../"
 
       if pkgeConfig.type is "package" and pkgeConfig.main
         entry = Path.resolve file.path, "../", pkgeConfig.main
