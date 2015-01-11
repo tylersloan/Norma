@@ -20,7 +20,7 @@ These core principles drive development and interactions with Norma.
 Lets talk! [@normatool](https://twitter.com/normatool)
 
 ### Package Request
-The Norma team would love to build packages for **your** projects! Submit an issue with the title of **Package-Request: <name of package>** and describe what you need as a package. Or if you would like to have your project converted with all of its current tasks, create an issue with the title of **Project-Convert: <project-name>** with a link to the project. We will create a fork called feature-normajs and convert your project for you!
+The Norma team would love to build packages for **your** projects! Submit an issue with the title of **Package-Request: name of package** and describe what you need as a package. Or if you would like to have your project converted with all of its current tasks, create an issue with the title of **Project-Convert: project-name** with a link to the project. We will create a fork called feature-normajs and convert your project for you!
 
 =========
 #### Requirements
