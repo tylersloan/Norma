@@ -1,4 +1,3 @@
-# Gulp is the only requried dependency
 Gulp = require "gulp"
 
 module.exports = (config, tasks) ->
@@ -16,8 +15,7 @@ module.exports = (config, tasks) ->
 
     cb null
 
-  # Set your file type(s) here
-  Gulp.tasks["sample"].ext = [".sample"]
+
 
   ###
 

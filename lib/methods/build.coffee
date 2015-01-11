@@ -38,13 +38,13 @@ module.exports = (tasks, cwd) ->
       ,
         ->
           Norma.events.emit "message", completeMessage
-          Norma.stop()
+          # Norma.stop()
       )
 
     else
 
       Norma.events.emit "message", completeMessage
-      Norma.stop()
+      # Norma.stop()
 
 
 
