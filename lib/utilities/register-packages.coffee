@@ -22,6 +22,11 @@ module.exports = (tasks, cwd) ->
 
   # Combine all tasks list in order of local - local npm - global npm
   for task in combinedTasks
+    # ensure it has all gulp needed attributes
+    for name of task
+      # dep
+      if !task[name].dep then task[name].dep = []
+
     _.extend Gulp.tasks, task
 
 
