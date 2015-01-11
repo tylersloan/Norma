@@ -6,7 +6,6 @@ Chalk = require "chalk"
 _ = require "underscore"
 Gulp = require "gulp"
 
-ReadConfig = require "./../utilities/read-config"
 PkgeLookup = require "./../utilities/package-lookup"
 Prompt = require "./../utilities/prompt"
 
@@ -16,7 +15,7 @@ module.exports = (tasks, cwd) ->
 
   # VARIABLES --------------------------------------------------------------
 
-  config = ReadConfig cwd
+  config = Norma.config()
 
   # Store watch started in Norma to span files
   Norma.watchStarted = true
@@ -49,6 +48,9 @@ module.exports = (tasks, cwd) ->
     src = if config.tasks[task]? then config.tasks[task].src else "./**/*/"
 
     taskName = task
+
+    if !Gulp.tasks[task].ext
+      Gulp.tasks[task].ext = ["*"]
 
     exts = (
       ext.replace(".", "") for ext in Gulp.tasks[task].ext
@@ -106,8 +108,9 @@ module.exports = (tasks, cwd) ->
 
       return
 
+
     for task of Gulp.tasks
-      createWatch(task) if Gulp.tasks[task].ext?
+      createWatch(task) if config.tasks[task]
 
 
     Norma.emit 'watch-start'
