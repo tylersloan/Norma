@@ -49,9 +49,6 @@ module.exports = (tasks, cwd) ->
 
     taskName = task
 
-    if !Gulp.tasks[task].ext
-      Gulp.tasks[task].ext = ["*"]
-
     exts = (
       ext.replace(".", "") for ext in Gulp.tasks[task].ext
     )
@@ -63,7 +60,7 @@ module.exports = (tasks, cwd) ->
 
     Gulp.watch(
       [
-        "#{src}/*.#{exts}"
+        "#{src}.#{exts}"
         "!node_modules/**/*"
         "!.git/**/*"
       ], (event) ->
@@ -78,6 +75,7 @@ module.exports = (tasks, cwd) ->
             " was #{event.type}"
 
           Norma.emit "message", msg
+
 
         runTask task
         Norma.events.emit 'file-change', event
@@ -110,7 +108,8 @@ module.exports = (tasks, cwd) ->
 
 
     for task of Gulp.tasks
-      createWatch(task) if config.tasks[task]
+      if config.tasks[task] and Gulp.tasks[task].ext
+        createWatch(task)
 
 
     Norma.emit 'watch-start'

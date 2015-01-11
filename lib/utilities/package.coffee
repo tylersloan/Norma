@@ -57,6 +57,7 @@ module.exports = (tasks, cwd) ->
   pkgeConfig =
     name: packageName
     version: "0.0.1"
+    description: "#{packageName.replace('norma-', '')} package for the Norma build tool"
     main: "package.coffee"
     keywords: [
       "norma"
