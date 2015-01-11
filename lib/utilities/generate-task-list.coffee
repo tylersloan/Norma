@@ -5,6 +5,8 @@ _ = require "underscore"
 
 module.exports = (config, tasks, cb) ->
 
+  if !tasks.length
+    return []
 
   saveTask = (location, task) ->
 
