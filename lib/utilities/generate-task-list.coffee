@@ -3,10 +3,8 @@ _ = require "underscore"
 
 # TASKLIST --------------------------------------------------------------
 
-module.exports = (config, types, cb) ->
+module.exports = (config, tasks, cb) ->
 
-  # allow wildcard package types
-  types.push "*"
 
   saveTask = (location, task) ->
 
@@ -43,28 +41,25 @@ module.exports = (config, types, cb) ->
       async: []
 
 
-  for task of Gulp.tasks
+  for task of tasks
 
-    if !Gulp.tasks[task].ext
+    if !config.tasks[task]
       continue
 
-    for type in types
+    if tasks[task].order
 
-      if Gulp.tasks[task].ext.indexOf(type) <= -1
-        continue
+      tasks[task].type = tasks[task].type or "async"
 
-      if Gulp.tasks[task].order
+      saveTask(
+        taskList[tasks[task].order][tasks[task].type]
+        task
+      )
 
-        Gulp.tasks[task].type = Gulp.tasks[task].type or "async"
+    else
+      saveTask taskList.main.async, task
 
-        saveTask(
-          taskList[Gulp.tasks[task].order][Gulp.tasks[task].type]
-          task
-        )
 
-      else
-        saveTask taskList.main.async, task
-
+  # SYNC-ORDER -------------------------------------------------------------
 
   # Mange order based on package.json
   orderedList = new Array
@@ -82,4 +77,25 @@ module.exports = (config, types, cb) ->
 
 
 
-  cb taskList
+
+  # REDUCE -----------------------------------------------------------------
+
+  finalList = new Array
+
+  for taskOrder of taskList
+    for task of taskList[taskOrder]
+
+      # empty array of tasks at level so keep going
+      if !taskList[taskOrder][task].length
+        continue
+
+      # add each sync task for dynamic sequence running
+      if task is "sync"
+        for syncTask in taskList[taskOrder][task]
+          finalList.push syncTask
+
+      else
+        finalList.push taskList[taskOrder][task]
+
+
+  return finalList

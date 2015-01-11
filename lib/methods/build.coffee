@@ -18,9 +18,6 @@ module.exports = (tasks, cwd) ->
   # Load config
   config = ReadConfig process.cwd()
 
-  # Set emtpy array for fileTypes
-  fileTypes = new Array
-
   # After task is done message
   completeMessage =
     level: "notify"
@@ -29,150 +26,81 @@ module.exports = (tasks, cwd) ->
     color: "green"
 
 
-  # CONFIG-FILE-TYPES ----------------------------------------------------
 
-  ###
+  # POST-BUILD ----------------------------------------------------------
 
-    Get types of files to be compiled based on items from the config
-    This can return empty things
+  completeBuild = ->
 
-  ###
-  do (config) ->
+    if config.scripts and config.scripts.custom
+      ExecCommand(
+        config.scripts.custom
+        process.cwd()
+      ,
+        ->
+          Norma.events.emit "message", completeMessage
+      )
 
-    task = config.tasks
-    # Generate kind of files to compile
-    for key of task
+    else
 
-      if task[key].ext
-
-        for ext in task[key].ext
-
-          fileTypes.push( ext )
+      Norma.events.emit "message", completeMessage
 
 
 
-
-  # PROJECT-FILE-TYPES ---------------------------------------------------
-
-  ###
-
-    Get all of the file types within the project.
-    This will determine what needs to be built
-
-  ###
-  ignore = config.ignore or []
-
-  folders = MapTree Path.normalize(process.cwd()), ignore
-
-  getFileTypes = (files) ->
-
-    for child in files.children
-
-      if child.type is "folder"
-        getFileTypes(child)
-      else
-        ext = Path.extname(child.name)
-
-        # add other file type to task list if not in config (autodiscovery)
-        if fileTypes.indexOf(ext) is -1
-          fileTypes.push(ext)
-
-  getFileTypes folders
-
-
-
-  # TASK-MANGEMENT ------------------------------------------------------
-
-  buildList = (list) ->
-
-    builtList = new Array
-
-    for taskOrder of list
-      for task of list[taskOrder]
-
-        if !list[taskOrder][task].length
-          continue
-
-        # add each sync task for dynamic sequence running
-        if task is "sync"
-          for syncTask in list[taskOrder][task]
-            builtList.push syncTask
-
-        else
-          builtList.push list[taskOrder][task]
-
-
-    return builtList
-
-
+  # BUILD ---------------------------------------------------------------
   build = (list)->
-
-    builtList = buildList(list)
 
     Gulp.task "final", () ->
 
-      if config.scripts and config.scripts.custom
-        ExecCommand(
-          config.scripts.custom
-          process.cwd()
-        ,
-          ->
-            Norma.events.emit "message", completeMessage
-        )
-
-      else
-
-        Norma.events.emit "message", completeMessage
+      completeBuild()
 
 
-    builtList.push "final"
+    list.push "final"
 
-    Sequence.apply null, builtList
+    Sequence.apply null, list
 
 
 
-  # GENERATE-LIST -------------------------------------------------------
+  # GENERATE-LIST --------------------------------------------------------
 
   if !tasks.length
-    GenerateTaskList(config, fileTypes, build)
+    # create list from packages and build
+    build GenerateTaskList(config, Gulp.tasks)
 
   else
 
 
-    # USER-DEFINED  -----------------------------------------------------
+    # USER-DEFINED  ------------------------------------------------------
 
     for task in tasks
       if !Gulp.tasks[task]
         msg =
-          color: "red"
+          level: "crash"
           message: "#{task} is not a known package"
 
-        Norma.events.emit "message", msg
+        Norma.emit "error", msg
 
         return
 
+      if !Gulp.tasks[task].fn
+        msg =
+          level: "crash"
+          message: "#{task} has no function to build"
+
+        Norma.emit "error", msg
+
+        return
+
+
     Gulp.task "final", () ->
 
-      if config.scripts and config.scripts.custom
-        ExecCommand(
-          config.scripts.custom
-          process.cwd()
-        ,
-          ->
-            Norma.events.emit "message", completeMessage
-        )
-
-      else
-
-        Norma.events.emit "message", completeMessage
+      completeBuild()
 
 
     tasks.push "final"
 
 
-    # process.nextTick( ->
     Sequence.apply null, tasks
-    # )
+
 
 
 
