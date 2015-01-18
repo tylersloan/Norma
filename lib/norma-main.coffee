@@ -31,6 +31,7 @@ cli.launch(
   cwd: Flags.cwd
   configPath: Flags[Tool]
   verbose: Flags.verbose
+  extensions: require('interpret').jsVariants
   ,
     invoke
 )
