@@ -58,6 +58,15 @@ module.exports = (tasks, cwd) ->
     else
       exts = "#{exts.join(",")}"
 
+    ignoreChange = {}
+
+
+    Norma.ignore = (file, length) ->
+
+      ignoreChange[file] = length
+      # console.log file, length
+
+
     Gulp.watch(
       [
         "#{src}.#{exts}"
@@ -65,6 +74,10 @@ module.exports = (tasks, cwd) ->
         "!.git/**/*"
       ], (event) ->
 
+
+        if ignoreChange[event.path] > 0
+          ignoreChange[event.path]--
+          return
 
         fileName = Path.basename event.path
 

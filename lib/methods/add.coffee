@@ -54,17 +54,17 @@ module.exports = (tasks, cwd, callback) ->
 
   continueTask = (list) ->
 
-    oldConfig = Norma.config()
-
-    for item in list.split(" ")
-
-      item = item.replace("#{Tool}-", "")
-
-      if !oldConfig.tasks[item]
-
-        oldConfig.tasks[item] = {}
-
-    Norma.config.save oldConfig
+    # oldConfig = Norma.config()
+    #
+    # for item in list.split(" ")
+    #
+    #   item = item.replace("#{Tool}-", "")
+    #
+    #   if !oldConfig.tasks[item]
+    #
+    #     oldConfig.tasks[item] = {}
+    #
+    # Norma.config.save oldConfig
 
     Norma.emit "message", "Packages installed!"
 
