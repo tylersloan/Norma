@@ -62,9 +62,8 @@ module.exports = (tasks, cwd) ->
 
 
     Norma.ignore = (file, length) ->
-
       ignoreChange[file] = length
-      # console.log file, length
+
 
 
     Gulp.watch(
