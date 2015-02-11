@@ -32,6 +32,12 @@ module.exports = (tasks, cwd) ->
     return
 
 
+  ignoreChange = {}
+
+
+  Norma.ignore = (file, length) ->
+    ignoreChange[file] = length
+
 
   # WATCH ----------------------------------------------------------------
 
@@ -57,12 +63,6 @@ module.exports = (tasks, cwd) ->
       exts  = "{#{exts.join(",")}}"
     else
       exts = "#{exts.join(",")}"
-
-    ignoreChange = {}
-
-
-    Norma.ignore = (file, length) ->
-      ignoreChange[file] = length
 
 
 
