@@ -29,9 +29,8 @@ module.exports = (tasks, cwd, callback) ->
   if Flags.scaffold
 
     # Clean out args to find git repo
-    tasks[0] = Flags.scaffold
     finalLoc = tasks[0].split "norma-"
-    finalLoc = finalLoc[1]
+    finalLoc = finalLoc[1].split(".git")[0]
 
     MkDir Path.resolve Norma.userHome, "scaffolds"
 
