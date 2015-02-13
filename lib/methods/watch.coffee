@@ -47,7 +47,7 @@ module.exports = (tasks, cwd) ->
     if Norma.debug
       msg =
         level: "debug"
-        message: "Task: #{task.toUpperCase()} added to watch"
+        message: "#{task.toUpperCase()}: added to watch"
 
       Norma.emit "message", msg
 
@@ -63,8 +63,6 @@ module.exports = (tasks, cwd) ->
       exts  = "{#{exts.join(",")}}"
     else
       exts = "#{exts.join(",")}"
-
-
 
     Gulp.watch(
       [
@@ -94,6 +92,14 @@ module.exports = (tasks, cwd) ->
 
     )
 
+    if Norma.debug
+      msg =
+        level: "debug"
+        message: "#{task}: ready"
+
+      Norma.emit "message", msg
+
+
 
 
 
@@ -118,10 +124,11 @@ module.exports = (tasks, cwd) ->
 
       return
 
-
     for task of Gulp.tasks
-      if config.tasks[task] and Gulp.tasks[task].ext
-        createWatch(task)
+      if !config.tasks[task] or !Gulp.tasks[task].ext
+        continue
+
+      createWatch(task)
 
 
     Norma.emit 'watch-start'
