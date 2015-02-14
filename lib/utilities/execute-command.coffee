@@ -22,6 +22,8 @@ module.exports = (action, cwd, cb) ->
 
   if file
     require Path.join(cwd, action)
+    if typeof cb is "function"
+      cb null
 
   else
     child = Exec(action, {cwd: cwd}, (err, stdout, stderr) ->

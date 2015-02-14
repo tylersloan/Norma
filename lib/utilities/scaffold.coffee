@@ -11,17 +11,15 @@
 
 Fs       = require "fs"
 Path     = require "path"
-Exec     = require('child_process').exec
-Argv     = require('minimist')( process.argv.slice(2) )
 
 ReadConfig   = require "./read-config"
 ExecCommand = require "./execute-command"
-BuildTasks = require './../methods/build'
 CopySync = require("./directory-tools").copySync
-Remove = require("./directory-tools").remove
+RemoveSync = require("./directory-tools").removeSync
 
 
 doAfterPreInstall = (project, scaffoldConfig) ->
+
 
   if project.path isnt process.cwd()
 
@@ -34,7 +32,7 @@ doAfterPreInstall = (project, scaffoldConfig) ->
     JSON.stringify(scaffoldConfig, null, 2)
   )
 
-  if not Fs.existsSync('package.json')
+  if !Fs.existsSync('package.json')
 
     defaultPackageData =
       name: scaffoldConfig.name
@@ -50,23 +48,22 @@ doAfterPreInstall = (project, scaffoldConfig) ->
     Fs.writeFile 'package.json', JSON.stringify(defaultPackageData, null, 2)
 
 
-  if scaffoldConfig.scripts
+  clean = ->
+    # Before compiling, remove the nspignore folder
+    RemoveSync Path.join(process.cwd(), '/norma-ignore')
 
-    for action of scaffoldConfig.scripts
+    require("./launcher").run ["build"], process.cwd()
 
-      if action isnt 'preinstall' and action isnt 'postinstall' and
-        action isnt 'custom'
-
-          ExecCommand scaffoldConfig.scripts[action], process.cwd()
-
-  # Before compiling, remove the nspignore folder
-  Remove Path.join(process.cwd(), '/norma-ignore')
-  BuildTasks [], process.cwd()
 
   # Run post installation scripts
   if scaffoldConfig.scripts and scaffoldConfig.scripts.postinstall
 
-    ExecCommand(scaffoldConfig.scripts.postinstall, project.path)
+    ExecCommand(scaffoldConfig.scripts.postinstall, process.cwd(), ->
+      clean()
+    )
+
+  else
+    clean()
 
 
 module.exports = (project, name) ->
