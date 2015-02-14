@@ -1,5 +1,5 @@
 
-Fs = require "fs"
+Fs = require "fs-extra"
 Path = require "path"
 Rimraf = require "rimraf"
 
@@ -143,23 +143,7 @@ removeTree = (dirPath, keep) ->
   return
 
 
-BUF_LENGTH = 64 * 1024
 
-_buff = new Buffer(BUF_LENGTH)
-
-# taken from fs-extra
-copySync = (srcFile, destFile) ->
-  fdr = Fs.openSync(srcFile, "r")
-  stat = Fs.fstatSync(fdr)
-  fdw = Fs.openSync(destFile, "w", stat.mode)
-  bytesRead = 1
-  pos = 0
-  while bytesRead > 0
-    bytesRead = Fs.readSync(fdr, _buff, 0, BUF_LENGTH, pos)
-    Fs.writeSync fdw, _buff, 0, bytesRead
-    pos += bytesRead
-  Fs.closeSync fdr
-  Fs.closeSync fdw
 
 
 removeSync = (dir) ->
@@ -177,5 +161,5 @@ module.exports =
   mkdir: mkdir
   copyTree: copyTree
   copy: copy
-  copySync: copySync
+  copySync: Fs.copySync
   removeTree: removeTree

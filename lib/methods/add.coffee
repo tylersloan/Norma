@@ -1,12 +1,11 @@
 Path = require "path"
 Exec = require("child_process").exec
-Chalk = require "chalk"
-Flags = require("minimist")( process.argv.slice(2) )
 Ghdownload = require "github-download"
 Fs = require "fs"
 
 ExecCommand = require "./../utilities/execute-command"
 MkDir = require("./../utilities/directory-tools").mkdir
+RemoveSync = require("./../utilities/directory-tools").removeSync
 
 module.exports = (tasks, cwd, callback) ->
 
@@ -26,7 +25,7 @@ module.exports = (tasks, cwd, callback) ->
 
   # SCAFFOLD ---------------------------------------------------------------
 
-  if Flags.scaffold
+  if Norma.scaffold
 
     # Clean out args to find git repo
     finalLoc = tasks[0].split "norma-"
@@ -36,6 +35,10 @@ module.exports = (tasks, cwd, callback) ->
 
     # Get final resting place of global scaffolds
     scaffoldLocation = Path.resolve Norma.userHome, "scaffolds", finalLoc
+
+    # remove existing scaffold
+    if Fs.existsSync scaffoldLocation
+      RemoveSync scaffoldLocation
 
     # Download from github
     Ghdownload(
@@ -52,18 +55,6 @@ module.exports = (tasks, cwd, callback) ->
   # INSTALL ----------------------------------------------------------------
 
   continueTask = (list) ->
-
-    # oldConfig = Norma.config()
-    #
-    # for item in list.split(" ")
-    #
-    #   item = item.replace("#{Tool}-", "")
-    #
-    #   if !oldConfig.tasks[item]
-    #
-    #     oldConfig.tasks[item] = {}
-    #
-    # Norma.config.save oldConfig
 
     Norma.emit "message", "Packages installed!"
 
@@ -89,7 +80,7 @@ module.exports = (tasks, cwd, callback) ->
 
   globalAdd = (list) ->
 
-    if Flags.dev
+    if Norma.dev
       action = "npm i --save-dev #{list}"
     else
       action = "npm i --save #{list}"
@@ -138,7 +129,7 @@ module.exports = (tasks, cwd, callback) ->
 
   localAdd = (list) ->
 
-    if Flags.dev
+    if Norma.dev
       action = "npm i --save-dev #{list}"
     else
       action = "npm i --save #{list}"
@@ -215,7 +206,7 @@ module.exports = (tasks, cwd, callback) ->
 
   # installed via command line
   if cmdLineInstalls.length
-    if Flags.global or Flags.g
+    if Norma.global or Norma.g
 
       globalAdd cmdLineInstalls
 
@@ -223,13 +214,13 @@ module.exports = (tasks, cwd, callback) ->
       localAdd cmdLineInstalls
 
 
-  # no global flags in package.json
+  # no global Norma in package.json
   if localInstalls.length
 
     localAdd localInstalls
 
 
-  # Global flags in package.json
+  # Global Norma in package.json
   if globalInstalls.length
 
     globalAdd globalInstalls
