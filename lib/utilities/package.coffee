@@ -70,10 +70,4 @@ module.exports = (tasks, cwd) ->
   )
 
 
-  ExecCommand(
-    "npm i --save gulp"
-    process.cwd()
-  ,
-    ->
-      Norma.emit "message", "Package Ready!"
-  )
+  Norma.emit "message", "Package Ready!"
