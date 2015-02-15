@@ -1,7 +1,7 @@
 
 Path = require "path"
 Fs = require "fs"
-Sequence = require "run-sequence"
+Sequence = require("run-sequence").use(gulp)
 Chalk = require "chalk"
 _ = require "underscore"
 Gulp = require "gulp"
@@ -49,7 +49,9 @@ module.exports = (tasks, cwd) ->
 
 
   # BUILD ---------------------------------------------------------------
-  build = (list)->
+  build = (list) ->
+
+    Gulp.tasks = Norma.tasks
 
     Gulp.task "final", () ->
 
@@ -66,7 +68,7 @@ module.exports = (tasks, cwd) ->
 
   if !tasks.length
     # create list from packages and build
-    build GenerateTaskList(config, Gulp.tasks)
+    build GenerateTaskList(config, Norma.tasks)
 
   else
 
@@ -74,7 +76,7 @@ module.exports = (tasks, cwd) ->
     # USER-DEFINED  ------------------------------------------------------
 
     for task in tasks
-      if !Gulp.tasks[task]
+      if !Norma.tasks[task]
         msg =
           level: "crash"
           message: "#{task} is not a known package"
@@ -83,7 +85,7 @@ module.exports = (tasks, cwd) ->
 
         return
 
-      if !Gulp.tasks[task].fn
+      if !Norma.tasks[task].fn
         msg =
           level: "crash"
           message: "#{task} has no function to build"
@@ -92,16 +94,7 @@ module.exports = (tasks, cwd) ->
 
         return
 
-
-    Gulp.task "final", () ->
-
-      completeBuild()
-
-
-    tasks.push "final"
-
-
-    Sequence.apply null, tasks
+    build tasks
 
 
 

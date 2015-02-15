@@ -1,4 +1,3 @@
-Gulp = require "gulp"
 _ = require "underscore"
 
 # TASKLIST --------------------------------------------------------------
@@ -24,7 +23,7 @@ module.exports = (config, tasks, cb) ->
         2. Main Compile
         3. Post compile.
       This taskList object is where those tasks are mapped. The type of
-      taks is defined within each gulp task.
+      taks is defined within each task.
 
       An example of a full task set would be:
         1. Pre Compile - sync task would be starting a mongodb.

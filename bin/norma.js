@@ -16,7 +16,8 @@ GLOBAL.Norma = {
   events: EventEmitter,
   domain: Domain,
   prefix: "Ø ",
-  packages: []
+  packages: [],
+  tasks: {}
 }
 
 
