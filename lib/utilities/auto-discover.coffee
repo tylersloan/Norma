@@ -21,7 +21,7 @@ module.exports = (tasks, cwd, packages) ->
 
     err =
       level: "crash"
-      message: "#{Tool}.json needs a tasks or devTasks object"
+      message: "#{Tool}.json needs a tasks object"
       name: "Not Valid"
 
     Norma.events.emit "error", err
