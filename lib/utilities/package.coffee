@@ -11,7 +11,6 @@
 Path = require "path"
 Fs = require "fs"
 Chalk = require "chalk"
-Gulp = require "gulp"
 _ = require "underscore"
 
 CopySync = require("./directory-tools").copySync
