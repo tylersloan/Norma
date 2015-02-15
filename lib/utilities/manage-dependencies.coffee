@@ -3,6 +3,7 @@ Fs = require "fs"
 Semver = require "semver"
 Npm = require "npm"
 Q = require "kew"
+_ = require "underscore"
 
 MapTree = require("./directory-tools").mapTree
 
@@ -25,7 +26,6 @@ module.exports = (tasks, cwd) ->
     return loaded
 
 
-
   installed = MapTree node_modules, true
 
   scope = [
@@ -35,7 +35,64 @@ module.exports = (tasks, cwd) ->
   ]
 
 
+  # compare with global packages
+  globalConfig = Path.join Norma.userHome, "packages", "package.json"
+
+  if Fs.existsSync globalConfig
+    globalConfig = require globalConfig
+  else
+    globalConfig = false
+
+
+  # local
   config = require config
+
+  if globalConfig
+    globalAlreadyInstalled = {}
+    global_modules = Path.join Norma.userHome, "packages", "node_modules"
+    globalInstalled = MapTree global_modules, true
+
+    getGlobalPkgeDetails = (pkge) ->
+
+      pkgeConfig = require pkge.path
+
+      globalAlreadyInstalled[pkgeConfig.name] = pkgeConfig.version
+
+
+    for existing in globalInstalled.children
+      if !existing.children
+        continue
+
+      for child in existing.children
+        if child.name is "package.json"
+          getGlobalPkgeDetails child
+
+    for type in scope
+      if config[type] and globalConfig[type]
+        for pkge of config[type]
+
+          if !globalAlreadyInstalled[pkge] or !config[type][pkge]
+            continue
+
+          # local is same as global
+          if Semver.satisfies(globalAlreadyInstalled[pkge], config[type][pkge])
+            delete config[type][pkge]
+            continue
+
+          if Semver.ltr globalAlreadyInstalled[pkge], config[type][pkge]
+            Norma.emit(
+              "message"
+              "your global version of #{pkge} can be updated"
+            )
+            continue
+
+          if Semver.gtr globalAlreadyInstalled[pkge], config[type][pkge]
+            Norma.emit(
+              "message"
+              "your local version of #{pkge} can be updated"
+            )
+            continue
+
 
   added = {}
   alreadyInstalled = {}

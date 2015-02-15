@@ -104,12 +104,16 @@ module.exports = (tasks, cwd, callback) ->
       defaultPackageData =
         name: "global-packages"
         version: "1.0.0"
-        description: ""
+        description: "global packages for Norma build tool"
         main: "index.js"
         scripts:
           test: "echo \"Error: no test specified\" && exit 1"
         author: ""
         license: "MIT"
+        repository:
+          type: "git"
+          url: "https://github.com/NewSpring/norma.git"
+        README: "  "
 
       Fs.writeFile pgkeJSON, JSON.stringify(defaultPackageData, null, 2)
 
