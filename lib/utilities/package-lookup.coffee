@@ -19,15 +19,18 @@ module.exports = (tasks, cwd) ->
   # Load package and see if it has any task
   mapPkge = (pkgeCwd) ->
 
-    # load package
-    task = require pkgeCwd
+    try
+      # load package
+      task = require pkgeCwd
 
-    # push task to packages
-    if typeof task is "function"
-      taskObject = task normaConfig, tasks
-      taskObject = null
+      # push task to packages
+      if typeof task is "function"
+        taskObject = task normaConfig, tasks
+        taskObject = null
 
-      packages.push task.tasks
+        packages.push task.tasks
+    catch e
+
     #
     # else
     #   packages.push task
