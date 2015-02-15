@@ -2,6 +2,7 @@
 Path = require "path"
 Fs = require "fs"
 _ = require "underscore"
+Gulp = require "gulp"
 
 PkgeLookup = require "./package-lookup"
 AutoDiscover = require "./auto-discover"
@@ -28,6 +29,9 @@ module.exports = (tasks, cwd) ->
       if !task[name].dep then task[name].dep = []
 
     _.extend Norma.tasks, task
+
+  # bind gulp / norma for right now
+  Gulp.tasks = Norma.tasks
 
   # see if we need to download any packages
   isMissingTasks = AutoDiscover tasks, cwd, Norma.tasks

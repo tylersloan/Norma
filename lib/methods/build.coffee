@@ -1,7 +1,7 @@
 
 Path = require "path"
 Fs = require "fs"
-Sequence = require("run-sequence").use(gulp)
+Sequence = require "run-sequence"
 Chalk = require "chalk"
 _ = require "underscore"
 Gulp = require "gulp"
