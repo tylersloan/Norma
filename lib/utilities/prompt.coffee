@@ -17,6 +17,8 @@ help = [
   "q[uit]        " + Chalk.grey("exit console.")
 ]
 
+
+
 addHelp = (terms) ->
 
   if !terms.length
@@ -68,7 +70,6 @@ initialize = ->
   # EVENTS -------------------------------------------------------------
 
   rl.on("line", (line) ->
-
     switch line.toLowerCase().trim()
       when "help"
         Util.puts(Chalk.grey(help.join("\n")))
@@ -76,6 +77,13 @@ initialize = ->
         rl.close()
       when "all"
         Build []
+      when "open the pod bay doors"
+        name = Norma.settings.get "user:name"
+        if name then name = ", " + name else name = ""
+        Norma.emit(
+          "message"
+          "I'm sorry#{name}. I'm afraid I can't do that."
+        )
 
     prompt()
     return

@@ -114,6 +114,15 @@ module.exports = (tasks, cwd) ->
 
       Norma.emit "message", msg
 
+
+    Norma.emit 'watch-start'
+
+    for task of Gulp.tasks
+      if !config.tasks[task] or !Gulp.tasks[task].ext
+        continue
+
+      createWatch(task)
+
     Norma.prompt()
 
     Norma.prompt.listen (line) ->
@@ -124,16 +133,6 @@ module.exports = (tasks, cwd) ->
 
       return
 
-    for task of Gulp.tasks
-      if !config.tasks[task] or !Gulp.tasks[task].ext
-        continue
-
-      createWatch(task)
-
-
-    Norma.emit 'watch-start'
-
-    return
 
 
 
