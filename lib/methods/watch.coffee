@@ -4,7 +4,7 @@ Fs = require "fs"
 Sequence = require "run-sequence"
 Chalk = require "chalk"
 _ = require "underscore"
-Gulp = require "gulp"
+Watch = require "glob-watcher"
 
 PkgeLookup = require "./../utilities/package-lookup"
 Prompt = require "./../utilities/prompt"
@@ -22,8 +22,8 @@ module.exports = (tasks, cwd) ->
 
   runnableTasks = new Array
 
-  for task of Gulp.tasks
-    runnableTasks.push(task) if Gulp.tasks[task].ext?
+  for task of Norma.tasks
+    runnableTasks.push(task) if Norma.tasks[task].ext?
 
   Norma.prompt._.autocomplete runnableTasks
 
@@ -56,7 +56,7 @@ module.exports = (tasks, cwd) ->
     taskName = task
 
     exts = (
-      ext.replace(".", "") for ext in Gulp.tasks[task].ext
+      ext.replace(".", "") for ext in Norma.tasks[task].ext
     )
 
     if exts.length > 1
@@ -64,7 +64,7 @@ module.exports = (tasks, cwd) ->
     else
       exts = "#{exts.join(",")}"
 
-    Gulp.watch(
+    Watch(
       [
         "#{src}.#{exts}"
         "!node_modules/**/*"
@@ -117,8 +117,8 @@ module.exports = (tasks, cwd) ->
 
     Norma.emit 'watch-start'
 
-    for task of Gulp.tasks
-      if !config.tasks[task] or !Gulp.tasks[task].ext
+    for task of Norma.tasks
+      if !config.tasks[task] or !Norma.tasks[task].ext
         continue
 
       createWatch(task)
