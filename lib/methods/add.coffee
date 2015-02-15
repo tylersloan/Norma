@@ -2,6 +2,7 @@ Path = require "path"
 Exec = require("child_process").exec
 Ghdownload = require "github-download"
 Fs = require "fs"
+Q = require "kew"
 
 ExecCommand = require "./../utilities/execute-command"
 MkDir = require("./../utilities/directory-tools").mkdir
@@ -21,6 +22,7 @@ module.exports = (tasks, cwd, callback) ->
       message: "Please specify a task or --scaffold <repo>"
 
     Norma.events.emit "error", err
+
 
 
   # SCAFFOLD ---------------------------------------------------------------
@@ -52,14 +54,8 @@ module.exports = (tasks, cwd, callback) ->
     return
 
 
-  # INSTALL ----------------------------------------------------------------
 
-  continueTask = (list) ->
-
-    Norma.emit "message", "Packages installed!"
-
-    if typeof callback is "function"
-      callback null
+  # PACKAGES ----------------------------------------------------------------
 
   ###
 
@@ -78,15 +74,14 @@ module.exports = (tasks, cwd, callback) ->
   ###
 
 
-  globalAdd = (list) ->
+  globalAdd = (list, dev, cb) ->
 
-    if Norma.dev
+    if Norma.dev or dev
       action = "npm i --save-dev #{list}"
+      Norma.emit "message", "Installing dev-packages to your global #{Tool}..."
     else
       action = "npm i --save #{list}"
-
-
-    Norma.emit "message", "Installing packages to your global #{Tool}..."
+      Norma.emit "message", "Installing packages to your global #{Tool}..."
 
 
     MkDir Path.resolve Norma.userHome, "packages"
@@ -119,22 +114,22 @@ module.exports = (tasks, cwd, callback) ->
         # Change back to project cwd for further tasks
         process.chdir cwd
 
-        Norma.emit "message", "Packages installed!"
-
-        if typeof callback is "function"
-          callback null
+        if typeof cb is "function"
+          cb null
 
     )
 
 
-  localAdd = (list) ->
+  localAdd = (list, dev, cb) ->
 
-    if Norma.dev
+    if Norma.dev or dev
       action = "npm i --save-dev #{list}"
+      Norma.emit "message", "Installing dev-packages to your local #{Tool}..."
+
     else
       action = "npm i --save #{list}"
 
-    Norma.emit "message", "Installing packages to your local #{Tool}..."
+      Norma.emit "message", "Installing packages to your local #{Tool}..."
 
     ExecCommand(
       action
@@ -142,16 +137,37 @@ module.exports = (tasks, cwd, callback) ->
     ,
       ->
 
-        continueTask list
+        cb null
 
     )
+
+  # PROMISES ---------------------------------------------------------------
+
+  promiseFunctions = []
+  obj = {}
+  count = 1
+
+  install = (arr, global, dev) ->
+    if !arr.length
+      return
+
+    count++
+    obj[count] = Q.defer()
+
+    if Norma.global or global
+      globalAdd arr, dev, obj[count].makeNodeResolver()
+    else
+      localAdd arr, dev, obj[count].makeNodeResolver()
+
+    promiseFunctions.push obj[count]
+
 
 
   # PACKAGES ---------------------------------------------------------------
 
   config = Path.resolve process.cwd(), "package.json"
 
-  if !config
+  if !Fs.existsSync config
 
     message = "No package.json found, please run `npm init` in the root"
 
@@ -162,68 +178,86 @@ module.exports = (tasks, cwd, callback) ->
 
     Norma.events.emit "error", err
 
-  cmdLineInstalls = new Array
-  localInstalls = new Array
-  globalInstalls = new Array
-  gitInstalls = new Array
 
-  # Quick add method for norma
-  for task in tasks
-    if typeof task is "string"
+  # COMMAND LINE ----------------------------------------------------------
 
+  cmdLineInstalls = []
 
-      ###
-
-        @todo
-
-          This should be a real check for git method, maybe look
-          into npm source code to find it
-
-      ###
-      # super rough test to check git url
-      if task.match /\//g
-        cmdLineInstalls.push task
-      else
-
-        cmdLineInstalls.push "#{Tool}-#{task}"
+  for task, index in tasks by -1
+    if typeof task isnt "string"
+      continue
+    # super rough test to check git url
+    if task.match /\//g
+      cmdLineInstalls.push task
     else
+      cmdLineInstalls.push "#{Tool}-#{task}"
+
+    tasks.splice(index, 1)
+
+  cmdLineInstalls = cmdLineInstalls.join(" ")
+
+  install cmdLineInstalls
+
+
+  # CONFIG ----------------------------------------------------------------
+
+  configInstall = (dev) ->
+
+    if !tasks.length
+      return
+
+    localInstalls = []
+    globalInstalls = []
+
+    for task, index in tasks by -1
+      if task.dev and !dev
+        continue
+
       if task.global
         if task.endpoint
           globalInstalls.push task.endpoint
         else
           globalInstalls.push "#{Tool}-#{task.name}"
+
+      else if task.endpoint
+        localInstalls.push task.endpoint
+
       else
-        if task.endpoint
-          localInstalls.push task.endpoint
-        else
-          localInstalls.push "#{Tool}-#{task.name}"
+        localInstalls.push "#{Tool}-#{task.name}"
+
+      # remove for shorter loops
+      tasks.splice(index, 1)
+
+    localInstalls = localInstalls.join(" ")
+    globalInstalls = globalInstalls.join(" ")
+
+    # no global Norma in package.json
+    install localInstalls, false, dev
+
+    # Global Norma in package.json
+    install globalInstalls, true, dev
 
 
-  cmdLineInstalls = cmdLineInstalls.join(" ")
-  localInstalls = localInstalls.join(" ")
-  globalInstalls = globalInstalls.join(" ")
+  # install main dependencies
+  configInstall false
+
+  # install dev dependencies
+  configInstall true
 
 
-  # installed via command line
-  if cmdLineInstalls.length
-    if Norma.global or Norma.g
-
-      globalAdd cmdLineInstalls
-
-    else
-      localAdd cmdLineInstalls
 
 
-  # no global Norma in package.json
-  if localInstalls.length
+  # INSTALL ----------------------------------------------------------------
+  # once all installs are done continue
+  Q.all(promiseFunctions)
+    .then( ->
 
-    localAdd localInstalls
+      Norma.emit "message", "Packages installed!"
 
+      if typeof callback is "function"
+        callback null
 
-  # Global Norma in package.json
-  if globalInstalls.length
-
-    globalAdd globalInstalls
+    )
 
 
 

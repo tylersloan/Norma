@@ -8,6 +8,7 @@ Add = require "./../methods/add"
 
 module.exports = (tasks, cwd, packages) ->
 
+
   Launcher = require "./launcher"
 
 
@@ -20,7 +21,7 @@ module.exports = (tasks, cwd, packages) ->
 
     err =
       level: "crash"
-      message: "#{Tool}.json needs a tasks object"
+      message: "#{Tool}.json needs a tasks or devTasks object"
       name: "Not Valid"
 
     Norma.events.emit "error", err
@@ -36,8 +37,10 @@ module.exports = (tasks, cwd, packages) ->
         name: key
         global: config.tasks[key].global
         endpoint: config.tasks[key].endpoint
+        dev: config.tasks[key].dev
 
       neededPackages.push pkge
+
 
 
   # verify unique package (don't download duplicates)
@@ -45,10 +48,13 @@ module.exports = (tasks, cwd, packages) ->
 
   if neededPackages.length
 
+    packagesCopy = neededPackages.slice()
+
     # add then run norma again
-    Add neededPackages, cwd, ->
+    Add packagesCopy, cwd, ->
 
       Launcher.run tasks, cwd
+
 
     prettyPrint = new Array
 
@@ -56,7 +62,7 @@ module.exports = (tasks, cwd, packages) ->
       prettyPrint.push pkge.name
 
 
-    msg = Chalk.green("Installing the following packages:") +
+    msg = Chalk.green("Installing the following packages: ") +
       "#{prettyPrint.join(', ')}"
 
     Norma.emit "message", msg

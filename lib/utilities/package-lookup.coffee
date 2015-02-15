@@ -2,6 +2,7 @@
 Path = require "path"
 Fs = require "fs"
 Multimatch = require "multimatch"
+_ = require "underscore"
 
 MapTree = require("./directory-tools").mapTree
 
