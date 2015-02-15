@@ -31,6 +31,17 @@ module.exports = (tasks, cwd, callback) ->
 
     # Clean out args to find git repo
     finalLoc = tasks[0].split "norma-"
+
+    if finalLoc.length < 2
+      err =
+        level: "crash"
+        name: "Incorrect name of scaffold"
+        message: "Please specify a scaffold name that resembles
+          Organization/norma-xxxx or a full git repo containing norma-xxxx"
+
+      Norma.events.emit "error", err
+      return
+
     finalLoc = finalLoc[1].split(".git")[0]
 
     MkDir Path.resolve Norma.userHome, "scaffolds"
