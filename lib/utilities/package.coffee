@@ -60,7 +60,6 @@ module.exports = (tasks, cwd) ->
     main: "package.coffee"
     keywords: [
       "norma"
-      "gulp"
     ]
 
   # Save package.json
