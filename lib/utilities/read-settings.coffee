@@ -60,6 +60,7 @@ initialize = ->
     .file "local", local
     .file "global", global
 
+
   intialized = true
 
   return Nconf

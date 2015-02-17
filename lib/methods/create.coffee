@@ -28,7 +28,7 @@ module.exports = (tasks, cwd) ->
       name: "Missing Info"
       message: "Please specify a project name"
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
 
 

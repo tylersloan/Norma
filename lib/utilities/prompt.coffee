@@ -4,8 +4,6 @@ Util = require "util"
 Chalk = require "chalk"
 _ = require "underscore"
 
-Build = require "./../methods/build"
-
 
 # HELP --------------------------------------------------------------------
 
@@ -76,7 +74,7 @@ initialize = ->
       when "exit", "e", "quit", "q"
         rl.close()
       when "all"
-        Build []
+        Norma.build []
       when "open the pod bay doors"
         name = Norma.settings.get "user:name"
         if name then name = ", " + name else name = ""
@@ -91,7 +89,7 @@ initialize = ->
   ).on( "close", ->
     Norma.prompt.open = false
     Norma.emit "message", "Have a great day!"
-    Norma.stop()
+    Norma.close()
     return
 
   )
@@ -109,6 +107,7 @@ prompt = ->
 
   rl.setPrompt Chalk.grey(Norma.prefix), Norma.prefix.length
   rl.prompt()
+
 
   Norma.prompt.open = true
 

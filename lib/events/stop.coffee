@@ -4,17 +4,22 @@ Q = require "kew"
 
 module.exports = (Norma) ->
 
-  Norma.end = ->
-    process.exit(0)
+  end = ->
+    process.exit 0
 
 
-  Norma.stop  = ->
+  Norma.close  = ->
 
     promiseFunctions = new Array
-    functions =  Norma.events.listeners "stop"
+    functions = Norma.listeners "stop"
 
     obj = {}
     count = 1
+
+    # if !functions.length
+    #   if Norma.verbose
+    #     Norma.emit "message", "exiting..."
+    #   end()
 
     # Build dynamic list of defered functions
     for fn in functions
@@ -29,5 +34,5 @@ module.exports = (Norma) ->
       .then( ->
         if Norma.verbose
           Norma.emit "message", "exiting..."
-        Norma.end()
+        end()
       )

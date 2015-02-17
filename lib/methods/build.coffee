@@ -3,6 +3,8 @@ Path = require "path"
 Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
+Gulp = require "gulp"
+Sequence = require "run-sequence"
 
 MapTree = require("./../utilities/directory-tools").mapTree
 ReadConfig = require "./../utilities/read-config"
@@ -35,28 +37,30 @@ module.exports = (tasks, cwd) ->
         process.cwd()
       ,
         ->
-          Norma.events.emit "message", completeMessage
-          # Norma.stop()
+          Norma.emit "message", completeMessage
+          # Norma.close()
       )
 
     else
 
-      Norma.events.emit "message", completeMessage
-      # Norma.stop()
+      Norma.emit "message", completeMessage
+      # Norma.close()
 
 
 
   # BUILD ---------------------------------------------------------------
   build = (list) ->
 
-    Norma.add "final", () ->
+    Norma.task "final", () ->
 
       completeBuild()
 
 
     list.push "final"
 
-    Norma.sequence.apply null, list
+    # Gulp.tasks = Norma.tasks
+
+    Norma.execute.apply null, list
 
 
 

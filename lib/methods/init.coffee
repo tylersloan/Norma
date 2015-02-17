@@ -114,13 +114,13 @@ module.exports = (tasks, cwd) ->
 
                 else
 
-                  Norma.events.emit "stop"
+                  Norma.emit "stop"
 
                   process.exit 0
 
             else
 
-              Norma.events.emit "stop"
+              Norma.emit "stop"
 
               process.exit 0
 

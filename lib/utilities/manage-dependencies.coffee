@@ -152,7 +152,7 @@ module.exports = (tasks, cwd) ->
 
     update = (name, message) ->
 
-      Norma.events.emit "message", message
+      Norma.emit "message", message
 
       obj = {}
 

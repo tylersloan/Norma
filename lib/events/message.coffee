@@ -20,10 +20,9 @@ module.exports = (Norma) ->
 
     message = [Chalk.grey(Norma.prefix)]
 
-    if Norma.prompt
-      if Norma.prompt._.initialized and Norma.prompt.open
-        Norma.prompt.pause()
-        message = []
+    if Norma.prompt._.initialized and Norma.prompt.open
+      Norma.prompt.pause()
+      message = []
 
     # Build the error message by priority
     # if msg.name
@@ -53,9 +52,8 @@ module.exports = (Norma) ->
 
     console.log message.join ""
 
-    if Norma.prompt
-      if Norma.prompt._.initialized and !Norma.prompt.open
-        Norma.prompt()
+    if Norma.prompt._.initialized and !Norma.prompt.open
+      Norma.prompt()
 
 
   messageType.debug = (msg) ->
@@ -68,7 +66,7 @@ module.exports = (Norma) ->
   # the norma-notify package is a great example of this event usage
   messageType.notify = (msg) ->
 
-    Norma.events.emit "notify", msg
+    Norma.emit "notify", msg
 
     messageType.log msg
 
@@ -78,7 +76,7 @@ module.exports = (Norma) ->
   # more than one person know what is happening.
   messageType.alert = (msg) ->
 
-    Norma.events.emit "alert", msg
+    Norma.emit "alert", msg
 
     messageType.notify msg
 
@@ -91,7 +89,7 @@ module.exports = (Norma) ->
 
     return
 
-  Norma.events.on "message", (message) ->
+  Norma.on "message", (message) ->
 
 
     if typeof message is "string"

@@ -2,9 +2,6 @@ Path = require "path"
 Chalk = require "chalk"
 _ = require "underscore"
 
-
-Build = require "./../methods/build"
-Watch = require "./../methods/watch"
 ReadConfig = require "./../utilities/read-config"
 
 
@@ -26,12 +23,12 @@ module.exports = (tasks, cwd) ->
     Norma.emit "message", msg
 
 
-    if Norma.watch
+    if tasks[0] is "watch"
 
-      Watch tasks, cwd
+      Norma.watch tasks, cwd
 
     else
-      Build tasks, cwd
+      Norma.build tasks, cwd
 
 
 

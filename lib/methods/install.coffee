@@ -21,7 +21,7 @@ module.exports = (tasks, cwd, callback) ->
       name: "Missing Info"
       message: "Please specify a task or --scaffold <repo>"
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
 
 
@@ -39,7 +39,7 @@ module.exports = (tasks, cwd, callback) ->
         message: "Please specify a scaffold name that resembles
           Organization/norma-xxxx or a full git repo containing norma-xxxx"
 
-      Norma.events.emit "error", err
+      Norma.emit "error", err
       return
 
     finalLoc = finalLoc[1].split(".git")[0]
@@ -191,7 +191,7 @@ module.exports = (tasks, cwd, callback) ->
       name: "Missing Info"
       message: message
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
 
   # COMMAND LINE ----------------------------------------------------------

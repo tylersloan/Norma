@@ -5,12 +5,9 @@ Fs = require "fs"
 Semver = require "semver"
 Inquirer = require "inquirer"
 
-
-ExecCommand = require "./execute-command"
+ExecCommand = require "./../lib/utilities/execute-command"
 
 module.exports = (tasks, preference) ->
-
-  Launcher = require "./launcher"
 
   update = ->
 
@@ -25,7 +22,7 @@ module.exports = (tasks, preference) ->
 
           Norma.emit "message", msg
 
-          Launcher.run tasks, process.cwd()
+          Norma.run tasks, process.cwd()
 
 
     )
@@ -41,7 +38,7 @@ module.exports = (tasks, preference) ->
         Norma.events.emit "error", err
 
       try
-        config = require Path.join __dirname, "../../package.json"
+        config = require Path.join __dirname, "../package.json"
       catch e
 
         Norma.events.emit "error", e

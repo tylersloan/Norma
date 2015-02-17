@@ -13,7 +13,7 @@ module.exports = (tasks, cwd) ->
       name: "Missing Info"
       message: "Please specify a package or scaffold to search for"
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
     return
 
@@ -34,7 +34,7 @@ module.exports = (tasks, cwd) ->
   timeout = setTimeout exit, 30000
 
 
-  Norma.events.emit "message", "searching..."
+  Norma.emit "message", "searching..."
 
   child = Exec("npm search #{tasks}", (err, stdout, stderr) ->
 

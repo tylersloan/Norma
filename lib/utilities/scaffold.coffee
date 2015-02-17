@@ -52,7 +52,7 @@ doAfterPreInstall = (project, scaffoldConfig) ->
     # Before compiling, remove the nspignore folder
     RemoveSync Path.join(process.cwd(), '/norma-ignore')
 
-    require("./launcher").run ["build"], process.cwd()
+    Norma.run ["build"], process.cwd()
 
 
   # Run post installation scripts

@@ -1,7 +1,7 @@
 
 Path = require "path"
 Fs = require "fs"
-Sequence = require "run-sequence"
+
 Chalk = require "chalk"
 _ = require "underscore"
 Watch = require "glob-watcher"
@@ -12,10 +12,9 @@ Prompt = require "./../utilities/prompt"
 
 module.exports = (tasks, cwd) ->
 
-
   # VARIABLES --------------------------------------------------------------
 
-  config = Norma.config()
+  config = Norma.getConfig()
 
   # Store watch started in Norma to span files
   Norma.watchStarted = true
@@ -28,7 +27,7 @@ module.exports = (tasks, cwd) ->
   Norma.prompt._.autocomplete runnableTasks
 
   runTask = (task) ->
-    Sequence task
+    Norma.execute task
     return
 
 
@@ -88,7 +87,7 @@ module.exports = (tasks, cwd) ->
 
 
         runTask task
-        Norma.events.emit 'file-change', event
+        Norma.emit 'file-change', event
 
     )
 

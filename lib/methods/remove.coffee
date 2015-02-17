@@ -19,7 +19,7 @@ module.exports = (tasks, cwd) ->
       name: "Missing Info"
       message: "Please specify a task or --scaffold <name>"
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
 
 
@@ -47,7 +47,7 @@ module.exports = (tasks, cwd) ->
       name: "Missing Info"
       message: message
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
 
   ###

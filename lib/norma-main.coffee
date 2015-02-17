@@ -1,14 +1,14 @@
 
 Orchestrator  = require("orchestrator")
 Inherits      = require("inherits")
-EventEmitter  = new (require("events").EventEmitter)
 Path          = require "path"
 Domain        = require("domain").create();
 Home          = require "user-home"
 
-
 MapTree = require("./utilities/directory-tools").mapTree
 MkDir = require("./utilities/directory-tools").mkdir
+ManageDependencies = require "./utilities/manage-dependencies"
+RegisterPackages = require "./utilities/register-packages"
 
 # PROTOTYPE ---------------------------------------------------------
 
@@ -19,10 +19,30 @@ _norma = ->
 
 Inherits _norma, Orchestrator
 
+# _norma::task = _norma::add
+###
 
-_norma::task = _norma::add
-_norma::events = EventEmitter
+  Existing methods from orchestrator:
 
+  reset
+  add
+  task
+  hasTask
+  start
+  stop
+  sequence
+  allDone
+  _resetTask
+  _resetAllTasks
+  _resetSpecificTasks
+  _runStep
+  _readyToRunTask
+  _stopTask
+  _emitTaskDone
+  _runTask
+  onAll
+
+###
 
 Norma = new _norma()
 
@@ -35,8 +55,7 @@ GLOBAL.Norma = Norma
 
 # STORAGE
 Norma.packages = []
-
-
+Norma.prefix = "Ø "
 if Home
   MkDir Path.resolve Home, "norma"
   Norma.userHome = Path.resolve Home, "norma"
@@ -44,21 +63,21 @@ else
   MkDir Path.resolve __dirname, "../../norma"
   Norma.userHome = Path.resolve __dirname, "../../norma"
 
-
-# LIBRARIES
-Norma.domain = Domain
-Norma.config = require "./utilities/read-config"
-Norma.settings = require "./utilities/read-settings"
-Norma.prompt = require "./utilities/prompt"
-Norma.prefix = "Ø "
+# Get the package.json for norma info
+cliPackage = require Path.join __dirname, "../package.json"
+Norma.version = cliPackage.version
 
 
 # EVENTS
 Norma.subscribe = (evt, cb) ->
-  Norma.events.on evt, cb
+  Norma.on evt, cb
 
-Norma.emit = (evt, obj) ->
-  Norma.events.emit evt, obj
+# DEPRECATED
+Norma.events =
+  on: Norma.on
+  emit: Norma.emit
+  listeners: Norma.listeners
+
 
 do ->
   eventDir = Path.resolve __dirname, "./events/"
@@ -68,6 +87,14 @@ do ->
     require(event.path)(Norma) if event.path
 
 
+# LIBRARIES
+Norma.domain = Domain
+Norma.getConfig = require "./utilities/read-config"
+Norma.settings = require "./utilities/read-settings"
+Norma.prompt = require "./utilities/prompt"
+Norma.execute = require "./utilities/orchestration"
+
+
 
 # STATES
 Norma.watchStarted = false
@@ -75,7 +102,6 @@ require("./utilities/bind-modes")(Norma)
 
 
 # METHODS
-Norma.method = {}
 
 do ->
   methodDir = Path.resolve __dirname, "./methods/"
@@ -84,19 +110,77 @@ do ->
   for method in methods.children
     name = Path.basename(method.name, Path.extname(method.name))
 
-    Norma.method[name] = require(method.path) if method.path
+    Norma[name] = require(method.path) if method.path
+
+
+Norma.ready = ManageDependencies
+Norma.getPackages = RegisterPackages
+
+Norma.run = (tasks, cwd) ->
+
+  if !tasks then tasks = Norma._
+  if !cwd then cwd = process.cwd()
+
+  # copy array for non destructive slicing
+  _tasks = tasks.slice()
+
+  # set default task to watch if running bare
+  if _tasks.length is 0
+    _tasks = ["watch"]
+
+  ###
+
+    This is where we need to register all packages prior
+    to running any tasks
+
+  ###
+  noPackageTasks = [
+    "add"
+    "config"
+    "create"
+    "help"
+    "init"
+    "open"
+    "remove"
+    "search"
+    "update"
+  ]
+
+  # lookup packages if necessary
+  if noPackageTasks.indexOf(_tasks[0]) is -1
+
+    pkges = Norma.getPackages cwd
+
+  else
+    pkges = {}
+
+  # Fire the start event
+  Norma.emit "start"
+
+  try
+    task = Norma[_tasks[0]]
+    action = _tasks.slice()
+    action.shift()
+
+    task action, cwd
+
+  catch e
+    pkge = _tasks.slice()
+    method = pkge[0]
+    pkge.shift()
+
+    if pkge.length
+      method += "-#{pkge[0]}"
+
+    if pkges[method]
+      pass = -> return
+      pkges[method].fn( pass, action, cwd)
+    else
+      e.level = "crash"
+      Norma.emit "error", e
+
 
 # Norma.root = Path.resolve __dirname, "../../"
 
-
-
-
-
-
-
-
-
-
-Norma.launch = require "./utilities/launcher"
 
 module.exports = Norma

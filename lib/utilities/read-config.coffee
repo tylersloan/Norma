@@ -32,7 +32,7 @@ config = (cwd) ->
         message: "norma.json is empty, have you initiated norma?"
         name: "Missing File"
 
-      Norma.events.emit "error", err
+      Norma.emit "error", err
 
     # Try parsing the config data as JSON
     try
@@ -42,7 +42,7 @@ config = (cwd) ->
       err.level = "crash"
       err.message = "norma.json is not a valid JSON"
 
-      Norma.events.emit "error", err
+      Norma.emit "error", err
 
   ###
 
@@ -56,7 +56,7 @@ config = (cwd) ->
     err.level = "crash"
     err.message= "Cannot find norma.json. Have you initiated norma?"
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
 
   parse file
@@ -79,7 +79,7 @@ save = (obj, cwd) ->
     )
   catch err
 
-    Norma.events.emit "error", "Cannot save norma.json"
+    Norma.emit "error", "Cannot save norma.json"
     return false
 
 

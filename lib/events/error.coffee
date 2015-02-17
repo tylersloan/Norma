@@ -20,14 +20,14 @@ module.exports = (Norma) ->
 
     msg.level = "log"
 
-    Norma.events.emit "message", msg
+    Norma.emit "message", msg
 
 
   # The warn level should try to let the developer know of the message
   # the norma-notify package is a great example of this event usage
   errorType.warn = (msg) ->
 
-    Norma.events.emit "warn", msg
+    Norma.emit "warn", msg
 
     errorType.log msg
 
@@ -42,18 +42,18 @@ module.exports = (Norma) ->
 
   errorType.crash = (msg) ->
 
-    Norma.events.emit "crash", msg
+    Norma.emit "crash", msg
 
     msg.level = "log"
-    Norma.events.emit "message", msg
+    Norma.emit "message", msg
 
 
-    Norma.events.emit "stop"
+    Norma.emit "stop"
 
 
 
 
-  Norma.events.on "error", (error) ->
+  Norma.on "error", (error) ->
 
     # if error.domainThrown
     #   errorType.crash error

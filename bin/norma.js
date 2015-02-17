@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 "use strict";
 
-
+require("coffee-script/register");
 var Liftoff = require("Liftoff");
 var Flags = require("minimist")(process.argv.slice(2));
 
 var Norma = require("../lib/norma")
+var Launch = require("./launcher")
+
 var cli = new Liftoff({
   name: "norma"
 });
 
 // STOP ----------------------------------------------------------------
 process.on('SIGINT', function() {
-  Norma.stop();
+  Norma.close();
 });
 
 
@@ -27,15 +29,11 @@ Norma.domain.on("error", function(err){
 // CLI ----------------------------------------------------------
 Norma.domain.run(function(){
 
-  var launch = function(env) {
-    Norma.launch(env, Norma)
-  }
-  
   // Require main file
   cli.launch({
     cwd: Flags.cwd,
     verbose: Flags.verbose,
     extensions: require('interpret').jsVariants
-  }, launch);
+  }, Launch);
 
 });

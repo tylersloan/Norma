@@ -3,13 +3,11 @@ Chalk = require "chalk"
 _ = require "underscore"
 
 ReadConfig = require "./read-config"
-Add = require "./../methods/add"
 
 
-module.exports = (tasks, cwd, packages) ->
+module.exports = (cwd, packages) ->
 
-
-  Launcher = require "./launcher"
+  if !cwd then cwd = process.cwd()
 
 
   # set needed variables
@@ -24,7 +22,7 @@ module.exports = (tasks, cwd, packages) ->
       message: "norma.json needs a tasks object"
       name: "Not Valid"
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
 
 
@@ -51,9 +49,9 @@ module.exports = (tasks, cwd, packages) ->
     packagesCopy = neededPackages.slice()
 
     # add then run norma again
-    Add packagesCopy, cwd, ->
+    Norma.install packagesCopy, cwd, ->
 
-      Launcher.run tasks, cwd
+      Norma.run Norma._, cwd
 
 
     prettyPrint = new Array

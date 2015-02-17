@@ -14,7 +14,7 @@ module.exports = (tasks, cwd) ->
       name: "Norma"
       message: "Updating Norma..."
 
-    Norma.events.emit "message", msg
+    Norma.emit "message", msg
 
     process.chdir Path.resolve __dirname, "../../"
 
@@ -64,7 +64,7 @@ module.exports = (tasks, cwd) ->
       catch err
         err.level = "crash"
 
-        Norma.events.emit "error", err
+        Norma.emit "error", err
 
 
       names = scope.reduce(
@@ -87,7 +87,7 @@ module.exports = (tasks, cwd) ->
         name: "Norma"
         message: "Updating all local packages..."
 
-      Norma.events.emit "message", msg
+      Norma.emit "message", msg
 
       ExecCommand(
         "npm update #{packageList}"
@@ -108,7 +108,7 @@ module.exports = (tasks, cwd) ->
       name: "Norma"
       message: "Updating #{tasks}..."
 
-    Norma.events.emit "message", msg
+    Norma.emit "message", msg
 
     ExecCommand(
       "npm update #{tasks}"

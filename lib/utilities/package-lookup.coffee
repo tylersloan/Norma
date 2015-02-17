@@ -8,10 +8,10 @@ MapTree = require("./directory-tools").mapTree
 
 
 
-module.exports = (tasks, cwd) ->
+module.exports = (cwd) ->
 
   # Get config for task comparison
-  normaConfig = Norma.config()
+  normaConfig = Norma.getConfig()
   packageList = new Array
   packages = new Array
 
@@ -25,7 +25,7 @@ module.exports = (tasks, cwd) ->
 
       # push task to packages
       if typeof task is "function"
-        taskObject = task normaConfig, tasks
+        taskObject = task normaConfig
         taskObject = null
 
         packages.push task.tasks
@@ -42,7 +42,7 @@ module.exports = (tasks, cwd) ->
   checkFile = (file) ->
 
     if file.name is "norma.json"
-      pkgeConfig = Norma.config Path.resolve file.path, "../"
+      pkgeConfig = Norma.getConfig Path.resolve file.path, "../"
 
       if pkgeConfig.type is "package" and pkgeConfig.main
         entry = Path.resolve file.path, "../", pkgeConfig.main
@@ -116,7 +116,7 @@ module.exports = (tasks, cwd) ->
     catch err
       err.level = "crash"
 
-      Norma.events.emit "error", err
+      Norma.emit "error", err
 
 
     names = scope.reduce(
