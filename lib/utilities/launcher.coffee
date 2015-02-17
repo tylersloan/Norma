@@ -73,6 +73,11 @@ module.exports = (env) ->
 
 
 
+  # ORCHESTRATION ----------------------------------------------------------
+  require("./orchestration")()
+
+
+
   # VARIABLES --------------------------------------------------------------
 
   # Get the package.json for norma info

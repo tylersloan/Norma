@@ -1,10 +1,8 @@
 
 Path = require "path"
 Fs = require "fs"
-Sequence = require("run-sequence").use(gulp)
 Chalk = require "chalk"
 _ = require "underscore"
-Gulp = require "gulp"
 
 MapTree = require("./../utilities/directory-tools").mapTree
 ReadConfig = require "./../utilities/read-config"
@@ -51,16 +49,14 @@ module.exports = (tasks, cwd) ->
   # BUILD ---------------------------------------------------------------
   build = (list) ->
 
-    Gulp.tasks = Norma.tasks
-
-    Gulp.task "final", () ->
+    Norma.add "final", () ->
 
       completeBuild()
 
 
     list.push "final"
 
-    Sequence.apply null, list
+    Norma.sequence.apply null, list
 
 
 
