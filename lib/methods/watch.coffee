@@ -24,7 +24,7 @@ module.exports = (tasks, cwd) ->
   for task of Norma.tasks
     runnableTasks.push(task) if Norma.tasks[task].ext?
 
-  Norma.prompt._.autocomplete runnableTasks
+  # Norma.prompt._.autocomplete runnableTasks
 
   runTask = (task) ->
     Norma.execute task

@@ -11,7 +11,6 @@
 Path = require "path"
 Fs = require "fs"
 Chalk = require "chalk"
-Gulp = require "gulp"
 _ = require "underscore"
 
 CopySync = require("./directory-tools").copySync
@@ -61,7 +60,6 @@ module.exports = (tasks, cwd) ->
     main: "package.coffee"
     keywords: [
       "norma"
-      "gulp"
     ]
 
   # Save package.json
@@ -71,10 +69,4 @@ module.exports = (tasks, cwd) ->
   )
 
 
-  ExecCommand(
-    "npm i --save gulp"
-    process.cwd()
-  ,
-    ->
-      Norma.emit "message", "Package Ready!"
-  )
+  Norma.emit "message", "Package Ready!"

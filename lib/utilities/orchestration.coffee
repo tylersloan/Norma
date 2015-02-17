@@ -5,12 +5,12 @@ Inherits = require "inherits"
 
 
 # SEQUENCE ---------------------------------------------------------------
-
+# TAKEN FROM RUN-SEQUENCE
 verifyTaskSets = (taskSets, skipArrays) ->
 
 
   if taskSets.length is 0
-    Norma.emit "error", new Error("No tasks were provided to run-sequence")
+    Norma.emit "error", new Error("No tasks were provided to norma")
 
   taskSets.forEach (t) ->
 

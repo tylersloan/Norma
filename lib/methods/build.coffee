@@ -3,8 +3,6 @@ Path = require "path"
 Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
-Gulp = require "gulp"
-Sequence = require "run-sequence"
 
 MapTree = require("./../utilities/directory-tools").mapTree
 ReadConfig = require "./../utilities/read-config"
@@ -57,8 +55,6 @@ module.exports = (tasks, cwd) ->
 
 
     list.push "final"
-
-    # Gulp.tasks = Norma.tasks
 
     Norma.execute.apply null, list
 

@@ -1,7 +1,6 @@
-Gulp = require "gulp"
+
 
 module.exports = (config, tasks) ->
-
 
   ###
 
@@ -10,7 +9,7 @@ module.exports = (config, tasks) ->
     through all tasks in a sequenced method
 
   ###
-  Gulp.task "sample", (cb) ->
+  Norma.task "sample", (cb) ->
     Norma.emit "message", "Your scripts go here"
 
     cb null
@@ -24,7 +23,7 @@ module.exports = (config, tasks) ->
     documenation site
 
   ###
-  # Gulp.tasks["sample"].order = "post"
+  # Norma.tasks["sample"].order = "post"
 
   # Export all of your tasks
-  module.exports.tasks = Gulp.tasks
+  module.exports.tasks = Norma.tasks

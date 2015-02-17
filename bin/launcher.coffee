@@ -15,16 +15,13 @@ AutoUpdate = require "./auto-update"
 
 module.exports = (env) ->
 
-
   # AUTOUPDATE --------------------------------------------------------------
 
   update = Norma.settings.get "autoupdate"
 
   # This should only run locally
   if !Norma.production or update is "false"
-    AutoUpdate Norma._, update
-
-
+    AutoUpdate update
 
   # UTILITY -----------------------------------------------------------------
 
@@ -53,10 +50,10 @@ module.exports = (env) ->
 
   Norma.log "I'm getting everything ready#{name}..."
 
-
   Norma.ready(Norma._, env.cwd).then( ->
 
     Norma.run Norma._, env.cwd
+
 
   ).fail( (err) ->
 

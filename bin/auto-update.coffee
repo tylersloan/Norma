@@ -7,7 +7,7 @@ Inquirer = require "inquirer"
 
 ExecCommand = require "./../lib/utilities/execute-command"
 
-module.exports = (tasks, preference) ->
+module.exports = (preference) ->
 
   update = ->
 
@@ -20,9 +20,9 @@ module.exports = (tasks, preference) ->
             message: "Norma updated!"
             color: "cyan"
 
-          Norma.emit "message", msg
+          Norma.log msg
 
-          Norma.run tasks, process.cwd()
+          Norma.run()
 
 
     )
@@ -35,13 +35,13 @@ module.exports = (tasks, preference) ->
   Npm.load( ->
     Npm.commands.view(["normajs", 'dist-tags.latest'], true, (err, data) ->
       if err
-        Norma.events.emit "error", err
+        Norma.emit "error", err
 
       try
         config = require Path.join __dirname, "../package.json"
       catch e
 
-        Norma.events.emit "error", e
+        Norma.emit "error", e
         return
 
       currentVersion = config.version
@@ -56,11 +56,11 @@ module.exports = (tasks, preference) ->
         skippedVersion = Norma.settings.get "version"
 
         if skippedVersion and Semver.gte skippedVersion, availableVersion
-          if Norma.prompt._.initialized
-            Norma.prompt.pause()
+          # if Norma.prompt._.initialized
+          #   Norma.prompt.pause()
           return
 
-        # Dont ask because user always wants latest and greatest
+        Dont ask because user always wants latest and greatest
         if preference is "auto"
           update()
           return
@@ -73,7 +73,7 @@ module.exports = (tasks, preference) ->
 
         # use inquier method for updating Norma here
 
-        Norma.events.emit "message", message
+        Norma.log message
 
         Inquirer.prompt([
           {
@@ -95,7 +95,7 @@ module.exports = (tasks, preference) ->
                 message: "#{Norma.prefix}OK, I will ask again next update"
                 color: "cyan"
 
-              Norma.emit "message", msg
+              Norma.log msg
 
 
               # isolate settings to global scale

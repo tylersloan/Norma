@@ -16,7 +16,6 @@ help = [
 ]
 
 
-
 addHelp = (terms) ->
 
   if !terms.length

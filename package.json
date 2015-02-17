@@ -31,7 +31,6 @@
     "fs-extra": "^0.16.3",
     "github-download": "^0.3.0",
     "glob-watcher": "0.0.7",
-    "gulp": "^3.8.5",
     "inherits": "^2.0.1",
     "inquirer": "^0.5.1",
     "interpret": "^0.4.2",
@@ -44,7 +43,6 @@
     "open": "0.0.5",
     "orchestrator": "^0.3.7",
     "rimraf": "^2.2.8",
-    "run-sequence": "^0.3.6",
     "semver": "^4.1.0",
     "underscore": "^1.7.0",
     "user-home": "^1.1.0"
