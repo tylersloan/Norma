@@ -10,8 +10,8 @@ Settings = require "./../utilities/read-settings"
 
 if Home
 
-  MkDir Path.resolve Home, "#{Tool}"
-  Norma.userHome = Path.resolve Home, "#{Tool}"
+  MkDir Path.resolve Home, "norma"
+  Norma.userHome = Path.resolve Home, "norma"
 
 else
 

@@ -28,7 +28,7 @@ doAfterPreInstall = (project, scaffoldConfig) ->
 
   # Save config
   Fs.writeFileSync(
-    Path.join(process.cwd(), "#{Tool}.json")
+    Path.join(process.cwd(), "norma.json")
     JSON.stringify(scaffoldConfig, null, 2)
   )
 
@@ -77,7 +77,7 @@ module.exports = (project, name) ->
   #   children: [Object] }
 
   # See if a config file already exists (for local files)
-  configExists = Fs.existsSync Path.join(project.path, "#{Tool}.json")
+  configExists = Fs.existsSync Path.join(project.path, "norma.json")
 
   ###
 

@@ -142,6 +142,6 @@ module.exports = (tasks, cwd) ->
 module.exports.api = [
   {
     command: ""
-    description: "initalize a directory as a #{Tool} project"
+    description: "initalize a directory as a norma project"
   }
 ]

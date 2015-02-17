@@ -2,7 +2,7 @@
 Q = require "kew"
 
 
-module.exports = ->
+module.exports = (Norma) ->
 
   Norma.end = ->
     process.exit(0)

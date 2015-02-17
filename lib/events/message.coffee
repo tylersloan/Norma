@@ -10,7 +10,7 @@
 Chalk = require "chalk"
 
 
-module.exports = ->
+module.exports = (Norma) ->
 
   messageType = {}
 
@@ -20,9 +20,10 @@ module.exports = ->
 
     message = [Chalk.grey(Norma.prefix)]
 
-    if Norma.prompt._.initialized and Norma.prompt.open
-      Norma.prompt.pause()
-      message = []
+    if Norma.prompt
+      if Norma.prompt._.initialized and Norma.prompt.open
+        Norma.prompt.pause()
+        message = []
 
     # Build the error message by priority
     # if msg.name
@@ -52,8 +53,9 @@ module.exports = ->
 
     console.log message.join ""
 
-    if Norma.prompt._.initialized and !Norma.prompt.open
-      Norma.prompt()
+    if Norma.prompt
+      if Norma.prompt._.initialized and !Norma.prompt.open
+        Norma.prompt()
 
 
   messageType.debug = (msg) ->
@@ -81,6 +83,13 @@ module.exports = ->
     messageType.notify msg
 
 
+  Norma.log = ->
+
+    args = Array::.slice.call(arguments)
+    for arg in args
+      Norma.emit "message", arg
+
+    return
 
   Norma.events.on "message", (message) ->
 

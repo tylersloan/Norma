@@ -24,7 +24,7 @@ module.exports = (tasks, cwd) ->
 
   exit = ->
     msg =
-      message: "No response from NPM after 30s. Looks like there may be a connection issue or a long task being run. To exit #{Tool}, press ctrl + c"
+      message: "No response from NPM after 30s. Looks like there may be a connection issue or a long task being run. To exit norma, press ctrl + c"
       level: "log"
 
     Norma.emit "error", msg

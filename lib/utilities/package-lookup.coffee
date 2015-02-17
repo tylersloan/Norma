@@ -83,8 +83,8 @@ module.exports = (tasks, cwd) ->
 
   # npm package testing
   pattern = [
-    "#{Tool}-*"
-    "#{Tool}.*"
+    "norma-*"
+    "norma.*"
   ]
 
 

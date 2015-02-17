@@ -35,9 +35,9 @@ module.exports = (tasks, cwd) ->
   packageName = tasks[0]
 
   # If this is a package it should look like "norma-#{name}"
-  if Flags.package and packageName.indexOf("#{Tool}-") isnt 0
+  if Flags.package and packageName.indexOf("norma-") isnt 0
 
-    packageName = "#{Tool}-#{packageName}"
+    packageName = "norma-#{packageName}"
 
   # If packageName declared, create directory, else create in place
   MkDir packageName

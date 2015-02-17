@@ -89,10 +89,10 @@ module.exports = (tasks, cwd, callback) ->
 
     if Norma.dev or dev
       action = "npm i --save-dev #{list}"
-      Norma.emit "message", "Installing dev-packages to your global #{Tool}..."
+      Norma.emit "message", "Installing dev-packages to your global norma..."
     else
       action = "npm i --save #{list}"
-      Norma.emit "message", "Installing packages to your global #{Tool}..."
+      Norma.emit "message", "Installing packages to your global norma..."
 
 
     MkDir Path.resolve Norma.userHome, "packages"
@@ -139,12 +139,12 @@ module.exports = (tasks, cwd, callback) ->
 
     if Norma.dev or dev
       action = "npm i --save-dev #{list}"
-      Norma.emit "message", "Installing dev-packages to your local #{Tool}..."
+      Norma.emit "message", "Installing dev-packages to your local norma..."
 
     else
       action = "npm i --save #{list}"
 
-      Norma.emit "message", "Installing packages to your local #{Tool}..."
+      Norma.emit "message", "Installing packages to your local norma..."
 
     ExecCommand(
       action
@@ -205,7 +205,7 @@ module.exports = (tasks, cwd, callback) ->
     if task.match /\//g
       cmdLineInstalls.push task
     else
-      cmdLineInstalls.push "#{Tool}-#{task}"
+      cmdLineInstalls.push "norma-#{task}"
 
     tasks.splice(index, 1)
 
@@ -232,13 +232,13 @@ module.exports = (tasks, cwd, callback) ->
         if task.endpoint
           globalInstalls.push task.endpoint
         else
-          globalInstalls.push "#{Tool}-#{task.name}"
+          globalInstalls.push "norma-#{task.name}"
 
       else if task.endpoint
         localInstalls.push task.endpoint
 
       else
-        localInstalls.push "#{Tool}-#{task.name}"
+        localInstalls.push "norma-#{task.name}"
 
       # remove for shorter loops
       tasks.splice(index, 1)

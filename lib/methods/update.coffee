@@ -31,8 +31,8 @@ module.exports = (tasks, cwd) ->
 
     # npm package testing
     pattern = [
-      "#{Tool}-*"
-      "#{Tool}.*"
+      "norma-*"
+      "norma.*"
     ]
 
 
@@ -98,7 +98,7 @@ module.exports = (tasks, cwd) ->
   else
 
     taskList = (
-      "#{Tool}-#{task}" for task in tasks
+      "norma-#{task}" for task in tasks
     )
 
     tasks = taskList.join(" ")

@@ -17,8 +17,8 @@ initialize = ->
 
   ###
 
-  global = Path.resolve Norma.userHome, ".#{Tool}"
-  local = Path.join process.cwd(), ".#{Tool}"
+  global = Path.resolve Norma.userHome, ".norma"
+  local = Path.join process.cwd(), ".norma"
 
 
   # See if a config file already exists (for global files)

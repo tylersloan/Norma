@@ -14,10 +14,11 @@ _ = require "underscore"
 
 config = (cwd) ->
 
+
   if !cwd then cwd = process.cwd()
 
   # Find file based on cwd argument
-  fileLoc = Path.join(cwd, "#{Tool}.json")
+  fileLoc = Path.join(cwd, "norma.json")
 
   # Create empty config object for empty returns
   _config = {}
@@ -28,7 +29,7 @@ config = (cwd) ->
 
       err =
         level: "crash"
-        message: "#{Tool}.json is empty, have you initiated #{Tool}?"
+        message: "norma.json is empty, have you initiated norma?"
         name: "Missing File"
 
       Norma.events.emit "error", err
@@ -39,7 +40,7 @@ config = (cwd) ->
     catch err
 
       err.level = "crash"
-      err.message = "#{Tool}.json is not a valid JSON"
+      err.message = "norma.json is not a valid JSON"
 
       Norma.events.emit "error", err
 
@@ -53,7 +54,7 @@ config = (cwd) ->
     file = Fs.readFileSync fileLoc, encoding: "utf8"
   catch err
     err.level = "crash"
-    err.message= "Cannot find #{Tool}.json. Have you initiated #{Tool}?"
+    err.message= "Cannot find norma.json. Have you initiated norma?"
 
     Norma.events.emit "error", err
 
@@ -73,12 +74,12 @@ save = (obj, cwd) ->
   # Save config
   try
     Fs.writeFileSync(
-      Path.join(cwd, "#{Tool}.json")
+      Path.join(cwd, "norma.json")
       JSON.stringify(obj, null, 2)
     )
   catch err
 
-    Norma.events.emit "error", "Cannot save #{Tool}.json"
+    Norma.events.emit "error", "Cannot save norma.json"
     return false
 
 

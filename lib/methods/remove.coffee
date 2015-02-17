@@ -60,7 +60,7 @@ module.exports = (tasks, cwd) ->
 
   # Quick add method for norma
   taskList = (
-    "#{Tool}-#{task}" for task in tasks
+    "norma-#{task}" for task in tasks
   )
 
   tasks = taskList.join(" ")
@@ -79,7 +79,7 @@ module.exports = (tasks, cwd) ->
 
   if Norma.global or Norma.g
 
-    Norma.emit "message", "Removing packages to your global #{Tool}..."
+    Norma.emit "message", "Removing packages to your global norma..."
   
 
     # Do work on users global norma
@@ -102,7 +102,7 @@ module.exports = (tasks, cwd) ->
 
   else
 
-    Norma.emit "message", "Removing packages to your local #{Tool}..."
+    Norma.emit "message", "Removing packages to your local norma..."
 
     ExecCommand(
       action
@@ -123,7 +123,7 @@ module.exports = (tasks, cwd) ->
 module.exports.api = [
   {
     command: "<name> --scaffold"
-    description: "remove scaffold from #{Tool}"
+    description: "remove scaffold from norma"
   }
   {
     command: "<package-name>"

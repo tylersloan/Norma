@@ -37,8 +37,8 @@ module.exports = (tasks, cwd) ->
 
   packageName = tasks[0]
 
-  if packageName.indexOf "#{Tool}-" isnt 0
-    packageName = "#{Tool}-#{packageName}"
+  if packageName.indexOf "norma-" isnt 0
+    packageName = "norma-#{packageName}"
 
   config =
     name: packageName
@@ -48,7 +48,7 @@ module.exports = (tasks, cwd) ->
 
   # Save config
   Fs.writeFileSync(
-    Path.join(process.cwd(), "#{Tool}.json")
+    Path.join(process.cwd(), "norma.json")
     JSON.stringify(config, null, 2)
   )
 

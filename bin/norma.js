@@ -1,97 +1,41 @@
 #!/usr/bin/env node
 "use strict";
 
-// Load Coffeescript for node tasks
-require("coffee-script/register");
 
-var EventEmitter = new (require("events").EventEmitter)();
-var Domain = require("domain").create();
-var Path = require("path")
+var Liftoff = require("Liftoff");
+var Flags = require("minimist")(process.argv.slice(2));
 
-
-GLOBAL.Tool = "norma"
-
-GLOBAL.Norma = {
-  watchStarted: false,
-  events: EventEmitter,
-  domain: Domain,
-  prefix: "Ø ",
-  packages: [],
-  tasks: {}
-}
-
-
-// EVENTS ---------------------------------------------------------------
-
-// Event shorthand
-Norma.subscribe = function(evt, cb) {
-  return Norma.events.on(evt, cb);
-};
-
-Norma.emit = function(evt, obj) {
-  return Norma.events.emit(evt, obj);
-};
-
-var MapTree = require("./../lib/utilities/directory-tools").mapTree
-
-var loadEvents = function() {
-
-  var events,
-  evt,
-  eventDir,
-  _i,
-  _len,
-  _ref,
-  _results;
-
-  eventDir = Path.resolve(__dirname, "./../lib/events/")
-
-  events = MapTree(eventDir);
-
-
-  _ref = events.children;
-  _results = [];
-
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-
-    evt = _ref[_i];
-
-    if (evt.path) {
-      _results.push(require(evt.path)());
-    } else {
-      _results.push(void 0);
-    }
-
-  }
-
-  return _results;
-}
-
-loadEvents();
-
-
-// ERRORS ---------------------------------------------------------------
-
-Domain.on("error", function(err){
-
-  // err.level = "crash";
-
-  // handle the error safely
-  Norma.events.emit("error", err);
-
+var Norma = require("../lib/norma")
+var cli = new Liftoff({
+  name: "norma"
 });
 
-// Domain.add(Norma.events)
-
-// APPLICATION ----------------------------------------------------------
-
+// STOP ----------------------------------------------------------------
 process.on('SIGINT', function() {
   Norma.stop();
 });
 
-Domain.run(function(){
 
+// ERRORS ---------------------------------------------------------------
+Norma.domain.on("error", function(err){
+  // err.level = "crash";
+  // handle the error safely
+  Norma.events.emit("error", err);
+});
+
+
+// CLI ----------------------------------------------------------
+Norma.domain.run(function(){
+
+  var launch = function(env) {
+    Norma.launch(env, Norma)
+  }
+  
   // Require main file
-  require("../lib/" + Tool + "-main");
+  cli.launch({
+    cwd: Flags.cwd,
+    verbose: Flags.verbose,
+    extensions: require('interpret').jsVariants
+  }, launch);
 
 });

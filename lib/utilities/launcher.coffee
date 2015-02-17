@@ -10,32 +10,19 @@ Path = require "path"
 Home = require "user-home"
 Fs = require "fs"
 
-ReadConfig = require "./read-config"
+Norma = require "./../norma"
+
+
 RegisterPackages = require "./register-packages"
 Logger = require "./../logging/logger"
 ManageDependencies = require "./manage-dependencies"
-ReadSettings = require "./read-settings"
-BindModes = require "./bind-modes"
 AutoUpdate = require "./auto-update"
-Prompt = require "./prompt"
 MkDir = require("./directory-tools").mkdir
 Ask = require ("./ask")
 
 
 
-module.exports = (env) ->
-
-  Norma.root = Path.resolve __dirname, "../../"
-
-  if Home
-
-    MkDir Path.resolve Home, "#{Tool}"
-    Norma.userHome = Path.resolve Home, "#{Tool}"
-
-  else
-
-    MkDir Path.resolve __dirname, "../../../${Tool}"
-    Norma.userHome = Path.resolve __dirname, "../../../${Tool}"
+module.exports = (env, Norma) ->
 
 
   ###
@@ -48,33 +35,10 @@ module.exports = (env) ->
     process.chdir env.cwd
 
 
-  # CONFIG -----------------------------------------------------------------
-
-  # norma.json for local project
-  Norma.config = ReadConfig
-
-
-
-  # SETTINGS ---------------------------------------------------------------
-
-  Norma.settings = ReadSettings
-
-
-
-  # PROMPT -----------------------------------------------------------------
-
-  Norma.prompt = Prompt
-
-
 
   # QUESTIONS --------------------------------------------------------------
 
   # Inquirer.prompt = Ask
-
-
-
-  # ORCHESTRATION ----------------------------------------------------------
-  require("./orchestration")()
 
 
 
@@ -85,8 +49,6 @@ module.exports = (env) ->
 
   # Bind tasks to variable for easy passing
   tasks = Flags._
-
-  BindModes()
 
 
 
@@ -105,20 +67,19 @@ module.exports = (env) ->
 
   # Check for version flag and report version
   if Norma.version
-    versionString = "#{Tool} CLI version: #{Chalk.cyan(cliPackage.version)}"
-    Norma.emit "message", versionString
+
+    versionString = "norma CLI version: #{Chalk.cyan(cliPackage.version)}"
+
+    Norma.log versionString
 
     # exit
-    process.exit 0
+    Norma.stop()
+
 
 
   # See if help or h task is trying to be run
   if Norma.help
-
-    Logger.logInfo(cliPackage)
-
-    process.exit 0
-
+    tasks = ["help"]
 
 
   # REGISTER ---------------------------------------------------------------
@@ -163,7 +124,8 @@ module.exports = (env) ->
     if pkges
 
       try
-        task = require "./../methods/#{_tasks[0]}"
+        # task = require "./../methods/#{_tasks[0]}"
+        task = Norma.method[_tasks[0]]
         action = _tasks.slice()
         action.shift()
 

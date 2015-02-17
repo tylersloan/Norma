@@ -2,7 +2,7 @@
 Flags = require("minimist")( process.argv.slice(2) )
 
 
-module.exports = ->
+module.exports = (Norma) ->
 
   # Mode utilities
   link = (string, key) ->

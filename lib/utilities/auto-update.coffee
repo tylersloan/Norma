@@ -81,7 +81,7 @@ module.exports = (tasks, preference) ->
         Inquirer.prompt([
           {
             type: "list"
-            message: "Would you like to update #{Tool}?"
+            message: "Would you like to update norma?"
             name: "update"
             choices: ["yes", "no"]
           }

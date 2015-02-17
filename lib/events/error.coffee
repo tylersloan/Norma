@@ -10,7 +10,7 @@
 Chalk = require "chalk"
 
 
-module.exports = ->
+module.exports = (Norma) ->
 
   errorType = {}
 
