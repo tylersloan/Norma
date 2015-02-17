@@ -48,7 +48,7 @@ module.exports = ->
     Norma.events.emit "message", msg
 
 
-    Norma.events.emit "stop"
+    Norma.stop()
 
 
 

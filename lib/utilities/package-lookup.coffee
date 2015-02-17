@@ -27,7 +27,7 @@ module.exports = (tasks, cwd) ->
       if typeof task is "function"
         taskObject = task normaConfig, tasks
         taskObject = null
-
+        
         packages.push task.tasks
     catch e
 
@@ -70,7 +70,6 @@ module.exports = (tasks, cwd) ->
 
   # Package testing (used in building and testing packages)
   if normaConfig.type is "package"
-
 
     # verify we aren't in root
     if cwd isnt Path.resolve Norma.userHome, 'packages'
