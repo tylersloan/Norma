@@ -39,6 +39,7 @@
     "minimist": "0.2.0",
     "multimatch": "^1.0.0",
     "nconf": "^0.6.9",
+    "norma-copy": "^0.2.4",
     "npm": "^2.1.12",
     "open": "0.0.5",
     "orchestrator": "^0.3.7",
@@ -47,8 +48,12 @@
     "underscore": "^1.7.0",
     "user-home": "^1.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^2.0.0",
+    "mocha": "^2.1.0"
+  },
   "scripts": {
+    "test": "mocha --compilers coffee:coffee-script/register --reporter spec --watch",
     "postinstall": "node ./lib/install/post.js"
   },
   "engines": {

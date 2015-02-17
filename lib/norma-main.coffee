@@ -154,30 +154,33 @@ Norma.run = (tasks, cwd) ->
   else
     pkges = {}
 
-  # Fire the start event
-  Norma.emit "start"
 
-  try
-    task = Norma[_tasks[0]]
-    action = _tasks.slice()
-    action.shift()
+  if pkges
+    
+    # Fire the start event
+    Norma.emit "start"
 
-    task action, cwd
+    try
+      task = Norma[_tasks[0]]
+      action = _tasks.slice()
+      action.shift()
 
-  catch e
-    pkge = _tasks.slice()
-    method = pkge[0]
-    pkge.shift()
+      task action, cwd
 
-    if pkge.length
-      method += "-#{pkge[0]}"
+    catch e
+      pkge = _tasks.slice()
+      method = pkge[0]
+      pkge.shift()
 
-    if pkges[method]
-      pass = -> return
-      pkges[method].fn( pass, action, cwd)
-    else
-      e.level = "crash"
-      Norma.emit "error", e
+      if pkge.length
+        method += "-#{pkge[0]}"
+
+      if pkges[method]
+        pass = -> return
+        pkges[method].fn( pass, action, cwd)
+      else
+        e.level = "crash"
+        Norma.emit "error", e
 
 
 # Norma.root = Path.resolve __dirname, "../../"
