@@ -72,5 +72,7 @@ module.exports = (cwd, packages) ->
 
     return loaded
 
-  loaded.resolve("ok")
-  return loaded
+  else
+    
+    loaded.resolve("ok")
+    return loaded
