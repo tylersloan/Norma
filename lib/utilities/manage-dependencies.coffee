@@ -12,7 +12,7 @@ module.exports = (tasks, cwd) ->
   # create the deferred
   loaded = Q.defer()
 
-  update = Norma.settings.get("autoUpdate")
+  update = Norma.getSettings.get("autoUpdate")
 
   if update is "false" or update is false
     loaded.resolve("ok")

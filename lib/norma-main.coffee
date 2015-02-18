@@ -89,8 +89,8 @@ do ->
 
 # LIBRARIES
 Norma.domain = Domain
-Norma.getConfig = require "./utilities/read-config"
-Norma.settings = require "./utilities/read-settings"
+Norma.config = require "./utilities/read-config"
+Norma.getSettings = require "./utilities/read-settings"
 Norma.prompt = require "./utilities/prompt"
 Norma.execute = require "./utilities/orchestration"
 
@@ -156,7 +156,7 @@ Norma.run = (tasks, cwd) ->
 
 
   if pkges
-    
+
     # Fire the start event
     Norma.emit "start"
 

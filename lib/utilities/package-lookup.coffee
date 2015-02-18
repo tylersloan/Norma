@@ -11,7 +11,7 @@ MapTree = require("./directory-tools").mapTree
 module.exports = (cwd) ->
 
   # Get config for task comparison
-  normaConfig = Norma.getConfig()
+  normaConfig = Norma.config()
   packageList = new Array
   packages = new Array
 
@@ -42,7 +42,7 @@ module.exports = (cwd) ->
   checkFile = (file) ->
 
     if file.name is "norma.json"
-      pkgeConfig = Norma.getConfig Path.resolve file.path, "../"
+      pkgeConfig = Norma.config Path.resolve file.path, "../"
 
       if pkgeConfig.type is "package" and pkgeConfig.main
         entry = Path.resolve file.path, "../", pkgeConfig.main

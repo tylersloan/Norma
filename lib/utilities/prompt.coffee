@@ -75,7 +75,7 @@ initialize = ->
       when "all"
         Norma.build []
       when "open the pod bay doors"
-        name = Norma.settings.get "user:name"
+        name = Norma.getSettings.get "user:name"
         if name then name = ", " + name else name = ""
         Norma.emit(
           "message"

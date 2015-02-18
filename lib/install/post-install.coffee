@@ -3,9 +3,9 @@ Inquirer = require "inquirer"
 
 Norma = require "../norma"
 
-name = Norma.settings.get "user:name"
-browser = Norma.settings.get "user:browser"
-editor = Norma.settings.get "user:editor"
+name = Norma.getSettings.get "user:name"
+browser = Norma.getSettings.get "user:browser"
+editor = Norma.getSettings.get "user:editor"
 
 if name or browser or editor
   return
@@ -41,11 +41,11 @@ Inquirer.prompt([
     for question of answer
       if answer[question]
         # Save config with value
-        Norma.settings.set "user:#{question}", answer[question]
+        Norma.getSettings.set "user:#{question}", answer[question]
 
 
     # Save the configuration object to file
-    Norma.settings._.save (err, data) ->
+    Norma.getSettings._.save (err, data) ->
       throw err if err
 
 )

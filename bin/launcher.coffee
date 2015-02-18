@@ -17,7 +17,7 @@ module.exports = (env) ->
 
   # AUTOUPDATE --------------------------------------------------------------
 
-  update = Norma.settings.get "autoupdate"
+  update = Norma.getSettings.get "autoupdate"
 
   # This should only run locally
   if !Norma.production or update is "false"
@@ -44,7 +44,7 @@ module.exports = (env) ->
 
   # DEPENDENCIES ------------------------------------------------------------
 
-  name = Norma.settings.get "user:name"
+  name = Norma.getSettings.get "user:name"
 
   if name then name = " " + name else name = ""
 

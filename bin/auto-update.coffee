@@ -53,14 +53,14 @@ module.exports = (preference) ->
 
       if !Semver.gte currentVersion, availableVersion
 
-        skippedVersion = Norma.settings.get "version"
+        skippedVersion = Norma.getSettings.get "version"
 
         if skippedVersion and Semver.gte skippedVersion, availableVersion
           # if Norma.prompt._.initialized
           #   Norma.prompt.pause()
           return
 
-        Dont ask because user always wants latest and greatest
+        # Dont ask because user always wants latest and greatest
         if preference is "auto"
           update()
           return
@@ -99,13 +99,13 @@ module.exports = (preference) ->
 
 
               # isolate settings to global scale
-              Norma.settings._.remove "memory"
-              Norma.settings._.remove "local"
+              Norma.getSettings._.remove "memory"
+              Norma.getSettings._.remove "local"
 
 
-              Norma.settings._.set "version", availableVersion
+              Norma.getSettings._.set "version", availableVersion
               # Save the configuration object to file
-              Norma.settings._.save (err, data) ->
+              Norma.getSettings._.save (err, data) ->
                 throw err if err
         )
 

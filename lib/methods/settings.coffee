@@ -18,7 +18,7 @@ Path = require "path"
 module.exports = (tasks, cwd) ->
 
   # remove memory settings to use just files for CLI usage
-  Norma.settings._.remove('memory')
+  Norma.getSettings._.remove('memory')
 
 
   # CONFIG-TYPE -----------------------------------------------------------
@@ -31,9 +31,9 @@ module.exports = (tasks, cwd) ->
 
   ###
   if Norma.global
-    Norma.settings._.remove "local"
+    Norma.getSettings._.remove "local"
   else
-    Norma.settings._.remove "global"
+    Norma.getSettings._.remove "global"
 
 
 
@@ -42,7 +42,7 @@ module.exports = (tasks, cwd) ->
   # Empty config command returns print out of config
   if !tasks.length
 
-    configData = Norma.settings()
+    configData = Norma.getSettings()
 
     # Print out cofing data for easy lookup
     console.log configData
@@ -57,11 +57,11 @@ module.exports = (tasks, cwd) ->
     # Gives users the options to remove config items
     if !Flags.remove
       msg = Chalk.cyan( tasks[0] + ": ") +
-        Norma.settings.get(tasks[0])
+        Norma.getSettings.get(tasks[0])
 
       Norma.emit "message", msg
     else
-      Norma.settings._.clear tasks[0]
+      Norma.getSettings._.clear tasks[0]
 
 
 
@@ -69,7 +69,7 @@ module.exports = (tasks, cwd) ->
 
   # Save config with value
   if tasks[1]
-    Norma.settings._.set tasks[0], tasks[1]
+    Norma.getSettings._.set tasks[0], tasks[1]
 
 
 
@@ -77,14 +77,14 @@ module.exports = (tasks, cwd) ->
 
   # Reset clears entire Nconf file
   if Flags.reset
-    Norma.settings._.reset()
+    Norma.getSettings._.reset()
 
 
   # CONFIG-SAVE -----------------------------------------------------------
 
 
   # Save the configuration object to file
-  Norma.settings._.save (err, data) ->
+  Norma.getSettings._.save (err, data) ->
     throw err if err
 
 

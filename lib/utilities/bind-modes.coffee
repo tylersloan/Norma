@@ -11,7 +11,7 @@ module.exports = (Norma) ->
 
   settingsLink = (key) ->
 
-    if Norma.settings.get "modes:#{key}"
+    if Norma.getSettings.get "modes:#{key}"
       Norma[key] = true
 
 

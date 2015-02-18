@@ -14,7 +14,7 @@ module.exports = (tasks, cwd) ->
 
   # VARIABLES --------------------------------------------------------------
 
-  config = Norma.getConfig()
+  config = Norma.config()
 
   # Store watch started in Norma to span files
   Norma.watchStarted = true
