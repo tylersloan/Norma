@@ -2,12 +2,14 @@
 Path = require "path"
 Fs = require "fs"
 _ = require "underscore"
+Q = require "kew"
 
 PkgeLookup = require "./package-lookup"
 AutoDiscover = require "./auto-discover"
 
 
 module.exports = (cwd) ->
+
 
   if !cwd then cwd = process.cwd()
 

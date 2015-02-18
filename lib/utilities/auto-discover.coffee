@@ -1,11 +1,15 @@
 
 Chalk = require "chalk"
 _ = require "underscore"
+Q = require "kew"
 
 ReadConfig = require "./read-config"
 
 
 module.exports = (cwd, packages) ->
+
+  # create the deferred
+  loaded = Q.defer()
 
   if !cwd then cwd = process.cwd()
 
@@ -51,7 +55,8 @@ module.exports = (cwd, packages) ->
     # add then run norma again
     Norma.install packagesCopy, cwd, ->
 
-      Norma.run Norma._, cwd
+      # Norma.run Norma._, cwd
+      loaded.resolve("ok")
 
 
     prettyPrint = new Array
@@ -65,6 +70,7 @@ module.exports = (cwd, packages) ->
 
     Norma.emit "message", msg
 
-    return true
+    return loaded
 
-  return false
+  loaded.resolve("ok")
+  return loaded
