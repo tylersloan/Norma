@@ -64,8 +64,7 @@ else
   Norma.userHome = Path.resolve __dirname, "../../norma"
 
 # Get the package.json for norma info
-cliPackage = require Path.join __dirname, "../package.json"
-Norma.version = cliPackage.version
+Norma.version = require(Path.join __dirname, "../package.json").version
 
 
 # EVENTS
@@ -184,7 +183,7 @@ Norma.run = (tasks, cwd) ->
 
   else start({})
 
-  
+
 # Norma.root = Path.resolve __dirname, "../../"
 
 
