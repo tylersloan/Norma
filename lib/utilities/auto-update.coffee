@@ -59,8 +59,8 @@ module.exports = (tasks, preference) ->
         skippedVersion = Norma.settings.get "version"
 
         if skippedVersion and Semver.gte skippedVersion, availableVersion
-          if Norma.prompt._.initialized
-            Norma.prompt.pause()
+          # if Norma.prompt._.initialized
+          #   Norma.prompt.pause()
           return
 
         # Dont ask because user always wants latest and greatest
