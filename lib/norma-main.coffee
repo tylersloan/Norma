@@ -146,16 +146,8 @@ Norma.run = (tasks, cwd) ->
     "update"
   ]
 
-  # lookup packages if necessary
-  if noPackageTasks.indexOf(_tasks[0]) is -1
 
-    pkges = Norma.getPackages cwd
-
-  else
-    pkges = {}
-
-
-  if pkges
+  start = (_pgkes) ->
 
     # Fire the start event
     Norma.emit "start"
@@ -177,12 +169,22 @@ Norma.run = (tasks, cwd) ->
 
       if pkges[method]
         pass = -> return
-        pkges[method].fn( pass, action, cwd)
+        Norma.tasks[method].fn( pass, action, cwd)
       else
         e.level = "crash"
         Norma.emit "error", e
 
+  # lookup packages if necessary
+  if noPackageTasks.indexOf(_tasks[0]) is -1
 
+    Norma.getPackages(cwd)
+      .then( (tasks) ->
+        start tasks
+      )
+
+  else start({})
+
+  
 # Norma.root = Path.resolve __dirname, "../../"
 
 

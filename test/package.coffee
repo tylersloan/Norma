@@ -8,20 +8,27 @@ Norma = require("./../lib/norma")
 describe "Packages", ->
 
   fixtures = Path.resolve "./test/fixtures"
+  fixturesJson = Path.resolve fixtures, "package.json"
 
   it "should download needed packages", ->
-    pkgeJson = Fs.readFileSync "package.json", encoding: "utf8"
+
+    @.timeout 10000
+
+    pkgeJson = Fs.readFileSync fixturesJson, encoding: "utf8"
+
+    Norma.silent = true
 
     if !pkgeJson.dependencies
 
-      pkges = Norma.getPackages(fixtures)
+      Norma.getPackages(fixtures)
+        .then( (packages) ->
 
-      console.log pkges
-        #
-        # pkgeJson = Fs.readFileSync "package.json", encoding: "utf8"
-        #
-        # pkgeJson.dependencies["norma-copy"].should
-        #   .contain.any.keys["norma-copy"]
+            pkgeJson = Fs.readFileSync fixturesJson, encoding: "utf8"
+
+            packages.should
+              .contain.any.keys["norma-copy"]
+        )
+
 
     # if !pkgeJson.dependencies["norma-copy"]
 

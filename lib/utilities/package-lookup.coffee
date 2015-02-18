@@ -8,10 +8,16 @@ MapTree = require("./directory-tools").mapTree
 
 
 
-module.exports = (cwd) ->
+module.exports = (cwd, targetCwd) ->
 
-  # Get config for task comparison
-  normaConfig = Norma.config()
+  if !cwd then cwd = process.cwd()
+
+  if targetCwd
+    # Get config for task comparison
+    normaConfig = Norma.config(targetCwd)
+  else
+    normaConfig = Norma.config(cwd)
+
   packageList = new Array
   packages = new Array
 

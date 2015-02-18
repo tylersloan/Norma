@@ -10,16 +10,16 @@ AutoDiscover = require "./auto-discover"
 
 module.exports = (cwd) ->
 
+  loadedPackages = Q.defer()
+
 
   if !cwd then cwd = process.cwd()
 
   # Get any project specific packages (from package.json)
   projectTasks = PkgeLookup cwd
 
-
   # Get global packages added to Norma
-  rootTasks = PkgeLookup (Path.resolve Norma.userHome, "packages")
-
+  rootTasks = PkgeLookup (Path.resolve Norma.userHome, "packages"), cwd
 
   combinedTasks = projectTasks.concat rootTasks
 
@@ -34,9 +34,10 @@ module.exports = (cwd) ->
     _.extend Norma.tasks, task
 
   # see if we need to download any packages
-  isMissingTasks = AutoDiscover cwd, Norma.tasks
+  isMissingTasks = AutoDiscover(cwd, Norma.tasks, loadedPackages)
 
 
-  return false if isMissingTasks
+  if !isMissingTasks
+    loadedPackages.resolve Norma.tasks
 
-  return Norma.tasks
+  return loadedPackages

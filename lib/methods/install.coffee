@@ -10,7 +10,6 @@ RemoveSync = require("./../utilities/directory-tools").removeSync
 
 module.exports = (tasks, cwd, callback) ->
 
-
   # LOGS -------------------------------------------------------------------
 
   # User tried to run `norma add` without argument
@@ -119,15 +118,13 @@ module.exports = (tasks, cwd, callback) ->
 
 
     # Do work on users global norma
-    process.chdir Path.resolve Norma.userHome, "packages"
+    cwd = Path.resolve Norma.userHome, "packages"
 
     ExecCommand(
       action
-      process.cwd()
+      cwd
     ,
       ->
-        # Change back to project cwd for further tasks
-        process.chdir cwd
 
         if typeof cb is "function"
           cb null
@@ -148,7 +145,7 @@ module.exports = (tasks, cwd, callback) ->
 
     ExecCommand(
       action
-      process.cwd()
+      cwd
     ,
       ->
 

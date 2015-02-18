@@ -14,7 +14,6 @@ _ = require "underscore"
 
 config = (cwd) ->
 
-
   if !cwd then cwd = process.cwd()
 
   # Find file based on cwd argument
@@ -57,6 +56,7 @@ config = (cwd) ->
     err.message= "Cannot find norma.json. Have you initiated norma?"
 
     Norma.emit "error", err
+    return
 
 
   parse file

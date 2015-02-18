@@ -1,21 +1,14 @@
 
 Chalk = require "chalk"
 _ = require "underscore"
-Q = require "kew"
-
-ReadConfig = require "./read-config"
 
 
-module.exports = (cwd, packages) ->
-
-  # create the deferred
-  loaded = Q.defer()
+module.exports = (cwd, packages, promise) ->
 
   if !cwd then cwd = process.cwd()
 
-
   # set needed variables
-  config = ReadConfig cwd
+  config = Norma.config cwd
   neededPackages = []
 
   # If there are no tasks so we can't do much, so exit with error
@@ -56,7 +49,11 @@ module.exports = (cwd, packages) ->
     Norma.install packagesCopy, cwd, ->
 
       # Norma.run Norma._, cwd
-      loaded.resolve("ok")
+      Norma.getPackages(cwd)
+        .then( (packages) ->
+          promise.resolve(packages)
+        )
+
 
 
     prettyPrint = new Array
@@ -70,9 +67,7 @@ module.exports = (cwd, packages) ->
 
     Norma.emit "message", msg
 
-    return loaded
+    return promise
 
   else
-    
-    loaded.resolve("ok")
-    return loaded
+    return false
