@@ -26,22 +26,28 @@ config = (cwd) ->
 
     if data is `undefined`
 
-      err =
-        level: "crash"
-        message: "norma.json is empty, have you initiated norma?"
-        name: "Missing File"
+      if !Norma.silent
+        err =
+          level: "crash"
+          message: "norma.json is empty, have you initiated norma?"
+          name: "Missing File"
 
-      Norma.emit "error", err
+        Norma.emit "error", err
+
+      return false
 
     # Try parsing the config data as JSON
     try
       _config = JSON.parse(data)
     catch err
 
-      err.level = "crash"
-      err.message = "norma.json is not a valid JSON"
+      if !Norma.silent
+        err.level = "crash"
+        err.message = "norma.json is not a valid JSON"
 
-      Norma.emit "error", err
+        Norma.emit "error", err
+
+      return false
 
   ###
 
@@ -56,10 +62,11 @@ config = (cwd) ->
     err.message= "Cannot find norma.json. Have you initiated norma?"
 
     Norma.emit "error", err
-    return
+    return false
 
 
-  parse file
+  return parse(file)
+
 
 
 
