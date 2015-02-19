@@ -8,7 +8,6 @@ Inherits = require "inherits"
 # TAKEN FROM RUN-SEQUENCE
 verifyTaskSets = (taskSets, skipArrays) ->
 
-
   if taskSets.length is 0
     Norma.emit "error", new Error("No tasks were provided to norma")
 
@@ -37,7 +36,11 @@ verifyTaskSets = (taskSets, skipArrays) ->
 
 runSequence = (norma) ->
 
+
   taskSets = Array::slice.call(arguments, 1)
+    .map( (task) ->
+      if Array.isArray(task) then task.slice() else task
+    )
 
   if typeof taskSets[taskSets.length - 1] is "function"
     callBack = taskSets.pop()
