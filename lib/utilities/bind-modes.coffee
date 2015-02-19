@@ -11,8 +11,10 @@ module.exports = (Norma) ->
 
   settingsLink = (key) ->
 
-    if Norma.getSettings.get "modes:#{key}"
-      Norma[key] = true
+    try
+      if Norma.getSettings.get "modes:#{key}"
+        Norma[key] = true
+    catch e
 
 
   # MODES -------------------------------------------------------------------

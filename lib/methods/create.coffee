@@ -8,15 +8,19 @@
 ###
 
 
-Fs = require("fs")
-Chalk  = require("chalk")
-Flags = require("minimist")( process.argv.slice(2) )
-Init = require("./init")
-Package = require "./../utilities/package"
+Fs = require "fs"
+Path = require "path"
 
+
+Init = require "./init"
+Package = require "./../utilities/package"
 MkDir = require("./../utilities/directory-tools").mkdir
 
-module.exports = (tasks, cwd) ->
+module.exports = (tasks, cwd, pkge) ->
+
+  if !cwd then cwd = process.cwd()
+
+  if !pkge then pkge = Norma.package
 
   # cwd = absolute path of directory where user typed 'norma create <appName>'
   # tasks = [ <appName> ] - flags are not included in the array
@@ -30,28 +34,41 @@ module.exports = (tasks, cwd) ->
 
     Norma.emit "error", err
 
+    return false
 
 
   packageName = tasks[0]
 
   # If this is a package it should look like "norma-#{name}"
-  if Flags.package and packageName.indexOf("norma-") isnt 0
+  if pkge and packageName.indexOf("norma-") isnt 0
 
     packageName = "norma-#{packageName}"
 
   # If packageName declared, create directory, else create in place
-  MkDir packageName
+  MkDir Path.join(cwd, packageName)
+
+  cwd = Path.join(cwd, packageName)
 
   # At this point we are in the project's directory root
-  process.chdir packageName
+  # process.chdir Path.join(cwd, packageName)
 
   # Make a package if we're supposed to
-  Package tasks, process.cwd() if Flags.package
+  if pkge
+    try
+      Package tasks, cwd
+    catch e
+      return e
+
+    return true
 
   # Otherwise init the norma project with a scaffold since its not a package
-  if not Flags.package
+  try
+    Init tasks, cwd
+  catch e
+    return e
+  return true
 
-    Init tasks, process.cwd()
+
 
 
 # API ----------------------------------------------------------------------
