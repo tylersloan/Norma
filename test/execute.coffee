@@ -2,7 +2,7 @@ Chai    = require("chai").should()
 Path    = require "path"
 Fs      = require "fs"
 
-Norma = require("./../lib/norma")
+
 SimpleTask = require("./methods/simpleTask")
 
 

@@ -3,7 +3,7 @@ Path    = require "path"
 Fs      = require "fs"
 Rimraf  = require "rimraf"
 
-Norma = require("./../lib/norma")
+
 
 
 describe "Create", ->

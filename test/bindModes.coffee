@@ -1,7 +1,7 @@
 
 Chai = require("chai").should()
 
-Norma = require("./../lib/norma")
+
 
 
 describe "Modes", ->

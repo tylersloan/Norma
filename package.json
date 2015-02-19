@@ -6,6 +6,7 @@
     "type": "git",
     "url": "https://github.com/NewSpring/norma.git"
   },
+  "main": "lib/norma.js",
   "author": "jbaxleyiii",
   "license": [
     {

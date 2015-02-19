@@ -49,7 +49,6 @@ Norma = new _norma()
 GLOBAL.Norma = Norma
 
 
-
 # NORMA -------------------------------------------------------------
 
 # STORAGE

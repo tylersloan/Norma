@@ -1,10 +1,9 @@
 
 Chai = require("chai").should()
 
-Norma = require("./../lib/norma")
+Norma = require "./../lib/norma"
 
-
-describe "Norma exists", ->
+describe "Norma", ->
 
   it "should return a version number", ->
     Norma.version.should.be.a "string"
