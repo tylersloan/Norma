@@ -11,6 +11,7 @@
 
 Fs       = require "fs"
 Path     = require "path"
+Q        = require "kew"
 
 ReadConfig   = require "./read-config"
 ExecCommand = require "./execute-command"
@@ -18,24 +19,25 @@ CopySync = require("./directory-tools").copySync
 RemoveSync = require("./directory-tools").removeSync
 
 
-doAfterPreInstall = (project, scaffoldConfig) ->
+doAfterPreInstall = (proj, _config, cwd, promise) ->
 
+  if !cwd then cwd = process.cwd()
 
-  if project.path isnt process.cwd()
-
+  if proj.path isnt cwd
     # Copy over all of the things
-    CopySync project.path, process.cwd()
+    CopySync proj.path, cwd
+
 
   # Save config
   Fs.writeFileSync(
-    Path.join(process.cwd(), "norma.json")
-    JSON.stringify(scaffoldConfig, null, 2)
+    Path.join(cwd, "norma.json")
+    JSON.stringify(_config, null, 2)
   )
 
-  if !Fs.existsSync('package.json')
+  if !Fs.existsSync( Path.join(cwd, "package.json") )
 
     defaultPackageData =
-      name: scaffoldConfig.name
+      name: _config.name
       version: "0.0.0"
       description: ""
       main: "index.js"
@@ -45,20 +47,29 @@ doAfterPreInstall = (project, scaffoldConfig) ->
       license: "MIT"
 
 
-    Fs.writeFile 'package.json', JSON.stringify(defaultPackageData, null, 2)
+    Fs.writeFile(
+      Path.join(cwd, "package.json")
+      JSON.stringify(defaultPackageData, null, 2)
+    )
 
 
   clean = ->
     # Before compiling, remove the nspignore folder
-    RemoveSync Path.join(process.cwd(), '/norma-ignore')
+    RemoveSync Path.join(cwd, "/norma-ignore")
 
-    Norma.run ["build"], process.cwd()
+    Norma.run(["build"], cwd)
+      .then( ->
+        promise.resolve("ok")
+      )
+      .fail( (err) ->
+        promise.reject err
+      )
 
 
   # Run post installation scripts
-  if scaffoldConfig.scripts and scaffoldConfig.scripts.postinstall
+  if _config.scripts and _config.scripts.postinstall
 
-    ExecCommand(scaffoldConfig.scripts.postinstall, process.cwd(), ->
+    ExecCommand(_config.scripts.postinstall, cwd, ->
       clean()
     )
 
@@ -66,13 +77,20 @@ doAfterPreInstall = (project, scaffoldConfig) ->
     clean()
 
 
-module.exports = (project, name) ->
 
+
+module.exports = (project, name, cwd) ->
+
+  created = Q.defer()
+
+  if !project
+    created.reject("no project passed")
+    return created
 
   # name = "My awesome project" or some other cool name
-  # project = { path: '/Users/.../Norma/scaffolds/ee-multisite',
-  #   name: 'ee-multisite',
-  #   type: 'folder',
+  # project = { path: "/Users/.../Norma/scaffolds/ee-multisite",
+  #   name: "ee-multisite",
+  #   type: "folder",
   #   children: [Object] }
 
   # See if a config file already exists (for local files)
@@ -100,9 +118,11 @@ module.exports = (project, name) ->
   if scaffoldConfig.scripts and scaffoldConfig.scripts.preinstall?
 
     ExecCommand(scaffoldConfig.scripts.preinstall, project.path, ->
-      doAfterPreInstall project, scaffoldConfig
+      doAfterPreInstall project, scaffoldConfig, cwd, created
     )
 
   else
 
-    doAfterPreInstall project, scaffoldConfig
+    doAfterPreInstall project, scaffoldConfig, cwd, created
+
+  return created

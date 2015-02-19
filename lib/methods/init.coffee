@@ -21,6 +21,11 @@ module.exports = (tasks, cwd, answers) ->
 
   installed = Q.defer()
 
+  if !tasks
+    installed.reject("no name to in specified ")
+
+  if !cwd then cwd = process.cwd()
+
   # cwd = path where norma package to be init'ed (same as process cwd)
   # tasks = [ 'create', <appName> ] - flags are not included in the array
 
@@ -29,7 +34,7 @@ module.exports = (tasks, cwd, answers) ->
 
   # Add in custom option to list of scaffolds available
   scaffolds.children.push custom =
-    path: process.cwd()
+    path: cwd
     name: 'custom'
     type: 'folder'
     children: []
@@ -40,12 +45,45 @@ module.exports = (tasks, cwd, answers) ->
   )
 
 
-  ###
+  # INSTAL --------------------------------------------------------------
 
-    @todo
-      This needs major cleanup and refactoring into smaller code
+  install = (answer) ->
 
-  ###
+    # Faster filter method
+    projects = (
+      p for p in scaffolds.children when p.name is answer.scaffold
+    )
+
+    # Use first match if one was found
+    if !projects.length
+
+      err =
+        level: "warn"
+        message:"That scaffold was not found.
+          Try 'norma list --scaffold'"
+
+      Norma.emit "error", err
+      installed.reject(err)
+      return
+
+
+    if Fs.readdirSync(cwd).length
+      installed.reject("not empty")
+      return
+
+
+    Scaffold(projects[0], answer.project, cwd)
+      .then( ->
+        installed.resolve("ok")
+      )
+      .fail( (err) ->
+        installed.reject err
+      )
+
+    return
+
+
+
 
   # INIT ------------------------------------------------------------------
 
@@ -68,88 +106,14 @@ module.exports = (tasks, cwd, answers) ->
       (answer) ->
 
         install answer
-
-        # if answer.project is "custom"
-        #   # Generate list of current files in directory
-        #   # (auto excludes "." and "..")
-        #   cwdIsEmpty = (Fs.readdirSync cwd).length is 0
-        #
-        #   # Failsafe to make sure project is
-        #   # empty on creation of new folder
-        #   if cwdIsEmpty
-        #     return
-        #
-        #   Inquirer.prompt
-        #     type: "confirm"
-        #     message: "Initializing will empty the
-        #       current directory. Continue?"
-        #     name: "override"
-        #     default: false
-        #   , (answer) ->
-        #
-        #     if answer.override
-        #
-        #       # Make really really sure that the user wants this
-        #       Inquirer.prompt
-        #         type: "confirm"
-        #         message: "Removed files are gone forever. Continue?"
-        #         name: "overridconfirm"
-        #         default: false
-        #       , (answer) ->
-        #
-        #         if answer.overridconfirm
-        #
-        #           # Clean up directory
-        #           Norma.emit "message", "Emptying current directory"
-        #           RemoveTree cwd, true
-        #           Scaffold projects[0], answer.project
-        #           return
-        #
-        #         else
-        #
-        #           Norma.stop()
-        #
-        #     else
-        #
-        #       Norma.stop()
-        #
-        # else
-        #
-        #   Scaffold projects[0], answer.project
-        #   return
     )
 
 
   if !answers
     doInit scaffoldNames
+  else
+    install answers
 
-  install = (answer) ->
-
-    # Faster filter method
-    projects = (
-      p for p in scaffolds.children when p.name is answer.scaffold
-    )
-
-    # Use first match if one was found
-    if !projects.length
-
-      err =
-        level: "warn"
-        message:"That scaffold was not found.
-          Try 'norma list --scaffold'"
-
-      Norma.emit "error", err
-      installed.reject(err)
-      return
-
-    cwdIsEmpty = (Fs.readdirSync cwd).length is 0
-
-    if cwdIsEmpty
-      return
-
-    Scaffold projects[0], answer.project
-
-    installed.resolve("ok")
 
   return installed
 

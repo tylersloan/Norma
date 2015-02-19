@@ -10,6 +10,7 @@
 
 Fs = require "fs"
 Path = require "path"
+Q = require "kew"
 
 
 Init = require "./init"
@@ -19,13 +20,18 @@ MkDir = require("./../utilities/directory-tools").mkdir
 module.exports = (tasks, cwd, pkge) ->
 
   if !cwd then cwd = process.cwd()
+  installPackage = Norma.package
 
-  if !pkge then pkge = Norma.package
+  if typeof pkge is "boolean"
+    installPackage = pkge
+
+  create = Q.defer()
+
 
   # cwd = absolute path of directory where user typed 'norma create <appName>'
   # tasks = [ <appName> ] - flags are not included in the array
 
-  if !tasks.length
+  if !tasks or !tasks.length
 
     err =
       level: "crash"
@@ -34,13 +40,14 @@ module.exports = (tasks, cwd, pkge) ->
 
     Norma.emit "error", err
 
-    return false
+    create.reject err
+    return create
 
 
   packageName = tasks[0]
 
   # If this is a package it should look like "norma-#{name}"
-  if pkge and packageName.indexOf("norma-") isnt 0
+  if installPackage and packageName.indexOf("norma-") isnt 0
 
     packageName = "norma-#{packageName}"
 
@@ -53,20 +60,27 @@ module.exports = (tasks, cwd, pkge) ->
   # process.chdir Path.join(cwd, packageName)
 
   # Make a package if we're supposed to
-  if pkge
+  if installPackage
     try
       Package tasks, cwd
     catch e
-      return e
+      create.reject e
 
-    return true
+    create.resolve("ok")
+    return create
 
   # Otherwise init the norma project with a scaffold since its not a package
-  try
-    Init tasks, cwd
-  catch e
-    return e
-  return true
+
+
+  Init(tasks, cwd, pkge)
+    .then( ->
+      create.resolve("ok")
+    )
+    .fail( (e) ->
+      create.reject e
+    )
+
+  return create
 
 
 
