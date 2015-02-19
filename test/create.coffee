@@ -8,9 +8,7 @@ Norma = require("./../lib/norma")
 
 describe "Create", ->
 
-
   norma_packages = Path.resolve "./test/fixtures/norma-packages"
-
   Norma.silent = true
 
   describe "package", ->

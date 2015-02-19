@@ -69,7 +69,6 @@ doAfterPreInstall = (project, scaffoldConfig) ->
 module.exports = (project, name) ->
 
 
-
   # name = "My awesome project" or some other cool name
   # project = { path: '/Users/.../Norma/scaffolds/ee-multisite',
   #   name: 'ee-multisite',

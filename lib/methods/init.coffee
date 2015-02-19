@@ -7,9 +7,9 @@
 
 ###
 Fs = require "fs"
-Chalk = require "chalk"
 Path = require "path"
 Inquirer = require "inquirer"
+Q = require "kew"
 
 Scaffold = require "./../utilities/scaffold"
 MapTree = require("./../utilities/directory-tools").mapTree
@@ -17,8 +17,9 @@ RemoveTree = require("./../utilities/directory-tools").removeTree
 
 
 
+module.exports = (tasks, cwd, answers) ->
 
-module.exports = (tasks, cwd) ->
+  installed = Q.defer()
 
   # cwd = path where norma package to be init'ed (same as process cwd)
   # tasks = [ 'create', <appName> ] - flags are not included in the array
@@ -66,76 +67,91 @@ module.exports = (tasks, cwd) ->
       ],
       (answer) ->
 
-        # Faster filter method
-        projects = (p for p in scaffolds.children when p.name is answer.scaffold)
+        install answer
 
-        # Use first match if one was found
-        if !projects.length
-
-          err =
-            level: "warn"
-            message:"That scaffold was not found. Try 'norma list --scaffold'"
-
-          Norma.emit "error", err
-          return
-
-        if answer.project is "custom"
-          # Generate list of current files in directory (auto excludes "." and "..")
-          cwdIsEmpty = (Fs.readdirSync cwd).length is 0
-
-          # Failsafe to make sure project is empty on creation of new folder
-          if cwdIsEmpty
-            return
-
-          Inquirer.prompt
-            type: "confirm"
-            message: "Initializing will empty the current directory. Continue?"
-            name: "override"
-            default: false
-          , (answer) ->
-
-            if answer.override
-
-              # Make really really sure that the user wants this
-              Inquirer.prompt
-                type: "confirm"
-                message: "Removed files are gone forever. Continue?"
-                name: "overridconfirm"
-                default: false
-              , (answer) ->
-
-                if answer.overridconfirm
-
-                  # Clean up directory
-                  Norma.emit "message", Chalk.grey("Emptying current directory")
-                  RemoveTree cwd, true
-                  Scaffold projects[0], answer.project
-                  return
-
-                else
-
-                  Norma.emit "stop"
-
-                  process.exit 0
-
-            else
-
-              Norma.emit "stop"
-
-              process.exit 0
-
-
-        else
-
-          Scaffold projects[0], answer.project
-          return
-
-
+        # if answer.project is "custom"
+        #   # Generate list of current files in directory
+        #   # (auto excludes "." and "..")
+        #   cwdIsEmpty = (Fs.readdirSync cwd).length is 0
+        #
+        #   # Failsafe to make sure project is
+        #   # empty on creation of new folder
+        #   if cwdIsEmpty
+        #     return
+        #
+        #   Inquirer.prompt
+        #     type: "confirm"
+        #     message: "Initializing will empty the
+        #       current directory. Continue?"
+        #     name: "override"
+        #     default: false
+        #   , (answer) ->
+        #
+        #     if answer.override
+        #
+        #       # Make really really sure that the user wants this
+        #       Inquirer.prompt
+        #         type: "confirm"
+        #         message: "Removed files are gone forever. Continue?"
+        #         name: "overridconfirm"
+        #         default: false
+        #       , (answer) ->
+        #
+        #         if answer.overridconfirm
+        #
+        #           # Clean up directory
+        #           Norma.emit "message", "Emptying current directory"
+        #           RemoveTree cwd, true
+        #           Scaffold projects[0], answer.project
+        #           return
+        #
+        #         else
+        #
+        #           Norma.stop()
+        #
+        #     else
+        #
+        #       Norma.stop()
+        #
+        # else
+        #
+        #   Scaffold projects[0], answer.project
+        #   return
     )
 
 
-  doInit scaffoldNames, scaffolds
+  if !answers
+    doInit scaffoldNames
 
+  install = (answer) ->
+
+    # Faster filter method
+    projects = (
+      p for p in scaffolds.children when p.name is answer.scaffold
+    )
+
+    # Use first match if one was found
+    if !projects.length
+
+      err =
+        level: "warn"
+        message:"That scaffold was not found.
+          Try 'norma list --scaffold'"
+
+      Norma.emit "error", err
+      installed.reject(err)
+      return
+
+    cwdIsEmpty = (Fs.readdirSync cwd).length is 0
+
+    if cwdIsEmpty
+      return
+
+    Scaffold projects[0], answer.project
+
+    installed.resolve("ok")
+
+  return installed
 
 # API ----------------------------------------------------------------------
 
