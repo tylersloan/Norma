@@ -3,6 +3,7 @@ Path = require "path"
 Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
+Q = require "kew"
 
 MapTree = require("./../utilities/directory-tools").mapTree
 ReadConfig = require "./../utilities/read-config"
@@ -13,8 +14,12 @@ GenerateTaskList = require "./../utilities/generate-task-list"
 
 module.exports = (tasks, cwd) ->
 
+  buildStatus = Q.defer()
+
+  if !cwd then cwd = process.cwd()
+
   # Load config
-  config = ReadConfig process.cwd()
+  config = ReadConfig cwd
 
   # After task is done message
   completeMessage =
@@ -32,16 +37,19 @@ module.exports = (tasks, cwd) ->
     if config.scripts and config.scripts.custom
       ExecCommand(
         config.scripts.custom
-        process.cwd()
+        cwd
       ,
         ->
           Norma.emit "message", completeMessage
+
+          buildStatus.resolve "ok"
           # Norma.close()
       )
 
     else
 
       Norma.emit "message", completeMessage
+      buildStatus.resolve "ok"
       # Norma.close()
 
 
@@ -56,15 +64,22 @@ module.exports = (tasks, cwd) ->
 
     list.push "final"
 
-    Norma.execute.apply null, list
+    try
+      Norma.execute.apply null, list
+    catch e
+      buildStatus.reject e
 
 
 
   # GENERATE-LIST --------------------------------------------------------
 
   if !tasks.length
-    # create list from packages and build
-    build GenerateTaskList(config, Norma.tasks)
+
+    try
+      # create list from packages and build
+      build GenerateTaskList(config, Norma.tasks)
+    catch e
+      buildStatus.reject e
 
   else
 
@@ -91,6 +106,9 @@ module.exports = (tasks, cwd) ->
         return
 
     build tasks
+
+
+  return buildStatus
 
 
 
