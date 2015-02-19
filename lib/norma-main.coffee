@@ -2,7 +2,6 @@
 Orchestrator  = require("orchestrator")
 Inherits      = require("inherits")
 Path          = require "path"
-Domain        = require("domain").create();
 Home          = require "user-home"
 
 MapTree = require("./utilities/directory-tools").mapTree
@@ -87,7 +86,6 @@ do ->
 
 
 # LIBRARIES
-Norma.domain = Domain
 Norma.config = require "./utilities/read-config"
 Norma.getSettings = require "./utilities/read-settings"
 Norma.prompt = require "./utilities/prompt"

@@ -4,6 +4,7 @@
 require("coffee-script/register");
 var Liftoff = require("Liftoff");
 var Flags = require("minimist")(process.argv.slice(2));
+var Domain = require("domain").create();
 
 var Norma = require("../lib/norma")
 var Launch = require("./launcher")
@@ -19,7 +20,7 @@ process.on('SIGINT', function() {
 
 
 // ERRORS ---------------------------------------------------------------
-Norma.domain.on("error", function(err){
+Domain.on("error", function(err){
   // err.level = "crash";
   // handle the error safely
   Norma.events.emit("error", err);
@@ -27,7 +28,7 @@ Norma.domain.on("error", function(err){
 
 
 // CLI ----------------------------------------------------------
-Norma.domain.run(function(){
+Domain.run(function(){
 
   // Require main file
   cli.launch({

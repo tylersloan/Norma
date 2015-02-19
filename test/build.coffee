@@ -41,7 +41,6 @@ describe "Build", ->
 
   it "should allow passing a task to be built", ->
 
-
     Norma.build(["copy"], fixtures)
       .then( (result) ->
         result.should.be.equal "ok"
