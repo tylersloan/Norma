@@ -7,10 +7,12 @@ _ = require "underscore"
 
 MapTree = require("./directory-tools").mapTree
 
-module.exports = (tasks, cwd) ->
+module.exports = (tasks, cwd, flush) ->
 
   # create the deferred
   loaded = Q.defer()
+
+  if !cwd then cwd = process.cwd()
 
   update = Norma.getSettings.get("autoUpdate")
 
@@ -45,7 +47,7 @@ module.exports = (tasks, cwd) ->
 
 
   # local
-  config = require config
+  config = JSON.parse Fs.readFileSync(config, encoding: "utf8")
 
   if globalConfig
     globalAlreadyInstalled = {}
@@ -54,7 +56,7 @@ module.exports = (tasks, cwd) ->
 
     getGlobalPkgeDetails = (pkge) ->
 
-      pkgeConfig = require pkge.path
+      pkgeConfig = JSON.parse Fs.readFileSync(pkge.path, encoding: "utf8")
 
       globalAlreadyInstalled[pkgeConfig.name] = pkgeConfig.version
 
@@ -110,7 +112,7 @@ module.exports = (tasks, cwd) ->
 
   getPkgeDetails = (pkge) ->
 
-    pkgeConfig = require pkge.path
+    pkgeConfig = JSON.parse Fs.readFileSync(pkge.path, encoding: "utf8")
 
     alreadyInstalled[pkgeConfig.name] = pkgeConfig.version
 
@@ -134,7 +136,7 @@ module.exports = (tasks, cwd) ->
 
   loadNPM = (cb) ->
 
-    if npmLoaded
+    if npmLoaded and !flush
       cb()
       return
 
@@ -142,7 +144,7 @@ module.exports = (tasks, cwd) ->
 
     Npm.load npmReady.makeNodeResolver()
 
-    npmReady.promise.then( ->
+    npmReady.then( ->
 
       npmLoaded = false
       cb()
@@ -159,7 +161,11 @@ module.exports = (tasks, cwd) ->
       obj[name] = Q.defer()
 
       install = ->
-        Npm.commands.install [name], obj[name].makeNodeResolver()
+        Npm.commands.install(
+          cwd
+          [name]
+          obj[name].makeNodeResolver()
+        )
 
       loadNPM install
 
@@ -175,16 +181,16 @@ module.exports = (tasks, cwd) ->
 
         message =
           name: addedName
-          message: "#{addedName} needs updating"
+          message: "#{addedName}@#{added[addedName]} needs updating"
 
-        update addedName, message
+        update "#{addedName}@#{added[addedName]}", message
 
     else
       message =
         name: addedName
-        message: "#{addedName} needs installing"
+        message: "#{addedName}@#{added[addedName]} needs installing"
 
-      update addedName, message
+      update "#{addedName}@#{added[addedName]}", message
 
 
   Q.all(installs)
