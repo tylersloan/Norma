@@ -67,7 +67,7 @@ module.exports = (tasks, cwd, answers) ->
       return
 
 
-    if Fs.readdirSync(cwd).length
+    if Fs.readdirSync(cwd).length and answer.scaffold isnt "custom"
       installed.reject("not empty")
       return
 

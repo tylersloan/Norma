@@ -5,6 +5,85 @@ Rimraf  = require "rimraf"
 
 describe "Init", ->
 
-  it "should be tested", ->
 
-    true.should.be.true
+  tempProject = Path.resolve "./test/temp-fixtures/"
+
+  answers =
+    scaffold: "custom"
+    project: "second-test"
+
+
+  beforeEach (done) ->
+
+    if !Fs.existsSync tempProject
+      Fs.mkdirSync tempProject
+
+    return done()
+
+
+  it "should require a name", ->
+
+    Norma.init([], tempProject, answers)
+      .then( (resolve) ->
+
+        resolve.should.not.equal "ok"
+
+      )
+      .fail( (err) ->
+
+        err.should.exist
+      )
+
+
+  it "should contain a norma.json", ->
+
+    Norma.init(["test"], tempProject, answers)
+      .then( (resolve) ->
+
+        normaJson = Path.join tempProject, "norma.json"
+
+        exists = Fs.existsSync normaJson
+
+        exists.should.be.true
+
+      )
+      .fail( (err) ->
+        err.should.not.exist
+      )
+
+
+  it "should create a norma.json with the right name", ->
+
+    Norma.init(["test"], tempProject, answers)
+      .then( (resolve) ->
+
+        normaJson = Path.join tempProject, "norma.json"
+
+        _config = Fs.readFileSync normaJson, encoding: "utf8"
+
+        _config = JSON.parse _config
+        _config.name.should.equal "second-test"
+
+      )
+
+
+  it "should contain a package.json", ->
+
+    Norma.init(["test"], tempProject, answers)
+      .then( (resolve) ->
+
+        pkgeJSON = Path.join tempProject, "package.json"
+        exists = Fs.existsSync pkgeJSON
+
+        exists.should.be.true
+
+      )
+
+
+  afterEach (done) ->
+
+    if Fs.existsSync tempProject
+      Rimraf.sync tempProject
+
+
+    return done()
