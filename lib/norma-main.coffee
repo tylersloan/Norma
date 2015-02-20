@@ -131,11 +131,11 @@ Norma.run = (tasks, cwd) ->
 
   ###
   noPackageTasks = [
-    "add"
     "config"
     "create"
     "help"
     "init"
+    "install"
     "open"
     "remove"
     "search"
