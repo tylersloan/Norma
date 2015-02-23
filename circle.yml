@@ -2,6 +2,10 @@ machine:
   node:
     version: 0.10.33
 
-# dependencies:
-#   override:
-#     - npm install --dev
+
+dependencies:
+  cache_directories:
+    - node_modules
+
+  override:
+    - npm prune && npm install
