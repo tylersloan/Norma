@@ -81,10 +81,10 @@ describe "getSettings", ->
         _settings.stores.global.file.should.contain Norma._.userHome
 
 
-      it "should be at process.cwd() if local", ->
-
-        _settings = Norma.getSettings._
-
-        baseName = Path.basename process.cwd()
-
-        _settings.stores.local.file.should.contain baseName
+      # it "should be at process.cwd() if local", ->
+      #
+      #   _settings = Norma.getSettings._
+      #
+      #   baseName = Path.basename process.cwd()
+      #
+      #   _settings.stores.local.file.should.contain baseName
