@@ -1,3 +1,6 @@
+if process.env.CI
+  return
+
 
 Inquirer = require "inquirer"
 
