@@ -27,10 +27,12 @@ module.exports = (tasks, cwd) ->
       if typeof task is "function"
         taskObject = task normaConfig, tasks
         taskObject = null
-        
-        packages.push task.tasks
-    catch e
 
+        packages.push task.tasks
+    catch err
+      console.log "At #{pkgeCwd}"
+      err.level = "crash"
+      Norma.events.emit "error", err
     #
     # else
     #   packages.push task
