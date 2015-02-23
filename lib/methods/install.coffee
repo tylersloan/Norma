@@ -4,6 +4,7 @@ Ghdownload = require "github-download"
 Fs = require "fs"
 Q = require "kew"
 
+Norma = require "./../norma"
 ExecCommand = require "./../utilities/execute-command"
 MkDir = require("./../utilities/directory-tools").mkdir
 RemoveSync = require("./../utilities/directory-tools").removeSync
@@ -43,10 +44,10 @@ module.exports = (tasks, cwd, callback) ->
 
     finalLoc = finalLoc[1].split(".git")[0]
 
-    MkDir Path.resolve Norma.userHome, "scaffolds"
+    MkDir Path.resolve Norma._.userHome, "scaffolds"
 
     # Get final resting place of global scaffolds
-    scaffoldLocation = Path.resolve Norma.userHome, "scaffolds", finalLoc
+    scaffoldLocation = Path.resolve Norma._.userHome, "scaffolds", finalLoc
 
     # remove existing scaffold
     if Fs.existsSync scaffoldLocation
@@ -94,9 +95,9 @@ module.exports = (tasks, cwd, callback) ->
       Norma.emit "message", "Installing packages to your global norma..."
 
 
-    MkDir Path.resolve Norma.userHome, "packages"
+    MkDir Path.resolve Norma._.userHome, "packages"
 
-    pgkeJSON = Path.resolve(Norma.userHome, "packages/package.json")
+    pgkeJSON = Path.resolve(Norma._.userHome, "packages/package.json")
 
     if !Fs.existsSync( pgkeJSON )
 
@@ -118,7 +119,7 @@ module.exports = (tasks, cwd, callback) ->
 
 
     # Do work on users global norma
-    cwd = Path.resolve Norma.userHome, "packages"
+    cwd = Path.resolve Norma._.userHome, "packages"
 
     ExecCommand(
       action

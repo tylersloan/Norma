@@ -5,6 +5,8 @@ Npm = require "npm"
 Q = require "kew"
 _ = require "underscore"
 
+
+Norma = require "./../norma"
 MapTree = require("./directory-tools").mapTree
 
 module.exports = (tasks, cwd, flush) ->
@@ -38,7 +40,7 @@ module.exports = (tasks, cwd, flush) ->
 
 
   # compare with global packages
-  globalConfig = Path.join Norma.userHome, "packages", "package.json"
+  globalConfig = Path.join Norma._.userHome, "packages", "package.json"
 
   if Fs.existsSync globalConfig
     globalConfig = require globalConfig
@@ -51,7 +53,7 @@ module.exports = (tasks, cwd, flush) ->
 
   if globalConfig
     globalAlreadyInstalled = {}
-    global_modules = Path.join Norma.userHome, "packages", "node_modules"
+    global_modules = Path.join Norma._.userHome, "packages", "node_modules"
     globalInstalled = MapTree global_modules, true
 
     getGlobalPkgeDetails = (pkge) ->

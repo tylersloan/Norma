@@ -4,6 +4,7 @@ Fs = require "fs"
 _ = require "underscore"
 Q = require "kew"
 
+Norma = require "./../norma"
 PkgeLookup = require "./package-lookup"
 AutoDiscover = require "./auto-discover"
 
@@ -19,7 +20,7 @@ module.exports = (cwd) ->
   projectTasks = PkgeLookup cwd
 
   # Get global packages added to Norma
-  rootTasks = PkgeLookup (Path.resolve Norma.userHome, "packages"), cwd
+  rootTasks = PkgeLookup (Path.resolve Norma._.userHome, "packages"), cwd
 
   combinedTasks = projectTasks.concat rootTasks
 

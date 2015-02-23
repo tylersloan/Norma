@@ -2,6 +2,7 @@ Fs = require "fs"
 Path = require "path"
 Chalk = require "chalk"
 
+Norma = require "./../norma"
 ReadConfig = require "./../utilities/read-config"
 ExecCommand = require "./../utilities/execute-command"
 RemoveTree = require('./../utilities/directory-tools').removeTree
@@ -28,7 +29,7 @@ module.exports = (tasks, cwd) ->
   if Norma.scaffold
     tasks[1] = Norma.scaffold
 
-    scaffoldLocation = Path.resolve Norma.userHome, "scaffolds/", tasks[1]
+    scaffoldLocation = Path.resolve Norma._.userHome, "scaffolds/", tasks[1]
 
     RemoveTree scaffoldLocation
 
@@ -80,10 +81,10 @@ module.exports = (tasks, cwd) ->
   if Norma.global or Norma.g
 
     Norma.emit "message", "Removing packages to your global norma..."
-  
+
 
     # Do work on users global norma
-    process.chdir Path.resolve Norma.userHome, "packages"
+    process.chdir Path.resolve Norma._.userHome, "packages"
 
     ExecCommand(
       action

@@ -6,6 +6,7 @@ Chalk = require "chalk"
 _ = require "underscore"
 Watch = require "glob-watcher"
 
+Norma = require "./../norma"
 PkgeLookup = require "./../utilities/package-lookup"
 Prompt = require "./../utilities/prompt"
 

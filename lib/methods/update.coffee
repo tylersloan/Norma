@@ -2,6 +2,7 @@ Path = require "path"
 Fs = require "fs"
 Multimatch = require "multimatch"
 
+Norma = require "./../norma"
 ExecCommand = require "./../utilities/execute-command"
 
 module.exports = (tasks, cwd) ->

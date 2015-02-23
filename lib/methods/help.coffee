@@ -1,6 +1,7 @@
 
 Path = require "path"
 
+Norma = require "./../norma"
 Logger = require "./../logging/logger"
 
 module.exports = ->

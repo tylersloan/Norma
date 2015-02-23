@@ -5,6 +5,7 @@ Chalk = require "chalk"
 _ = require "underscore"
 Q = require "kew"
 
+Norma = require "./../norma"
 MapTree = require("./../utilities/directory-tools").mapTree
 ReadConfig = require "./../utilities/read-config"
 ExecCommand = require "./../utilities/execute-command"
@@ -17,6 +18,10 @@ module.exports = (tasks, cwd) ->
   buildStatus = Q.defer()
 
   if !cwd then cwd = process.cwd()
+
+  if !Fs.existsSync Path.join(cwd, "norma.json")
+    buildStatus.reject("no norma.json found at #{cwd}")
+    return buildStatus
 
   # Load config
   config = ReadConfig cwd
@@ -68,6 +73,7 @@ module.exports = (tasks, cwd) ->
       Norma.execute.apply null, list
     catch e
       buildStatus.reject e
+      return buildStatus
 
 
 
@@ -80,6 +86,7 @@ module.exports = (tasks, cwd) ->
       build GenerateTaskList(config, Norma.tasks)
     catch e
       buildStatus.reject e
+      return buildStatus
 
   else
 

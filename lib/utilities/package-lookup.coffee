@@ -4,6 +4,7 @@ Fs = require "fs"
 Multimatch = require "multimatch"
 _ = require "underscore"
 
+Norma = require "./../norma"
 MapTree = require("./directory-tools").mapTree
 
 
@@ -83,7 +84,7 @@ module.exports = (cwd, targetCwd) ->
 
 
     # verify we aren't in root
-    if cwd isnt Path.resolve Norma.userHome, 'packages'
+    if cwd isnt Path.resolve Norma._.userHome, 'packages'
 
       pkges = MapTree process.cwd()
 

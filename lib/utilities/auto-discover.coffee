@@ -2,6 +2,7 @@
 Chalk = require "chalk"
 _ = require "underscore"
 
+Norma = require "./../norma"
 
 module.exports = (cwd, packages, promise) ->
 

@@ -1,5 +1,6 @@
 Exec = require('child_process').exec
 
+Norma = require "./../norma"
 
 module.exports = (tasks, cwd) ->
 

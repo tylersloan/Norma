@@ -2,6 +2,7 @@ Path = require "path"
 Chalk = require "chalk"
 _ = require "underscore"
 
+Norma = require "./../norma"
 ReadConfig = require "./../utilities/read-config"
 
 

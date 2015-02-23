@@ -3,6 +3,7 @@ Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
 
+Norma = require "./../norma"
 MapTree = require("./../utilities/directory-tools").mapTree
 PkgeLookup = require "./../utilities/package-lookup"
 
@@ -23,7 +24,7 @@ module.exports = (tasks, cwd, scaffolds) ->
 
   if Norma.scaffold or Norma.scaffolds or scaffolds
 
-    scaffoldLocation = Path.join Norma.userHome, "scaffolds"
+    scaffoldLocation = Path.join Norma._.userHome, "scaffolds"
 
     types = listTypes scaffoldLocation, "folder"
 

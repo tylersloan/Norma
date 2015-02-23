@@ -10,6 +10,7 @@
 
 Chalk = require "chalk"
 Log = require "./message"
+Norma = require "./../norma"
 
 
 error =
@@ -26,7 +27,7 @@ error =
   # the norma-notify package is a great example of this event usage
   warn: (msg) =>
 
-    # Norma.emit "warn", msg
+    Norma.emit "warn", msg
     msg.level = "log"
 
     Log msg
@@ -42,7 +43,7 @@ error =
 
   crash: (msg) ->
 
-    # Norma.emit "crash", msg
+    Norma.emit "crash", msg
 
     msg.level = "log"
     Log msg
@@ -66,6 +67,9 @@ module.exports = Error = (err) ->
 
 
   if !err.color then err.color = "red"
+
+  if Norma.silent
+    return
 
   if err.level
     error[err.level] err

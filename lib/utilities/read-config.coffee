@@ -11,6 +11,8 @@ Path = require "path"
 Chalk = require "chalk"
 _ = require "underscore"
 
+Norma = require "./../norma"
+
 
 config = (cwd) ->
 
@@ -55,14 +57,19 @@ config = (cwd) ->
     This is done syncronously in order to return read data correctly
 
   ###
-  try
-    file = Fs.readFileSync fileLoc, encoding: "utf8"
-  catch err
-    err.level = "crash"
-    err.message= "Cannot find norma.json. Have you initiated norma?"
 
-    Norma.emit "error", err
-    return false
+  if Fs.existsSync fileLoc
+    try
+      file = Fs.readFileSync fileLoc, encoding: "utf8"
+    catch err
+      console.log err
+      err.level = "crash"
+
+
+      Norma.emit "error", err
+      return false
+
+  else return false
 
 
   return parse(file)

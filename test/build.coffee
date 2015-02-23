@@ -2,6 +2,7 @@ Chai    = require("chai").should()
 Path    = require "path"
 Fs      = require "fs"
 
+Norma = require "./../lib/index"
 
 
 
@@ -32,12 +33,15 @@ describe "Build", ->
       )
 
 
+
   it "should allow a fail function", ->
 
     Norma.build([], process.cwd())
       .fail( (e) ->
         e.should.exist
       )
+
+
 
   it "should allow passing a task to be built", ->
 

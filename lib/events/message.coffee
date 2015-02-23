@@ -8,7 +8,7 @@
 
 ###
 Chalk = require "chalk"
-
+Norma = require "./../norma"
 
 message =
 
@@ -16,12 +16,12 @@ message =
   # extra information available.
   log: (msg) ->
 
-    # message = [Chalk.grey(Norma._.prefix)]
-    message = []
+    message = [Chalk.grey(Norma._.prefix)]
 
-    # if Norma.prompt._.initialized and Norma.prompt.open
-    #   Norma.prompt.pause()
-    #   message = []
+
+    if Norma.prompt._.initialized and Norma.prompt.open
+      Norma.prompt.pause()
+      message = []
 
     # Build the error message by priority
     # if msg.name
@@ -51,8 +51,9 @@ message =
 
     console.log message.join ""
 
-    # if Norma.prompt._.initialized and !Norma.prompt.open
-    #   Norma.prompt()
+    if Norma.prompt._.initialized and !Norma.prompt.open
+
+      Norma.prompt()
 
 
 
@@ -61,7 +62,7 @@ message =
   # the norma-notify package is a great example of this event usage
   notify: (msg) ->
 
-    # Norma.emit "notify", msg
+    Norma.emit "notify", msg
 
     messageType.log msg
 
@@ -71,7 +72,7 @@ message =
   # more than one person know what is happening.
   alert: (msg) ->
 
-    # Norma.emit "alert", msg
+    Norma.emit "alert", msg
 
     messageType.notify msg
 
@@ -90,8 +91,8 @@ module.exports = Log = ->
         level: "log"
         name: "Log"
 
-    # if Norma.silent and arg.type isnt "alert"
-    #   return
+    if Norma.silent and arg.type isnt "alert"
+      return
 
 
     if arg.level

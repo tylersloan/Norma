@@ -1,8 +1,7 @@
 
 Orchestrator = require "orchestrator"
-Inherits = require "inherits"
 
-
+Norma = require "./../norma"
 
 # SEQUENCE ---------------------------------------------------------------
 # TAKEN FROM RUN-SEQUENCE

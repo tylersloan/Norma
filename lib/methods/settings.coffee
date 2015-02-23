@@ -14,6 +14,8 @@ Flags = require("minimist")(process.argv.slice(2))
 Chalk = require "chalk"
 Path = require "path"
 
+Norma = require "./../norma"
+
 
 module.exports = (tasks, cwd) ->
 

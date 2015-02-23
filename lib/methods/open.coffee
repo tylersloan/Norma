@@ -1,6 +1,7 @@
 
 Open = require "open"
 
+Norma = require "./../norma"
 
 module.exports = (tasks, cwd) ->
 

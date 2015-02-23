@@ -3,6 +3,7 @@ Path    = require "path"
 Fs      = require "fs"
 _ = require "underscore"
 
+Norma = require "./../lib/index"
 
 describe "Lists", ->
 
@@ -17,9 +18,9 @@ describe "Lists", ->
       scaffolds.should.be.an "array"
 
 
-    it "should return all folders in Norma.userHome/scaffolds", ->
+    it "should return all folders in Norma._.userHome/scaffolds", ->
 
-      scaffoldDir = Path.join Norma.userHome , "scaffolds"
+      scaffoldDir = Path.join Norma._.userHome , "scaffolds"
 
       files = Fs.readdirSync scaffoldDir
 

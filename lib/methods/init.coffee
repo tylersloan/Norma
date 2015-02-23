@@ -11,6 +11,7 @@ Path = require "path"
 Inquirer = require "inquirer"
 Q = require "kew"
 
+Norma = require "./../norma"
 Scaffold = require "./../utilities/scaffold"
 MapTree = require("./../utilities/directory-tools").mapTree
 RemoveTree = require("./../utilities/directory-tools").removeTree
@@ -29,8 +30,8 @@ module.exports = (tasks, cwd, answers) ->
   # cwd = path where norma package to be init'ed (same as process cwd)
   # tasks = [ 'create', <appName> ] - flags are not included in the array
 
-  # Norma.userHome is this script files' directory
-  scaffolds = MapTree Path.join Norma.userHome, "/scaffolds"
+  # Norma._.userHome is this script files' directory
+  scaffolds = MapTree Path.join Norma._.userHome, "/scaffolds"
 
   # Add in custom option to list of scaffolds available
   scaffolds.children.push custom =

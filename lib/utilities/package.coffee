@@ -13,6 +13,7 @@ Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
 
+Norma = require "./../norma"
 CopySync = require("./directory-tools").copySync
 ExecCommand = require "./execute-command"
 

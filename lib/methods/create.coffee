@@ -12,7 +12,7 @@ Fs = require "fs"
 Path = require "path"
 Q = require "kew"
 
-
+Norma = require "./../norma"
 Init = require "./init"
 Package = require "./../utilities/package"
 MkDir = require("./../utilities/directory-tools").mkdir
@@ -79,7 +79,7 @@ module.exports = (tasks, cwd, pkge) ->
     .fail( (e) ->
       create.reject e
     )
-
+  
   return create
 
 

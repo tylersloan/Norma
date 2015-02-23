@@ -2,7 +2,8 @@ Chai    = require("chai").should()
 Path    = require "path"
 Fs      = require "fs"
 Rimraf  = require "rimraf"
-Norma   = require "./../lib/norma"
+
+Norma = require "./../lib/index"
 
 
 describe "Packages", ->

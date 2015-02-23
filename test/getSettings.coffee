@@ -3,6 +3,7 @@ Path = require "path"
 Fs = require "fs"
 Rimraf = require "rimraf"
 
+Norma = require "./../lib/index"
 
 describe "getSettings", ->
 
@@ -55,11 +56,11 @@ describe "getSettings", ->
       Object.keys(_settings).length.should.be.above 1
 
 
-    it "should have three stores of data", ->
+    it "should have at least two stores of data", ->
 
       _settings = Norma.getSettings._
 
-      Object.keys(_settings.stores).length.should.equal 3
+      Object.keys(_settings.stores).length.should.be.above 1
 
     describe "stores", ->
 
@@ -77,13 +78,13 @@ describe "getSettings", ->
 
         _settings = Norma.getSettings._
 
-        _settings.stores.global.file.should.contain Norma.userHome
+        _settings.stores.global.file.should.contain Norma._.userHome
 
 
-        it "should be at process.cwd() if local", ->
+      it "should be at process.cwd() if local", ->
 
-          _settings = Norma.getSettings._
+        _settings = Norma.getSettings._
 
-          baseName = Path.basename process.cwd()
+        baseName = Path.basename process.cwd()
 
-          _settings.stores.local.file.should.contain baseName
+        _settings.stores.local.file.should.contain baseName

@@ -2,6 +2,8 @@
 Inquirer = require "inquirer"
 _ = require "underscore"
 
+Norma = require "./../norma"
+
 module.exports = (questions, callback) ->
 
   # see if string is asked (defaults to input)

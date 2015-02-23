@@ -1,7 +1,6 @@
 
+Norma = require "./../norma"
 
-foobar = (foobar) ->
+module.exports = foobar = (foobar) ->
 
-  console.log foobar
-
-module.exports = foobar
+  console.log Norma, "1"

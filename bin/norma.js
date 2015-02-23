@@ -6,7 +6,7 @@ var Liftoff = require("Liftoff");
 var Flags = require("minimist")(process.argv.slice(2));
 var Domain = require("domain").create();
 
-var Norma = require("../lib/norma")()
+var Norma = require "../lib/index"
 var Launch = require("./launcher")
 
 var cli = new Liftoff({

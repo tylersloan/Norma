@@ -13,6 +13,8 @@ Fs       = require "fs"
 Path     = require "path"
 Q        = require "kew"
 
+
+Norma = require "./../norma"
 ReadConfig   = require "./read-config"
 ExecCommand = require "./execute-command"
 CopySync = require("./directory-tools").copySync
@@ -57,7 +59,7 @@ doAfterPreInstall = (proj, _config, cwd, promise) ->
     # Before compiling, remove the nspignore folder
     RemoveSync Path.join(cwd, "/norma-ignore")
 
-    Norma.run(["build"], cwd)
+    Norma.build([], cwd)
       .then( ->
         promise.resolve("ok")
       )
