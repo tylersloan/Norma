@@ -10,19 +10,18 @@
 Chalk = require "chalk"
 
 
-module.exports = (Norma) ->
-
-  messageType = {}
+message =
 
   # This is the simplest message. It logs out message with any
   # extra information available.
-  messageType.log = (msg) ->
+  log: (msg) ->
 
-    message = [Chalk.grey(Norma.prefix)]
+    # message = [Chalk.grey(Norma._.prefix)]
+    message = []
 
-    if Norma.prompt._.initialized and Norma.prompt.open
-      Norma.prompt.pause()
-      message = []
+    # if Norma.prompt._.initialized and Norma.prompt.open
+    #   Norma.prompt.pause()
+    #   message = []
 
     # Build the error message by priority
     # if msg.name
@@ -52,21 +51,17 @@ module.exports = (Norma) ->
 
     console.log message.join ""
 
-    if Norma.prompt._.initialized and !Norma.prompt.open
-      Norma.prompt()
+    # if Norma.prompt._.initialized and !Norma.prompt.open
+    #   Norma.prompt()
 
 
-  messageType.debug = (msg) ->
 
-    if Norma.debug
-      msg.color = "red"
-      messageType.log msg
 
   # The notify level should try to let the developer know of the message
   # the norma-notify package is a great example of this event usage
-  messageType.notify = (msg) ->
+  notify: (msg) ->
 
-    Norma.emit "notify", msg
+    # Norma.emit "notify", msg
 
     messageType.log msg
 
@@ -74,37 +69,35 @@ module.exports = (Norma) ->
   # The alert is the highest level of serverity of the message.
   # It should be used for external coummincation services to let
   # more than one person know what is happening.
-  messageType.alert = (msg) ->
+  alert: (msg) ->
 
-    Norma.emit "alert", msg
+    # Norma.emit "alert", msg
 
     messageType.notify msg
 
 
-  Norma.log = ->
-
-    args = Array::.slice.call(arguments)
-    for arg in args
-      Norma.emit "message", arg
-
-    return
-
-  Norma.on "message", (message) ->
 
 
-    if typeof message is "string"
+module.exports = Log = ->
 
-      message =
-        message: message
+  args = Array::.slice.call(arguments)
+
+  for arg in args
+    if typeof arg is "string"
+
+      arg =
+        message: arg
         level: "log"
         name: "Log"
 
-    if Norma.silent and message.type isnt "alert"
-      return
+    # if Norma.silent and arg.type isnt "alert"
+    #   return
 
 
-    if message.level
-      messageType[message.level] message
+    if arg.level
+      message[arg.level] arg
 
     else
-      messageType.log message
+      message.log arg
+
+  return

@@ -23,12 +23,11 @@ module.exports = (tasks, cwd) ->
     Norma.emit "message", msg
 
 
-    if tasks[0] is "watch"
-
-      Norma.watch tasks, cwd
+    if tasks[0] is "build"
+      Norma.build tasks, cwd
 
     else
-      Norma.build tasks, cwd
+      Norma.watch tasks, cwd
 
 
 
@@ -37,10 +36,10 @@ module.exports = (tasks, cwd) ->
 module.exports.api = [
   {
     command: ""
-    description: "test your project/package"
+    description: "continuously test your package"
   }
   {
-    command: "--watch"
-    description: "continuously test project/package"
+    command: "build"
+    description: "test build of package"
   }
 ]
