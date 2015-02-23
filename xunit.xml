@@ -1,0 +1,74 @@
+<testsuite name="Mocha Tests" tests="72" failures="0" errors="0" skipped="0" timestamp="Mon, 23 Feb 2015 21:52:11 GMT" time="8.895">
+<testcase classname="Norma" name="should return a version number" time="0.001"/>
+<testcase classname="Norma" name="should be an object with many keys" time="0"/>
+<testcase classname="Norma" name="should have a method for help" time="0.001"/>
+<testcase classname="Norma" name="should have a value for prefix that is a string" time="0"/>
+<testcase classname="Packages install process" name="should have no installed modules" time="0.001"/>
+<testcase classname="Packages install process" name="should download needed packages" time="8.217"/>
+<testcase classname="Packages install process" name="should have installed modules" time="0"/>
+<testcase classname="Packages install process" name="should be stored in Norma.packages" time="0.001"/>
+<testcase classname="Packages install process" name="should be stored in Norma.tasks" time="0"/>
+<testcase classname="Packages norma-copy" name="should have a fn key" time="0"/>
+<testcase classname="Packages norma-copy" name="should have a dep key" time="0"/>
+<testcase classname="Packages norma-copy" name="should have a name key" time="0"/>
+<testcase classname="Packages package running" name="should be synchronous and return after scripts are run" time="0.001"/>
+<testcase classname="Modes" name="should pull in compilers flag from test runner" time="0"/>
+<testcase classname="Modes" name="should pull in envrioment variable" time="0"/>
+<testcase classname="Build" name="should return a promise" time="0.002"/>
+<testcase classname="Build" name="should allow a success function" time="0.001"/>
+<testcase classname="Build" name="should allow a fail function" time="0"/>
+<testcase classname="Build" name="should allow passing a task to be built" time="0.002"/>
+<testcase classname="Config" name="should return an object" time="0"/>
+<testcase classname="Config" name="should have a tasks object" time="0"/>
+<testcase classname="Config" name="should match the norma.json" time="0"/>
+<testcase classname="Config" name="should return false if no config found" time="0"/>
+<testcase classname="Config .save()" name="should allow saving an object to the norma.json" time="0.001"/>
+<testcase classname="Config .save()" name="should require an object passed" time="0"/>
+<testcase classname="Create" name="should return a promise" time="0.001"/>
+<testcase classname="Create package" name="should require a name" time="0"/>
+<testcase classname="Create package" name="should create a folder with norma- at the front" time="0.002"/>
+<testcase classname="Create package" name="should contain a norma.json" time="0.002"/>
+<testcase classname="Create package" name="should contain a package.json" time="0.003"/>
+<testcase classname="Create package" name="should contain a package.coffee" time="0.003"/>
+<testcase classname="Create package" name="should create a working package" time="0.011"/>
+<testcase classname="Create scaffolds" name="should require a name" time="0.001"/>
+<testcase classname="Create scaffolds" name="should contain a norma.json" time="0.028"/>
+<testcase classname="Create scaffolds" name="should create a norma.json with the right name" time="0.018"/>
+<testcase classname="Create scaffolds" name="should contain a package.json" time="0.012"/>
+<testcase classname="Events Subscribe" name="should register a new event" time="0"/>
+<testcase classname="Events Subscribe" name="should register the string passed as the event key" time="0"/>
+<testcase classname="Events Subscribe" name="should require a callback as the second parameter" time="0"/>
+<testcase classname="Events Emit" name="should execute a function on emit" time="0"/>
+<testcase classname="Events Emit" name="should pass a variable to function on emit" time="0"/>
+<testcase classname="Execute" name="should run a single task" time="0.001"/>
+<testcase classname="Execute" name="should run multiple tasks" time="0"/>
+<testcase classname="Execute" name="should run simultaneous tasks" time="0"/>
+<testcase classname="Execute" name="should run task dependencies" time="0.001"/>
+<testcase classname="Execute" name="should run task dependencies after previous tasks" time="0.001"/>
+<testcase classname="Execute" name="should handle the callback" time="0"/>
+<testcase classname="Execute Input Array Handling" name="should not modify passed-in parallel task arrays" time="0.001"/>
+<testcase classname="Execute Asynchronous Tasks" name="should run a single task" time="0"/>
+<testcase classname="Execute Asynchronous Tasks" name="should run multiple tasks" time="0.002"/>
+<testcase classname="Execute Asynchronous Tasks" name="should run simultaneous tasks" time="0.011"/>
+<testcase classname="Execute Asynchronous Tasks" name="should run task dependencies" time="0.001"/>
+<testcase classname="Execute Asynchronous Tasks" name="should run task dependencies after previous tasks" time="0.001"/>
+<testcase classname="getSettings" name="should be return an object" time="0.001"/>
+<testcase classname="getSettings" name="should be contain a path key" time="0"/>
+<testcase classname="getSettings get" name="should return a value if passed a key" time="0"/>
+<testcase classname="getSettings get" name="should return an object if passed nothing" time="0.001"/>
+<testcase classname="getSettings set" name="should add to the object" time="0"/>
+<testcase classname="getSettings _" name="should be an object with multiple keys" time="0"/>
+<testcase classname="getSettings _" name="should have at least two stores of data" time="0"/>
+<testcase classname="getSettings _ stores" name="should be from a .norma file if type is `file`" time="0"/>
+<testcase classname="getSettings _ stores" name="should be at Norma.userHome if global" time="0"/>
+<testcase classname="Init" name="should require a name" time="0.012"/>
+<testcase classname="Init" name="should contain a norma.json" time="0.025"/>
+<testcase classname="Init" name="should create a norma.json with the right name" time="0.02"/>
+<testcase classname="Init" name="should contain a package.json" time="0.009"/>
+<testcase classname="Install" name="should require a task" time="0.001"/>
+<testcase classname="Install Scaffolds" name="should download only repo with norma in the name" time="0"/>
+<testcase classname="Lists scaffold" name="should return an array of scaffolds if installed" time="0.014"/>
+<testcase classname="Lists scaffold" name="should return all folders in Norma._.userHome/scaffolds" time="0.032"/>
+<testcase classname="Lists packages" name="should list all found packages stored in Norma.packages" time="0.001"/>
+<testcase classname="Lists packages" name="should return only unique packages" time="0"/>
+</testsuite>

@@ -10,9 +10,9 @@ describe "Modes", ->
 
     Norma.compilers.should.equal "coffee:coffee-script/register"
 
-  it "should pull in spec flag from test runner", ->
-
-    Norma.reporter.should.equal "spec"
+  # it "should pull in spec flag from test runner", ->
+  #
+  #   Norma.reporter.should.equal "spec"
 
   it "should pull in envrioment variable", ->
 

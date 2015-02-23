@@ -3,9 +3,9 @@ machine:
     version: 0.10.33
 
 
-dependencies:
-  cache_directories:
-    - node_modules
-
-  override:
-    - npm prune && npm install
+# dependencies:
+#   cache_directories:
+#     - node_modules
+#
+#   override:
+#     - npm prune && npm install
