@@ -9,12 +9,36 @@ ExecCommand = require "./../utilities/execute-command"
 MkDir = require("./../utilities/directory-tools").mkdir
 RemoveSync = require("./../utilities/directory-tools").removeSync
 
-module.exports = (tasks, cwd, callback) ->
+module.exports = (tasks, cwd, scaffold, callback) ->
+
+  # Norma.install([], ->)
+  if typeof cwd is "function"
+    callback = cwd
+    cwd = false
+
+  # Norma.install([], cwd, ->)
+  if typeof scaffold is "function"
+    callback = scaffold
+    scaffold = false
+
+  # Norma.install([], true, ->)
+  if typeof cwd is "boolean"
+    scaffold = cwd
+    cwd = null
+
+  # Allow override via --scaffold
+  if Norma.scaffold then scaffold = true
+
+  # verify cwd
+  if !cwd then cwd = process.cwd()
+
+  # verify callback
+  if !callback then callback = -> return
 
   # LOGS -------------------------------------------------------------------
 
   # User tried to run `norma add` without argument
-  if !tasks.length
+  if !tasks or !tasks.length
 
     err =
       level: "crash"
@@ -24,10 +48,15 @@ module.exports = (tasks, cwd, callback) ->
     Norma.emit "error", err
 
 
+    callback err, null
+
+    return
+
+
 
   # SCAFFOLD ---------------------------------------------------------------
 
-  if Norma.scaffold
+  if scaffold
 
     # Clean out args to find git repo
     finalLoc = tasks[0].split "norma-"
@@ -40,7 +69,11 @@ module.exports = (tasks, cwd, callback) ->
           Organization/norma-xxxx or a full git repo containing norma-xxxx"
 
       Norma.emit "error", err
+
+
+      callback err, null
       return
+
 
     finalLoc = finalLoc[1].split(".git")[0]
 
@@ -53,14 +86,19 @@ module.exports = (tasks, cwd, callback) ->
     if Fs.existsSync scaffoldLocation
       RemoveSync scaffoldLocation
 
+    console.log "installing #{tasks[0]} at #{scaffoldLocation}"
     # Download from github
     Ghdownload(
       tasks[0]
       scaffoldLocation + "/"
     ).on "end", ->
-      Exec "tree", (err, stdout, sderr) ->
-        Norma.emit "message", "Scaffold ready!"
-        return
+
+      console.log "installed"
+      Norma.emit "message", "Scaffold ready!"
+
+      callback err, stdout
+      return
+
 
     return
 

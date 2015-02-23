@@ -159,3 +159,5 @@ module.exports = (Norma) ->
       name = Path.basename(method.name, Path.extname(method.name))
 
       Norma[name] = require(method.path) if method.path
+
+  Norma.i = Norma.install
