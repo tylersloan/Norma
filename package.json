@@ -54,7 +54,7 @@
     "mocha": "^2.1.0"
   },
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register --reporter spec --watch",
+    "test": "mocha --compilers coffee:coffee-script/register --reporter spec",
     "postinstall": "node ./lib/install/post.js"
   },
   "engines": {
