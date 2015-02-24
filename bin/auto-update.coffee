@@ -4,6 +4,7 @@ Path = require "path"
 Fs = require "fs"
 Semver = require "semver"
 Inquirer = require "inquirer"
+Norma = require "../lib/norma"
 
 ExecCommand = require "./../lib/utilities/execute-command"
 

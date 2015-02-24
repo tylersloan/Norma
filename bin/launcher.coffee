@@ -50,9 +50,10 @@ module.exports = (env) ->
 
   Norma.log "I'm getting everything ready#{name}..."
 
-  Norma.ready(Norma._, env.cwd).then( ->
+  Norma.ready(Norma.args, env.cwd).then( ->
 
-    Norma.run Norma._, env.cwd
+    console.log Norma.args
+    Norma.run Norma.args, env.cwd
 
 
   ).fail( (err) ->
