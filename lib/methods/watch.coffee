@@ -125,7 +125,7 @@ module.exports = (tasks, cwd) ->
 
     Norma.prompt()
 
-    Norma.prompt.listen (line) ->
+    Norma.prompt.listen (err, line) ->
 
       if runnableTasks.indexOf(line) > -1
         Norma.emit "message", Chalk.grey("Running #{line}")

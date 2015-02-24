@@ -108,7 +108,7 @@ prompt = ->
   if !Norma.prompt._.initialized
     initialize()
 
-  rl.setPrompt Chalk.grey(Norma.prefix), Norma.prefix.length
+  rl.setPrompt Chalk.grey(Norma._.prefix), Norma._.prefix.length
   rl.prompt()
 
   Norma.prompt.open = true
@@ -124,10 +124,11 @@ listen = (cb) ->
 
   if !Norma.prompt._.initialized
     Norma.emit "message", "prompt not initiatied"
+    cb "prompt not initiatied"
     return
 
   rl.on "line", (line) ->
-    cb line
+    cb null, line
 
   return
 

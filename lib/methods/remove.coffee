@@ -1,6 +1,8 @@
 Fs = require "fs"
 Path = require "path"
 Chalk = require "chalk"
+Q = require "kew"
+_ = require "underscore"
 
 Norma = require "./../norma"
 ReadConfig = require "./../utilities/read-config"
@@ -8,12 +10,19 @@ ExecCommand = require "./../utilities/execute-command"
 RemoveTree = require('./../utilities/directory-tools').removeTree
 
 
-module.exports = (tasks, cwd) ->
+module.exports = (tasks, cwd, scaffold) ->
+
+  removeStatus = Q.defer()
+
+  # Allow override via --scaffold
+  if Norma.scaffold then scaffold = true
+
+  if !cwd then cwd = process.cwd()
 
   # LOGS -------------------------------------------------------------------
 
   # User tried to run `norma add` without argument
-  if !tasks.length
+  if !tasks or !tasks.length
 
     err =
       level: "crash"
@@ -21,17 +30,30 @@ module.exports = (tasks, cwd) ->
       message: "Please specify a task or --scaffold <name>"
 
     Norma.emit "error", err
+    removeStatus.reject err
+    return removeStatus
 
 
 
   # SCAFFOLD ---------------------------------------------------------------
 
-  if Norma.scaffold
-    tasks[1] = Norma.scaffold
+  if scaffold
 
-    scaffoldLocation = Path.resolve Norma._.userHome, "scaffolds/", tasks[1]
+    scaffoldLocation = Path.resolve Norma._.userHome, "scaffolds/", tasks[0]
+
+    if !Fs.existsSync scaffoldLocation
+      err =
+        level: "crash"
+        name: "Missing Scaffold"
+        message: "#{tasks[0]} was not found to remove"
+
+      Norma.emit "error", err
+      removeStatus.reject err
+      return removeStatus
 
     RemoveTree scaffoldLocation
+    removeStatus.resolve "ok"
+    return removeStatus
 
 
 
@@ -49,6 +71,9 @@ module.exports = (tasks, cwd) ->
       message: message
 
     Norma.emit "error", err
+
+    removeStatus.reject err
+    return removeStatus
 
 
   ###
