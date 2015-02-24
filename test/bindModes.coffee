@@ -6,9 +6,9 @@ Norma = require "./../lib/index"
 
 describe "Modes", ->
 
-  it "should pull in compilers flag from test runner", ->
-
-    Norma.compilers.should.equal "coffee:coffee-script/register"
+  # it "should pull in compilers flag from test runner", ->
+  #
+  #   Norma.compilers.should.equal "coffee:coffee-script/register"
 
   # it "should pull in spec flag from test runner", ->
   #
