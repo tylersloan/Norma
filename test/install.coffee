@@ -15,52 +15,132 @@ describe "Install", ->
 
   it "should require a task", ->
 
-    Norma.install([], (err, result) ->
-      if err
+    Norma.install()
+      .fail( (err) ->
         err.should.contain.any.keys ["message"]
-    )
+      )
 
-    # installed.should.be.undefined
 
 
   describe "Scaffolds", ->
 
     it "should download only repo with norma in the name", ->
 
-      Norma.install(["NewSpring/foobar"], fixtures, true, (err) ->
-        if err
+      Norma.install(["NewSpring/foobar"], fixtures, true)
+        .fail( (err) ->
+
           err.should.contain.any.keys ["message"]
 
+        )
 
-      )
+
+    it "should download a package from github and install it", ->
+
+      @.timeout 10000
+      Norma.install(["NewSpring/norma-sample-scaffold"], fixtures, true)
+        .then( (result) ->
+            sample = Path.join(
+              Norma._.userHome, "scaffolds", "sample-scaffold"
+            )
+
+            Fs.existsSync(sample).should.be.true
+
+        )
+        .fail( (err) ->
+
+          err.should.be.undefined
+        )
+
+    it "should show up in listed scaffolds", ->
+
+      scaffolds = Norma.list([], fixtures, true)
+
+      scaffolds.should.include "sample-scaffold"
 
 
-    # it "should download a package from github and install it", ->
-    #
-    #   Norma.install(
-    #     ["NewSpring/norma-sample-scaffold"],
-    #     fixtures,
-    #     true,
-    #     (err, result) ->
-    #       console.log "why hello there"
-    #       console.log err, result
-    #       # if err
-    #       #   err.should.be.undefined
-    #       #
-    #       # sample = Path.join(
-    #       #   Norma._.userHome, "scaffolds", "sample-scaffold"
-    #       # )
-    #       #
-    #       # Fs.existsSync(sample).should.be.true
-    #
-    #   )
+  describe "Packages", ->
 
-    # it "should show up in listed scaffolds", ->
-    #
-    #   scaffolds = Norma.list([], fixtures, true)
-    #
-    #   scaffolds.should.include "sample-scaffold"
+    js = Path.join node_modules, "norma-javascript"
+    globalJs = Path.join(
+      Norma._.userHome, "packages", "node_modules", "norma-javascript"
+    )
 
-  # describe "Packages", ->
-  #
-  #   it "should"
+    beforeEach (done) ->
+
+      if Fs.existsSync js
+        Rimraf.sync js
+
+      if Fs.existsSync globalJs
+        Rimraf.sync globalJs
+
+      json = JSON.parse(Fs.readFileSync fixturesJson, encoding: "utf8")
+
+      delete json.devDependencies
+
+      Fs.writeFileSync fixturesJson, JSON.stringify(json, null, 2)
+
+
+
+      done()
+
+    it "install npm package with norma- at front of the name", ->
+
+      @.timeout 100000
+      Norma.install(["javascript"], fixtures)
+        .then( ->
+          Fs.existsSync(js).should.be.true
+        )
+
+    it "install allow an object to be used for installation", ->
+
+      @.timeout 100000
+    
+      obj =
+        name: "javascript"
+
+      Norma.install(obj, fixtures)
+        .then( ->
+          Fs.existsSync(js).should.be.true
+        )
+
+
+    it "install allow packages to be installed globally", ->
+
+      @.timeout 100000
+
+      obj =
+        name: "javascript"
+        global: true
+
+      Norma.install(obj, fixtures)
+        .then( ->
+          Fs.existsSync(globalJs).should.be.true
+        )
+
+    it "install allow packages to be installed from a git repo", ->
+
+      @.timeout 100000
+
+      obj =
+        name: "javascript"
+        endpoint: "NewSpring/norma-javascript"
+
+      Norma.install(obj, fixtures)
+        .then( ->
+          Fs.existsSync(js).should.be.true
+        )
+
+    it "install allow packages to be installed as a dev dependency", ->
+
+      @.timeout 100000
+
+      obj =
+        name: "javascript"
+        endpoint: "NewSpring/norma-javascript"
+        dev: true
+
+      Norma.install(obj, fixtures)
+        .then( ->
+          json = JSON.parse(Fs.readFileSync fixturesJson, encoding: "utf8")
+          json.devDependencies.should.contain.any.keys "norma-javascript"
+        )

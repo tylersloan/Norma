@@ -9,6 +9,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "norma-copy": "^0.2.4"
+    "norma-copy": "^0.2.4",
+    "norma-javascript": "git://github.com/NewSpring/norma-javascript"
+  },
+  "devDependencies": {
+    "norma-javascript": "git://github.com/NewSpring/norma-javascript"
   }
 }

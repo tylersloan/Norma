@@ -3,25 +3,22 @@ Exec = require("child_process").exec
 Ghdownload = require "github-download"
 Fs = require "fs"
 Q = require "kew"
+_ = require "underscore"
 
 Norma = require "./../norma"
 ExecCommand = require "./../utilities/execute-command"
 MkDir = require("./../utilities/directory-tools").mkdir
 RemoveSync = require("./../utilities/directory-tools").removeSync
 
-module.exports = (tasks, cwd, scaffold, callback) ->
+module.exports = (tasks, cwd, scaffold) ->
 
-  # Norma.install([], ->)
-  if typeof cwd is "function"
-    callback = cwd
-    cwd = false
+  installStatus = Q.defer()
 
-  # Norma.install([], cwd, ->)
-  if typeof scaffold is "function"
-    callback = scaffold
-    scaffold = false
+  # Norma.install({name: "javascript"})
+  if tasks and _.isObject(tasks) and !_.isArray(tasks)
+    tasks = [tasks]
 
-  # Norma.install([], true, ->)
+  # Norma.install([], true)
   if typeof cwd is "boolean"
     scaffold = cwd
     cwd = null
@@ -32,8 +29,6 @@ module.exports = (tasks, cwd, scaffold, callback) ->
   # verify cwd
   if !cwd then cwd = process.cwd()
 
-  # verify callback
-  if !callback then callback = -> return
 
   # LOGS -------------------------------------------------------------------
 
@@ -48,9 +43,8 @@ module.exports = (tasks, cwd, scaffold, callback) ->
     Norma.emit "error", err
 
 
-    callback err, null
-
-    return
+    installStatus.reject err
+    return installStatus
 
 
 
@@ -60,6 +54,7 @@ module.exports = (tasks, cwd, scaffold, callback) ->
 
     # Clean out args to find git repo
     finalLoc = tasks[0].split "norma-"
+
 
     if finalLoc.length < 2
       err =
@@ -71,8 +66,8 @@ module.exports = (tasks, cwd, scaffold, callback) ->
       Norma.emit "error", err
 
 
-      callback err, null
-      return
+      installStatus.reject err
+      return installStatus
 
 
     finalLoc = finalLoc[1].split(".git")[0]
@@ -86,21 +81,21 @@ module.exports = (tasks, cwd, scaffold, callback) ->
     if Fs.existsSync scaffoldLocation
       RemoveSync scaffoldLocation
 
-    console.log "installing #{tasks[0]} at #{scaffoldLocation}"
+
     # Download from github
     Ghdownload(
       tasks[0]
       scaffoldLocation + "/"
     ).on "end", ->
 
-      console.log "installed"
       Norma.emit "message", "Scaffold ready!"
 
-      callback err, stdout
-      return
+      if err
+        installStatus.reject err
 
+      installStatus.resolve "ok"
 
-    return
+    return installStatus
 
 
 
@@ -199,6 +194,7 @@ module.exports = (tasks, cwd, scaffold, callback) ->
   count = 1
 
   install = (arr, global, dev) ->
+
     if !arr.length
       return
 
@@ -297,7 +293,6 @@ module.exports = (tasks, cwd, scaffold, callback) ->
 
 
 
-
   # INSTALL ----------------------------------------------------------------
   # once all installs are done continue
   Q.all(promiseFunctions)
@@ -305,10 +300,10 @@ module.exports = (tasks, cwd, scaffold, callback) ->
 
       Norma.emit "message", "Packages installed!"
 
-      if typeof callback is "function"
-        callback null
-
+      installStatus.resolve "ok"
     )
+
+  return installStatus
 
 
 

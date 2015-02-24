@@ -47,13 +47,16 @@ module.exports = (cwd, packages, promise) ->
     packagesCopy = neededPackages.slice()
 
     # add then run norma again
-    Norma.install packagesCopy, cwd, ->
+    Norma.install(packagesCopy, cwd)
+      .then( ->
+        # Norma.run Norma._, cwd
+        Norma.getPackages(cwd)
+          .then( (packages) ->
+            promise.resolve(packages)
+          )
+      )
 
-      # Norma.run Norma._, cwd
-      Norma.getPackages(cwd)
-        .then( (packages) ->
-          promise.resolve(packages)
-        )
+
 
 
 
