@@ -7,7 +7,6 @@ Norma = require "./../lib/index"
 describe "Watch", ->
 
   fixtures = Path.resolve "./test/fixtures"
-  Norma.silent = false
 
   it "should change Norma.watchStarted to true", ->
 
@@ -33,27 +32,30 @@ describe "Watch", ->
 
     oldContents = ""
     if Fs.existsSync outFile
-      oldContents = Fs.readFileSync outFile
+      oldContents = Fs.readFileSync outFile, encoding: "utf8"
 
     Norma.watch([], fixtures)
 
     contents = Math.random()
 
-    # setTimeout ->
-    #   Fs.writeFileSync inFile, contents
-    # , 1000
+    setTimeout ->
+      Fs.writeFileSync inFile, contents
+    , 1000
 
-    Fs.writeFileSync inFile, contents
+    # Fs.writeFileSync inFile, contents
 
     Norma.on "file-change", (event) ->
 
       if Path.resolve(event.path) is Path.resolve(inFile)
-        newContents = Fs.readFileSync outFile, encoding: "utf8"
-        console.log newContents
-        newContents.should.equal contents
+        setTimeout ->
+          Fs.writeFileSync inFile, contents
 
-        process.chdir oldprocess
+          newContents = Fs.readFileSync outFile, encoding: "utf8"
+          newContents.should.equal contents.toString()
 
-        Norma.watch.stop()
+          process.chdir oldprocess
 
-        done()
+          Norma.watch.stop()
+
+          done()
+        , 1000

@@ -10,8 +10,12 @@ describe "Build", ->
 
   fixtures = Path.resolve "./test/fixtures"
   Norma.silent = true
+  oldCwd = process.cwd()
 
   before (done) ->
+
+
+    process.chdir fixtures
 
     Norma.getPackages(fixtures)
       .then( ->
@@ -52,3 +56,10 @@ describe "Build", ->
       .fail( (e) ->
         e.should.not.exist
       )
+
+
+  after (done) ->
+
+    process.chdir oldCwd
+
+    done()

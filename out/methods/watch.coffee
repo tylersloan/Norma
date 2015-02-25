@@ -96,6 +96,7 @@ module.exports = (tasks, cwd) ->
 
 
         runTask task, ->
+          console.log "foobar"
           Norma.emit 'file-change', event
 
     )

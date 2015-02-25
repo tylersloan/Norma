@@ -10,6 +10,19 @@ describe "Test", ->
 
   fixtures = Path.resolve "./test/fixtures"
   Norma.silent = true
+  oldCwd = process.cwd()
+
+  before (done) ->
+
+
+    process.chdir fixtures
+
+    Norma.getPackages(fixtures)
+      .then( ->
+        return done()
+      )
+
+
 
   before (done) ->
 
@@ -36,7 +49,7 @@ describe "Test", ->
 
   it "should allow a fail function", ->
 
-    Norma.test(["build"], process.cwd())
+    Norma.test(["build"], oldCwd)
       .fail( (e) ->
         e.should.exist
       )
@@ -52,3 +65,8 @@ describe "Test", ->
   #     .fail( (e) ->
   #       e.should.not.exist
   #     )
+  after (done) ->
+
+    process.chdir oldCwd
+
+    done()
