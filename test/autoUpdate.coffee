@@ -2,7 +2,6 @@ Chai    = require("chai").should()
 Path    = require "path"
 Fs      = require "fs"
 Spawn   = require("child_process").spawn
-Exec    = require("child_process").exec
 
 # Norma = require "./../lib/index"
 autoUpdate = require "./../bin/auto-update"
@@ -39,7 +38,7 @@ describe "Auto update", ->
     results = []
     errors = []
 
-    _norma = Spawn("norma", [], {cwd: fixtures})
+    _norma = Spawn("node", ["../../bin/norma.js"], {cwd: fixtures})
 
     _norma.stdout.setEncoding("utf8")
 
@@ -56,6 +55,8 @@ describe "Auto update", ->
             message.splice(0, 1)
 
           errors.push message.join(" ")
+
+          # Norma.emit "message", message
         i++
 
       return
@@ -74,15 +75,19 @@ describe "Auto update", ->
             message.splice(0, 1)
 
           results.push message.join(" ")
+
+          # Norma.emit "message", message
         i++
 
       return
 
     _norma.on "close", ->
       if errors.length
-        console.log results, errors
+        console.log errors
+
       results.should.include "An update is available for Norma"
       done()
+      # data.should.be.true
 
     setTimeout ->
       _norma.kill()

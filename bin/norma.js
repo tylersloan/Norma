@@ -2,7 +2,7 @@
 "use strict";
 
 require("coffee-script/register");
-var Liftoff = require("Liftoff");
+var Liftoff = require("liftoff");
 var Flags = require("minimist")(process.argv.slice(2));
 var Domain = require("domain").create();
 
