@@ -6,7 +6,7 @@ Norma = require "./../lib/index"
 describe "Norma", ->
 
   it "should return a version number", ->
-    Norma.version.should.be.a "string"
+    Norma._.version.should.be.a "string"
 
 
   it "should be an object with many keys", ->
