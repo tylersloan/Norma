@@ -2,6 +2,7 @@ Chai    = require("chai").should()
 Path    = require "path"
 Fs      = require "fs"
 Spawn   = require("child_process").spawn
+Exec    = require("child_process").exec
 
 # Norma = require "./../lib/index"
 autoUpdate = require "./../bin/auto-update"
@@ -38,58 +39,61 @@ describe "Auto update", ->
     results = []
     errors = []
 
-    _norma = Spawn("node", ["../../bin/norma.js"], {cwd: fixtures})
+    Exec "npm link", {cwd: oldCwd}, ->
 
-    _norma.stdout.setEncoding("utf8")
+      _norma = Spawn("norma", [], {cwd: fixtures})
 
-    _norma.stderr.on "data", (data) ->
-      str = data.toString()
-      lines = str.split(/(\r?\n)/g)
+      _norma.stdout.setEncoding("utf8")
 
-      i = 0
-      while i < lines.length
-        if !lines[i].match "\n"
-          message = lines[i].split("] ")
+      _norma.stderr.on "data", (data) ->
+        str = data.toString()
+        lines = str.split(/(\r?\n)/g)
 
-          if message.length > 1
-            message.splice(0, 1)
+        i = 0
+        while i < lines.length
+          if !lines[i].match "\n"
+            message = lines[i].split("] ")
 
-          errors.push message.join(" ")
+            if message.length > 1
+              message.splice(0, 1)
 
-          # Norma.emit "message", message
-        i++
+            errors.push message.join(" ")
 
-      return
+            # Norma.emit "message", message
+          i++
+
+        return
 
 
-    _norma.stdout.on "data", (data) ->
-      str = data.toString()
-      lines = str.split(/(\r?\n)/g)
+      _norma.stdout.on "data", (data) ->
+        str = data.toString()
+        lines = str.split(/(\r?\n)/g)
 
-      i = 0
-      while i < lines.length
-        if !lines[i].match "\n"
-          message = lines[i].split("] ")
+        i = 0
+        while i < lines.length
+          if !lines[i].match "\n"
+            message = lines[i].split("] ")
 
-          if message.length > 1
-            message.splice(0, 1)
+            if message.length > 1
+              message.splice(0, 1)
 
-          results.push message.join(" ")
+            results.push message.join(" ")
 
-          # Norma.emit "message", message
-        i++
+            # Norma.emit "message", message
+          i++
 
-      return
+        return
 
-    _norma.on "close", ->
-      console.log results, errors
-      results.should.include "An update is available for Norma"
-      done()
-      # data.should.be.true
+      _norma.on "close", ->
+        if errors.length
+          console.log results, errors
+        results.should.include "An update is available for Norma"
+        done()
+        # data.should.be.true
 
-    setTimeout ->
-      _norma.kill()
-    , 10000
+      setTimeout ->
+        _norma.kill()
+      , 10000
 
 
   after (done) ->
