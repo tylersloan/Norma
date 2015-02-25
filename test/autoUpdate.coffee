@@ -36,10 +36,31 @@ describe "Auto update", ->
     @.timeout 100000
 
     results = []
+    errors = []
 
     _norma = Spawn("node", ["../../bin/norma.js"], {cwd: fixtures})
 
     _norma.stdout.setEncoding("utf8")
+
+    _norma.stderr.on "data", (data) ->
+      str = data.toString()
+      lines = str.split(/(\r?\n)/g)
+
+      i = 0
+      while i < lines.length
+        if !lines[i].match "\n"
+          message = lines[i].split("] ")
+
+          if message.length > 1
+            message.splice(0, 1)
+
+          errors.push message.join(" ")
+
+          # Norma.emit "message", message
+        i++
+
+      return
+
 
     _norma.stdout.on "data", (data) ->
       str = data.toString()
@@ -61,13 +82,14 @@ describe "Auto update", ->
       return
 
     _norma.on "close", ->
+      console.log results, errors
       results.should.include "An update is available for Norma"
       done()
       # data.should.be.true
 
     setTimeout ->
       _norma.kill()
-    , 5000
+    , 10000
 
 
   after (done) ->
