@@ -17,7 +17,7 @@ module.exports = (tasks, cwd) ->
 
     Norma.emit "message", msg
 
-    process.chdir Path.resolve __dirname, "../../"
+    # process.chdir Path.resolve __dirname, "../../"
 
     ExecCommand(
       "npm update -g normajs"

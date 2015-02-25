@@ -48,7 +48,7 @@ error =
     msg.level = "log"
     Log msg
 
-    Norma.stop()
+    Norma.close()
 
 
 module.exports = Error = (err) ->

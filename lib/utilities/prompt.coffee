@@ -92,7 +92,7 @@ initialize = ->
   ).on( "close", ->
     Norma.prompt.open = false
     Norma.emit "message", "Have a great day!"
-    Norma.stop()
+    Norma.close()
     return
 
   )

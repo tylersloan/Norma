@@ -8,10 +8,9 @@ Norma = require "../lib/norma"
 
 ExecCommand = require "./../lib/utilities/execute-command"
 
-module.exports = (preference) ->
+module.exports = (preference, callback) ->
 
   update = ->
-
     ExecCommand(
       "npm update -g normajs"
       process.cwd()
@@ -27,6 +26,8 @@ module.exports = (preference) ->
 
 
     )
+
+  if typeof callback is "function" then update = callback
 
 
   # UPDATE ------------------------------------------------------------------
@@ -52,10 +53,10 @@ module.exports = (preference) ->
         availableVersion = key
         break
 
+
       if !Semver.gte currentVersion, availableVersion
 
         skippedVersion = Norma.getSettings.get "version"
-
         if skippedVersion and Semver.gte skippedVersion, availableVersion
           # if Norma.prompt._.initialized
           #   Norma.prompt.pause()

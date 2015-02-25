@@ -20,7 +20,7 @@ module.exports = (env) ->
   update = Norma.getSettings.get "autoupdate"
 
   # This should only run locally
-  if !Norma.production or update is "false"
+  if !Norma.production or !process.env.CI or update is "false"
     AutoUpdate update
 
   # UTILITY -----------------------------------------------------------------

@@ -10,7 +10,7 @@ module.exports = ->
 
   Logger.logInfo(cliPackage)
 
-  Norma.stop()
+  Norma.close()
 
 
 module.exports.api = [
