@@ -37,7 +37,7 @@ describe "Auto update", ->
 
     results = []
 
-    _norma = Spawn("norma", [], {cwd: fixtures})
+    _norma = Spawn("node", ["../../bin/norma.js"], {cwd: fixtures})
 
     _norma.stdout.setEncoding("utf8")
 
