@@ -9,7 +9,7 @@ describe "Watch", ->
   fixtures = Path.resolve "./test/fixtures"
 
   it "should change Norma.watchStarted to true", ->
-
+    @.timeout 100000
     Norma.watchStarted.should.be.false
 
     Norma.watch([], fixtures)

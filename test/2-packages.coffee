@@ -89,8 +89,16 @@ describe "Packages", ->
 
   describe "package running", ->
 
-    it "should be synchronous and return after scripts are run", ->
+    it "should be promise based and return after scripts are run", (done) ->
 
+      oldCwd = process.cwd()
+      process.chdir fixtures
+      alive = false
+      Norma.build(["copy"], fixtures)
+        .then( ->
+            process.chdir oldCwd
+            alive.should.be.true
+            done()
+
+        )
       alive = true
-      Norma.run(["build", "copy"], fixtures)
-      alive.should.be.true
