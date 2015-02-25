@@ -7,29 +7,30 @@
   by the error object passed on the emittance.
 
 ###
+
 Chalk = require "chalk"
+Log = require "./message"
+Norma = require "./../norma"
 
 
-module.exports = ->
-
-  errorType = {}
+error =
 
   # This is the simplest message. It logs out message with any
   # extra information available.
-  errorType.log = (msg) ->
+  log: (msg) ->
 
     msg.level = "log"
-
-    Norma.events.emit "message", msg
+    Log msg
 
 
   # The warn level should try to let the developer know of the message
   # the norma-notify package is a great example of this event usage
-  errorType.warn = (msg) ->
+  warn: (msg) =>
 
-    Norma.events.emit "warn", msg
+    Norma.emit "warn", msg
+    msg.level = "log"
 
-    errorType.log msg
+    Log msg
 
 
   ###
@@ -40,36 +41,37 @@ module.exports = ->
 
   ###
 
-  errorType.crash = (msg) ->
+  crash: (msg) ->
 
-    Norma.events.emit "crash", msg
+    Norma.emit "crash", msg
 
     msg.level = "log"
-    Norma.events.emit "message", msg
+    Log msg
+
+    Norma.close()
 
 
-    Norma.stop()
+module.exports = Error = (err) ->
+
+  if !err
+    return
+
+  if typeof err is "string"
+
+    err =
+      message: err
+      level: "log"
+      name: "Log"
+      color: "red"
 
 
+  if !err.color then err.color = "red"
 
+  if Norma.silent
+    return
 
-  Norma.events.on "error", (error) ->
+  if err.level
+    error[err.level] err
 
-    # if error.domainThrown
-    #   errorType.crash error
-
-    if typeof error is "string"
-
-      error =
-        message: error
-        level: "log"
-        name: "Log"
-        color: "red"
-
-    if !error.color then error.color = "red"
-
-    if error.level
-      errorType[error.level] error
-
-    else
-      errorType.log error
+  else
+    error.log err

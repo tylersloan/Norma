@@ -1,6 +1,7 @@
 
 Path = require "path"
 
+Norma = require "./../norma"
 Logger = require "./../logging/logger"
 
 module.exports = ->
@@ -9,7 +10,7 @@ module.exports = ->
 
   Logger.logInfo(cliPackage)
 
-  process.exit 0
+  Norma.close()
 
 
 module.exports.api = [

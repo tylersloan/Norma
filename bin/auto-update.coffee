@@ -4,16 +4,13 @@ Path = require "path"
 Fs = require "fs"
 Semver = require "semver"
 Inquirer = require "inquirer"
+Norma = require "../lib/norma"
 
+ExecCommand = require "./../lib/utilities/execute-command"
 
-ExecCommand = require "./execute-command"
-
-module.exports = (tasks, preference) ->
-
-  Launcher = require "./launcher"
+module.exports = (preference, callback) ->
 
   update = ->
-
     ExecCommand(
       "npm update -g normajs"
       process.cwd()
@@ -23,12 +20,14 @@ module.exports = (tasks, preference) ->
             message: "Norma updated!"
             color: "cyan"
 
-          Norma.emit "message", msg
+          Norma.log msg
 
-          Launcher.run tasks, process.cwd()
+          Norma.run()
 
 
     )
+
+  if typeof callback is "function" then update = callback
 
 
   # UPDATE ------------------------------------------------------------------
@@ -38,13 +37,13 @@ module.exports = (tasks, preference) ->
   Npm.load( ->
     Npm.commands.view(["normajs", 'dist-tags.latest'], true, (err, data) ->
       if err
-        Norma.events.emit "error", err
+        Norma.emit "error", err
 
       try
-        config = require Path.join __dirname, "../../package.json"
+        config = require Path.join __dirname, "../package.json"
       catch e
 
-        Norma.events.emit "error", e
+        Norma.emit "error", e
         return
 
       currentVersion = config.version
@@ -54,10 +53,10 @@ module.exports = (tasks, preference) ->
         availableVersion = key
         break
 
+
       if !Semver.gte currentVersion, availableVersion
 
-        skippedVersion = Norma.settings.get "version"
-
+        skippedVersion = Norma.getSettings.get "version"
         if skippedVersion and Semver.gte skippedVersion, availableVersion
           # if Norma.prompt._.initialized
           #   Norma.prompt.pause()
@@ -76,12 +75,12 @@ module.exports = (tasks, preference) ->
 
         # use inquier method for updating Norma here
 
-        Norma.events.emit "message", message
+        Norma.log message
 
         Inquirer.prompt([
           {
             type: "list"
-            message: "Would you like to update #{Tool}?"
+            message: "Would you like to update norma?"
             name: "update"
             choices: ["yes", "no"]
           }
@@ -98,17 +97,17 @@ module.exports = (tasks, preference) ->
                 message: "#{Norma.prefix}OK, I will ask again next update"
                 color: "cyan"
 
-              Norma.emit "message", msg
+              Norma.log msg
 
 
               # isolate settings to global scale
-              Norma.settings._.remove "memory"
-              Norma.settings._.remove "local"
+              Norma.getSettings._.remove "memory"
+              Norma.getSettings._.remove "local"
 
 
-              Norma.settings._.set "version", availableVersion
+              Norma.getSettings._.set "version", availableVersion
               # Save the configuration object to file
-              Norma.settings._.save (err, data) ->
+              Norma.getSettings._.save (err, data) ->
                 throw err if err
         )
 

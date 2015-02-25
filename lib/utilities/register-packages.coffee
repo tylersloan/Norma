@@ -2,21 +2,25 @@
 Path = require "path"
 Fs = require "fs"
 _ = require "underscore"
-Gulp = require "gulp"
+Q = require "kew"
 
+Norma = require "./../norma"
 PkgeLookup = require "./package-lookup"
 AutoDiscover = require "./auto-discover"
 
 
-module.exports = (tasks, cwd) ->
+module.exports = (cwd) ->
+
+  loadedPackages = Q.defer()
+
+
+  if !cwd then cwd = process.cwd()
 
   # Get any project specific packages (from package.json)
-  projectTasks = PkgeLookup tasks, cwd
-
+  projectTasks = PkgeLookup cwd
 
   # Get global packages added to Norma
-  rootTasks = PkgeLookup tasks, (Path.resolve Norma.userHome, "packages")
-
+  rootTasks = PkgeLookup (Path.resolve Norma._.userHome, "packages"), cwd
 
   combinedTasks = projectTasks.concat rootTasks
 
@@ -31,12 +35,13 @@ module.exports = (tasks, cwd) ->
     _.extend Norma.tasks, task
 
   # bind gulp / norma for right now
-  Gulp.tasks = Norma.tasks
+  # Gulp.tasks = Norma.tasks
 
   # see if we need to download any packages
-  isMissingTasks = AutoDiscover tasks, cwd, Norma.tasks
+  isMissingTasks = AutoDiscover(cwd, Norma.tasks, loadedPackages)
 
 
-  return false if isMissingTasks
+  if !isMissingTasks
+    loadedPackages.resolve Norma.tasks
 
-  return Norma.tasks
+  return loadedPackages

@@ -1,21 +1,23 @@
 
 Path = require "path"
 Fs = require "fs"
-Sequence = require "run-sequence"
 Chalk = require "chalk"
 _ = require "underscore"
 Watch = require "glob-watcher"
 
+Norma = require "./../norma"
 PkgeLookup = require "./../utilities/package-lookup"
 Prompt = require "./../utilities/prompt"
 
-
+watching = []
 module.exports = (tasks, cwd) ->
 
+  # if !cwd then cwd = process.cwd()
 
   # VARIABLES --------------------------------------------------------------
 
-  config = Norma.config()
+  config = Norma.config(cwd)
+
 
   # Store watch started in Norma to span files
   Norma.watchStarted = true
@@ -25,10 +27,12 @@ module.exports = (tasks, cwd) ->
   for task of Norma.tasks
     runnableTasks.push(task) if Norma.tasks[task].ext?
 
-  Norma.prompt._.autocomplete runnableTasks
+  # Norma.prompt._.autocomplete runnableTasks
 
-  runTask = (task) ->
-    Sequence task
+  runTask = (task, cb) ->
+    Norma.execute task, ->
+      if typeof cb is "function"
+        cb null
     return
 
 
@@ -46,12 +50,14 @@ module.exports = (tasks, cwd) ->
 
     if Norma.debug
       msg =
-        level: "debug"
         message: "#{task.toUpperCase()}: added to watch"
 
       Norma.emit "message", msg
 
     src = if config.tasks[task]? then config.tasks[task].src else "./**/*/"
+
+    # src = Path.resolve cwd, src
+    # console.log src
 
     taskName = task
 
@@ -64,7 +70,9 @@ module.exports = (tasks, cwd) ->
     else
       exts = "#{exts.join(",")}"
 
-    Watch(
+    obj = {}
+
+    obj[taskName] = Watch(
       [
         "#{src}.#{exts}"
         "!node_modules/**/*"
@@ -87,54 +95,59 @@ module.exports = (tasks, cwd) ->
           Norma.emit "message", msg
 
 
-        runTask task
-        Norma.events.emit 'file-change', event
+        runTask task, ->
+          Norma.emit 'file-change', event
 
     )
 
+    watching.push obj[taskName]
+
     if Norma.debug
       msg =
-        level: "debug"
         message: "#{task}: ready"
 
       Norma.emit "message", msg
 
 
 
-
-
   # START ------------------------------------------------------------------
 
-  do ->
 
-    if Norma.verbose
-      msg =
-        message: "Watching files..."
-        color: "grey"
+  if Norma.verbose
+    msg =
+      message: "Watching files..."
+      color: "grey"
 
-      Norma.emit "message", msg
-
-
-    Norma.emit 'watch-start'
-
-    for task of Norma.tasks
-      if !config.tasks[task] or !Norma.tasks[task].ext
-        continue
-
-      createWatch(task)
-
-    Norma.prompt()
-
-    Norma.prompt.listen (line) ->
-
-      if runnableTasks.indexOf(line) > -1
-        Norma.emit "message", Chalk.grey("Running #{line}")
-        runTask line
-
-      return
+    Norma.emit "message", msg
 
 
+  Norma.emit 'watch-start'
 
+  for task of Norma.tasks
+    if !config.tasks[task] or !Norma.tasks[task].ext
+      continue
+
+    createWatch(task)
+
+  Norma.prompt()
+
+  Norma.prompt.listen (err, line) ->
+
+    if runnableTasks.indexOf(line) > -1
+      Norma.emit "message", Chalk.grey("Running #{line}")
+      runTask line
+
+    return
+
+
+module.exports.stop = ->
+
+  for watched in watching
+    watched.end()
+
+  Norma.prompt.pause()
+
+  return
 
 # API ---------------------------------------------------------------------
 

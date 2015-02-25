@@ -2,6 +2,7 @@ Path = require "path"
 Fs = require "fs"
 Exec = require('child_process').exec
 
+Norma = require "./../norma"
 
 ###
 

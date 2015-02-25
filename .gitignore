@@ -13,3 +13,5 @@ test/watch-*.txt
 workbench
 workbench.coffee
 .norma
+
+xunit.xml

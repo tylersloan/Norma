@@ -3,7 +3,7 @@ Fs    = require "fs"
 Path = require "path"
 Nconf = require "nconf"
 
-
+Norma = require "./../norma"
 intialized = false
 
 initialize = ->
@@ -17,8 +17,8 @@ initialize = ->
 
   ###
 
-  global = Path.resolve Norma.userHome, ".#{Tool}"
-  local = Path.join process.cwd(), ".#{Tool}"
+  global = Path.resolve Norma._.userHome, ".norma"
+  local = Path.join process.cwd(), ".norma"
 
 
   # See if a config file already exists (for global files)
@@ -42,23 +42,27 @@ initialize = ->
     )
 
   # If no file, then we create a new one with some preset items
-  if !localConfigExists
-    config =
-      path: local
-
-    # Save config
-    Fs.writeFileSync(
-      local
-      JSON.stringify(config, null, 2)
-    )
+  # if !localConfigExists
+  #   config =
+  #     path: local
+  #
+  #   # Save config
+  #   Fs.writeFileSync(
+  #     local
+  #     JSON.stringify(config, null, 2)
+  #   )
 
 
   # CONFIG-SET ---------------------------------------------------------------
 
+  if localConfigExists
+    Nconf.use "memory"
+      .file "local", local
+      .file "global", global
+  else
+    Nconf.use "memory"
+      .file "global", global
 
-  Nconf.use "memory"
-    .file "local", local
-    .file "global", global
 
   intialized = true
 

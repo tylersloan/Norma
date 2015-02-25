@@ -1,37 +1,45 @@
 Path = require "path"
 Chalk = require "chalk"
 _ = require "underscore"
+Q = require "kew"
 
-
-Build = require "./../methods/build"
-Watch = require "./../methods/watch"
+Norma = require "./../norma"
 ReadConfig = require "./../utilities/read-config"
 
 
 module.exports = (tasks, cwd) ->
 
-  normaConfig = ReadConfig process.cwd()
+  tested = Q.defer()
 
   # Force verbose and debug
   Norma.verbose = true
   Norma.debug = true
 
-  if normaConfig.type is "package"
+  msg =
+    color: "green"
+    message: "✔ Testing your project!"
+
+  Norma.emit "message", msg
 
 
-    msg =
-      color: "green"
-      message: "✔ Testing your package!"
+  if tasks[0] is "build"
 
-    Norma.emit "message", msg
+    tasks.shift()
+    
+    Norma.build(tasks, cwd)
+      .then( ->
+        tested.resolve "ok"
+      )
+      .fail( (err) ->
+        tested.reject err
+      )
 
+    return tested
 
-    if Norma.watch
+  else
+    Norma.watch tasks, cwd
 
-      Watch tasks, cwd
-
-    else
-      Build tasks, cwd
+    return tested
 
 
 
@@ -40,10 +48,10 @@ module.exports = (tasks, cwd) ->
 module.exports.api = [
   {
     command: ""
-    description: "test your project/package"
+    description: "continuously test your package"
   }
   {
-    command: "--watch"
-    description: "continuously test project/package"
+    command: "build"
+    description: "test build of package"
   }
 ]

@@ -1,41 +1,26 @@
+if process.env.CI
+  return
 
-Chalk = require "chalk"
+
 Inquirer = require "inquirer"
-Path = require "path"
-Home = require "user-home"
-Inquirer = require "inquirer"
 
-MkDir = require("./../utilities/directory-tools").mkdir
-Settings = require "./../utilities/read-settings"
+Norma = require "../index"
 
-if Home
+name = Norma.getSettings.get "user:name"
+browser = Norma.getSettings.get "user:browser"
+editor = Norma.getSettings.get "user:editor"
 
-  MkDir Path.resolve Home, "#{Tool}"
-  Norma.userHome = Path.resolve Home, "#{Tool}"
-
-else
-
-  MkDir Path.resolve __dirname, "../../../${Tool}"
-  Norma.userHome = Path.resolve __dirname, "../../../${Tool}"
-
-Settings.get()
-
-# remove memory settings to use just global for intial questions
-Settings._.remove "memory"
-Settings._.remove "local"
-
-name = Settings.get "user:name"
-browser = Settings.get "user:browser"
-editor = Settings.get "user:editor"
+# console.log name, browser, editor
 
 if name or browser or editor
   return
 
-msg = "Ø Thanks for installing me! \n" +
-  "Ø Before we get started, I have a few questions to know " +
-  "how to help you the best..."
-
-console.log Chalk.green msg
+Norma.log({
+  message: "Thanks for installing me! \n" +
+    "Before we get started, I have a few questions to know " +
+    "how to help you the best..."
+  color: "green"
+})
 
 Inquirer.prompt([
   {
@@ -61,11 +46,11 @@ Inquirer.prompt([
     for question of answer
       if answer[question]
         # Save config with value
-        Settings.set "user:#{question}", answer[question]
+        Norma.getSettings.set "user:#{question}", answer[question]
 
 
     # Save the configuration object to file
-    Settings._.save (err, data) ->
+    Norma.getSettings._.save (err, data) ->
       throw err if err
 
 )

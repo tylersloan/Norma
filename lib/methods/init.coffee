@@ -7,28 +7,35 @@
 
 ###
 Fs = require "fs"
-Chalk = require "chalk"
 Path = require "path"
 Inquirer = require "inquirer"
+Q = require "kew"
 
+Norma = require "./../norma"
 Scaffold = require "./../utilities/scaffold"
 MapTree = require("./../utilities/directory-tools").mapTree
 RemoveTree = require("./../utilities/directory-tools").removeTree
 
 
 
+module.exports = (tasks, cwd, answers) ->
 
-module.exports = (tasks, cwd) ->
+  installed = Q.defer()
+
+  if !tasks
+    installed.reject("no name to in specified ")
+
+  if !cwd then cwd = process.cwd()
 
   # cwd = path where norma package to be init'ed (same as process cwd)
   # tasks = [ 'create', <appName> ] - flags are not included in the array
 
-  # Norma.userHome is this script files' directory
-  scaffolds = MapTree Path.join Norma.userHome, "/scaffolds"
+  # Norma._.userHome is this script files' directory
+  scaffolds = MapTree Path.join Norma._.userHome, "/scaffolds"
 
   # Add in custom option to list of scaffolds available
   scaffolds.children.push custom =
-    path: process.cwd()
+    path: cwd
     name: 'custom'
     type: 'folder'
     children: []
@@ -39,12 +46,45 @@ module.exports = (tasks, cwd) ->
   )
 
 
-  ###
+  # INSTAL --------------------------------------------------------------
 
-    @todo
-      This needs major cleanup and refactoring into smaller code
+  install = (answer) ->
 
-  ###
+    # Faster filter method
+    projects = (
+      p for p in scaffolds.children when p.name is answer.scaffold
+    )
+
+    # Use first match if one was found
+    if !projects.length
+
+      err =
+        level: "warn"
+        message:"That scaffold was not found.
+          Try 'norma list --scaffold'"
+
+      Norma.emit "error", err
+      installed.reject(err)
+      return
+
+
+    if Fs.readdirSync(cwd).length and answer.scaffold isnt "custom"
+      installed.reject("not empty")
+      return
+
+
+    Scaffold(projects[0], answer.project, cwd)
+      .then( ->
+        installed.resolve("ok")
+      )
+      .fail( (err) ->
+        installed.reject err
+      )
+
+    return
+
+
+
 
   # INIT ------------------------------------------------------------------
 
@@ -66,82 +106,23 @@ module.exports = (tasks, cwd) ->
       ],
       (answer) ->
 
-        # Faster filter method
-        projects = (p for p in scaffolds.children when p.name is answer.scaffold)
-
-        # Use first match if one was found
-        if !projects.length
-
-          err =
-            level: "warn"
-            message:"That scaffold was not found. Try 'norma list --scaffold'"
-
-          Norma.emit "error", err
-          return
-
-        if answer.project is "custom"
-          # Generate list of current files in directory (auto excludes "." and "..")
-          cwdIsEmpty = (Fs.readdirSync cwd).length is 0
-
-          # Failsafe to make sure project is empty on creation of new folder
-          if cwdIsEmpty
-            return
-
-          Inquirer.prompt
-            type: "confirm"
-            message: "Initializing will empty the current directory. Continue?"
-            name: "override"
-            default: false
-          , (answer) ->
-
-            if answer.override
-
-              # Make really really sure that the user wants this
-              Inquirer.prompt
-                type: "confirm"
-                message: "Removed files are gone forever. Continue?"
-                name: "overridconfirm"
-                default: false
-              , (answer) ->
-
-                if answer.overridconfirm
-
-                  # Clean up directory
-                  Norma.emit "message", Chalk.grey("Emptying current directory")
-                  RemoveTree cwd, true
-                  Scaffold projects[0], answer.project
-                  return
-
-                else
-
-                  Norma.events.emit "stop"
-
-                  process.exit 0
-
-            else
-
-              Norma.events.emit "stop"
-
-              process.exit 0
-
-
-        else
-
-          Scaffold projects[0], answer.project
-          return
-
-
+        install answer
     )
 
 
-  doInit scaffoldNames, scaffolds
+  if !answers
+    doInit scaffoldNames
+  else
+    install answers
 
+
+  return installed
 
 # API ----------------------------------------------------------------------
 
 module.exports.api = [
   {
     command: ""
-    description: "initalize a directory as a #{Tool} project"
+    description: "initalize a directory as a norma project"
   }
 ]

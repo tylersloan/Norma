@@ -4,14 +4,21 @@ Fs = require "fs"
 Multimatch = require "multimatch"
 _ = require "underscore"
 
+Norma = require "./../norma"
 MapTree = require("./directory-tools").mapTree
 
 
 
-module.exports = (tasks, cwd) ->
+module.exports = (cwd, targetCwd) ->
 
-  # Get config for task comparison
-  normaConfig = Norma.config()
+  if !cwd then cwd = process.cwd()
+
+  if targetCwd
+    # Get config for task comparison
+    normaConfig = Norma.config(targetCwd)
+  else
+    normaConfig = Norma.config(cwd)
+
   packageList = new Array
   packages = new Array
 
@@ -25,7 +32,7 @@ module.exports = (tasks, cwd) ->
 
       # push task to packages
       if typeof task is "function"
-        taskObject = task normaConfig, tasks
+        taskObject = task normaConfig
         taskObject = null
 
         packages.push task.tasks
@@ -48,7 +55,11 @@ module.exports = (tasks, cwd) ->
 
       if pkgeConfig.type is "package" and pkgeConfig.main
         entry = Path.resolve file.path, "../", pkgeConfig.main
+
+
         Norma.packages.push pkgeConfig.name
+        Norma.packages = _.uniq Norma.packages
+
         mapPkge entry
 
     else if file.children
@@ -74,7 +85,7 @@ module.exports = (tasks, cwd) ->
   if normaConfig.type is "package"
 
     # verify we aren't in root
-    if cwd isnt Path.resolve Norma.userHome, 'packages'
+    if cwd isnt Path.resolve Norma._.userHome, 'packages'
 
       pkges = MapTree process.cwd()
 
@@ -84,8 +95,8 @@ module.exports = (tasks, cwd) ->
 
   # npm package testing
   pattern = [
-    "#{Tool}-*"
-    "#{Tool}.*"
+    "norma-*"
+    "norma.*"
   ]
 
 
@@ -117,7 +128,7 @@ module.exports = (tasks, cwd) ->
     catch err
       err.level = "crash"
 
-      Norma.events.emit "error", err
+      Norma.emit "error", err
 
 
     names = scope.reduce(
@@ -130,7 +141,9 @@ module.exports = (tasks, cwd) ->
 
     Multimatch(names, pattern).forEach (name) ->
 
+
       Norma.packages.push name
+      Norma.packages = _.uniq Norma.packages
 
       packageList.push Path.resolve(node_modules, name)
 

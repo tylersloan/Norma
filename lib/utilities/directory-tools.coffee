@@ -8,7 +8,7 @@ Rimraf = require "rimraf"
 whitelist = [
   ".git"
   "node_modules"
-  "#{Tool}_packages"
+  "norma_packages"
   ".DS_Store"
 ]
 

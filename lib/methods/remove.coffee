@@ -1,42 +1,65 @@
 Fs = require "fs"
 Path = require "path"
 Chalk = require "chalk"
+Q = require "kew"
+_ = require "underscore"
 
+Norma = require "./../norma"
 ReadConfig = require "./../utilities/read-config"
 ExecCommand = require "./../utilities/execute-command"
 RemoveTree = require('./../utilities/directory-tools').removeTree
 
 
-module.exports = (tasks, cwd) ->
+module.exports = (tasks, cwd, scaffold) ->
+
+  removeStatus = Q.defer()
+
+  # Allow override via --scaffold
+  if Norma.scaffold then scaffold = true
+
+  if !cwd then cwd = process.cwd()
 
   # LOGS -------------------------------------------------------------------
 
   # User tried to run `norma add` without argument
-  if !tasks.length
+  if !tasks or !tasks.length
 
     err =
       level: "crash"
       name: "Missing Info"
       message: "Please specify a task or --scaffold <name>"
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
+    removeStatus.reject err
+    return removeStatus
 
 
 
   # SCAFFOLD ---------------------------------------------------------------
 
-  if Norma.scaffold
-    tasks[1] = Norma.scaffold
+  if scaffold
 
-    scaffoldLocation = Path.resolve Norma.userHome, "scaffolds/", tasks[1]
+    scaffoldLocation = Path.resolve Norma._.userHome, "scaffolds/", tasks[0]
+
+    if !Fs.existsSync scaffoldLocation
+      err =
+        level: "crash"
+        name: "Missing Scaffold"
+        message: "#{tasks[0]} was not found to remove"
+
+      Norma.emit "error", err
+      removeStatus.reject err
+      return removeStatus
 
     RemoveTree scaffoldLocation
+    removeStatus.resolve "ok"
+    return removeStatus
 
 
 
   # PACKAGES ---------------------------------------------------------------
 
-  config = Path.resolve process.cwd(), "package.json"
+  config = Path.resolve cwd, "package.json"
 
   if !config
 
@@ -47,7 +70,10 @@ module.exports = (tasks, cwd) ->
       name: "Missing Info"
       message: message
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
+
+    removeStatus.reject err
+    return removeStatus
 
 
   ###
@@ -60,30 +86,30 @@ module.exports = (tasks, cwd) ->
 
   # Quick add method for norma
   taskList = (
-    "#{Tool}-#{task}" for task in tasks
+    "norma-#{task}" for task in tasks
   )
 
   tasks = taskList.join(" ")
 
 
   ###
-    @note
-      As of Norma alpha, the npm package does not support dev installing.
-      Once it does, it will replace the child proccess method done below
+
+    @note this needs to be expanded to support programmtic removals
+
   ###
   if Norma.dev
-    action = "npm uninstall --save-dev #{taskList}"
+    action = "npm uninstall --save-dev #{taskList}; npm prune"
   else
-    action = "npm uninstall --save #{taskList}"
+    action = "npm uninstall --save #{taskList}; npm prune"
 
 
-  if Norma.global or Norma.g
+  if Norma.global
 
-    Norma.emit "message", "Removing packages to your global #{Tool}..."
-  
+    Norma.emit "message", "Removing packages to your global norma..."
+
 
     # Do work on users global norma
-    process.chdir Path.resolve Norma.userHome, "packages"
+    process.chdir Path.resolve Norma._.userHome, "packages"
 
     ExecCommand(
       action
@@ -98,15 +124,16 @@ module.exports = (tasks, cwd) ->
         if typeof cb is 'function'
           cb()
 
+        removeStatus.resolve "ok"
     )
 
   else
 
-    Norma.emit "message", "Removing packages to your local #{Tool}..."
+    Norma.emit "message", "Removing packages to your local norma..."
 
     ExecCommand(
       action
-      process.cwd()
+      cwd
     ,
       ->
 
@@ -115,7 +142,11 @@ module.exports = (tasks, cwd) ->
         if typeof cb is 'function'
           cb()
 
+        removeStatus.resolve "ok"
+
     )
+
+  return removeStatus
 
 
 # API ----------------------------------------------------------------------
@@ -123,7 +154,7 @@ module.exports = (tasks, cwd) ->
 module.exports.api = [
   {
     command: "<name> --scaffold"
-    description: "remove scaffold from #{Tool}"
+    description: "remove scaffold from norma"
   }
   {
     command: "<package-name>"

@@ -13,11 +13,14 @@ Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
 
+Norma = require "./../norma"
 CopySync = require("./directory-tools").copySync
 ExecCommand = require "./execute-command"
 
 
 module.exports = (tasks, cwd) ->
+
+  if !cwd then cwd = process.cwd()
 
   # cwd = absolute path of directory where package is to be created
   # tasks = [ <appName> ] - flags are not included in the array
@@ -29,15 +32,15 @@ module.exports = (tasks, cwd) ->
   # __dirname is the directory that the currently executing script resides in
   CopySync(
     Path.resolve __dirname , "./base-package.coffee"
-    Path.join process.cwd(), "package.coffee"
+    Path.join cwd, "package.coffee"
   )
 
   # NORMA.JSON ----------------------------------------------------------
 
   packageName = tasks[0]
 
-  if packageName.indexOf "#{Tool}-" isnt 0
-    packageName = "#{Tool}-#{packageName}"
+  if packageName.indexOf "norma-" isnt 0
+    packageName = "norma-#{packageName}"
 
   config =
     name: packageName
@@ -47,7 +50,7 @@ module.exports = (tasks, cwd) ->
 
   # Save config
   Fs.writeFileSync(
-    Path.join(process.cwd(), "#{Tool}.json")
+    Path.join(cwd, "norma.json")
     JSON.stringify(config, null, 2)
   )
 
@@ -64,16 +67,10 @@ module.exports = (tasks, cwd) ->
 
   # Save package.json
   Fs.writeFileSync(
-    Path.join(process.cwd(), "package.json")
+    Path.join(cwd, "package.json")
     JSON.stringify(pkgeConfig, null, 2)
   )
 
-  ExecCommand(
-    "npm i --save gulp"
-    process.cwd()
-  ,
-    ->
-      Norma.emit "message", "Package Ready!"
-  )
-
   Norma.emit "message", "Package Ready!"
+
+  return

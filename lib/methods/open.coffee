@@ -1,12 +1,13 @@
 
 Open = require "open"
 
+Norma = require "./../norma"
 
 module.exports = (tasks, cwd) ->
 
   # User tried to run `norma add` without argument
   if !tasks.length
-    editor = Norma.settings.get "user:editor"
+    editor = Norma.getSettings.get "user:editor"
 
     if !editor
       msg = "no editor specified, to add one run" +

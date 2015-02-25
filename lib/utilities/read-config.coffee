@@ -12,13 +12,15 @@ Chalk = require "chalk"
 _ = require "underscore"
 Lint = require "json-lint"
 
+Norma = require "./../norma"
+
 
 config = (cwd) ->
 
   if !cwd then cwd = process.cwd()
 
   # Find file based on cwd argument
-  fileLoc = Path.join(cwd, "#{Tool}.json")
+  fileLoc = Path.join(cwd, "norma.json")
 
   # Create empty config object for empty returns
   _config = {}
@@ -27,12 +29,15 @@ config = (cwd) ->
 
     if data is `undefined`
 
-      err =
-        level: "crash"
-        message: "#{Tool}.json is empty, have you initiated #{Tool}?"
-        name: "Missing File"
+      if !Norma.silent
+        err =
+          level: "crash"
+          message: "norma.json is empty, have you initiated norma?"
+          name: "Missing File"
 
-      Norma.events.emit "error", err
+        Norma.emit "error", err
+
+      return false
 
     # Try parsing the config data as JSON
     try
@@ -45,9 +50,10 @@ config = (cwd) ->
           found on line #{lint.line} at character #{lint.character}"
 
       err.level = "crash"
-      # err.message = "#{Tool}.json is not a valid JSON"
+      Norma.emit "error", err
 
-      Norma.events.emit "error", err
+
+      return false
 
   ###
 
@@ -55,16 +61,23 @@ config = (cwd) ->
     This is done syncronously in order to return read data correctly
 
   ###
-  try
-    file = Fs.readFileSync fileLoc, encoding: "utf8"
-  catch err
-    err.level = "crash"
-    err.message= "Cannot find #{Tool}.json. Have you initiated #{Tool}?"
 
-    Norma.events.emit "error", err
+  if Fs.existsSync fileLoc
+    try
+      file = Fs.readFileSync fileLoc, encoding: "utf8"
+    catch err
+      console.log err
+      err.level = "crash"
 
 
-  parse file
+      Norma.emit "error", err
+      return false
+
+  else return false
+
+
+  return parse(file)
+
 
 
 
@@ -79,12 +92,12 @@ save = (obj, cwd) ->
   # Save config
   try
     Fs.writeFileSync(
-      Path.join(cwd, "#{Tool}.json")
+      Path.join(cwd, "norma.json")
       JSON.stringify(obj, null, 2)
     )
   catch err
 
-    Norma.events.emit "error", "Cannot save #{Tool}.json"
+    Norma.emit "error", "Cannot save norma.json"
     return false
 
 

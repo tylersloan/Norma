@@ -3,34 +3,58 @@ Exec = require("child_process").exec
 Ghdownload = require "github-download"
 Fs = require "fs"
 Q = require "kew"
+_ = require "underscore"
 
+Norma = require "./../norma"
 ExecCommand = require "./../utilities/execute-command"
 MkDir = require("./../utilities/directory-tools").mkdir
 RemoveSync = require("./../utilities/directory-tools").removeSync
 
-module.exports = (tasks, cwd, callback) ->
+module.exports = (tasks, cwd, scaffold) ->
+
+  installStatus = Q.defer()
+
+  # Norma.install({name: "javascript"})
+  if tasks and _.isObject(tasks) and !_.isArray(tasks)
+    tasks = [tasks]
+
+  # Norma.install([], true)
+  if typeof cwd is "boolean"
+    scaffold = cwd
+    cwd = null
+
+  # Allow override via --scaffold
+  if Norma.scaffold then scaffold = true
+
+  # verify cwd
+  if !cwd then cwd = process.cwd()
 
 
   # LOGS -------------------------------------------------------------------
 
   # User tried to run `norma add` without argument
-  if !tasks.length
+  if !tasks or !tasks.length
 
     err =
       level: "crash"
       name: "Missing Info"
       message: "Please specify a task or --scaffold <repo>"
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
+
+
+    installStatus.reject err
+    return installStatus
 
 
 
   # SCAFFOLD ---------------------------------------------------------------
 
-  if Norma.scaffold
+  if scaffold
 
     # Clean out args to find git repo
     finalLoc = tasks[0].split "norma-"
+
 
     if finalLoc.length < 2
       err =
@@ -39,30 +63,39 @@ module.exports = (tasks, cwd, callback) ->
         message: "Please specify a scaffold name that resembles
           Organization/norma-xxxx or a full git repo containing norma-xxxx"
 
-      Norma.events.emit "error", err
-      return
+      Norma.emit "error", err
+
+
+      installStatus.reject err
+      return installStatus
+
 
     finalLoc = finalLoc[1].split(".git")[0]
 
-    MkDir Path.resolve Norma.userHome, "scaffolds"
+    MkDir Path.resolve Norma._.userHome, "scaffolds"
 
     # Get final resting place of global scaffolds
-    scaffoldLocation = Path.resolve Norma.userHome, "scaffolds", finalLoc
+    scaffoldLocation = Path.resolve Norma._.userHome, "scaffolds", finalLoc
 
     # remove existing scaffold
     if Fs.existsSync scaffoldLocation
       RemoveSync scaffoldLocation
+
 
     # Download from github
     Ghdownload(
       tasks[0]
       scaffoldLocation + "/"
     ).on "end", ->
-      Exec "tree", (err, stdout, sderr) ->
-        Norma.emit "message", "Scaffold ready!"
-        return
 
-    return
+      Norma.emit "message", "Scaffold ready!"
+
+      if err
+        installStatus.reject err
+
+      installStatus.resolve "ok"
+
+    return installStatus
 
 
 
@@ -89,15 +122,15 @@ module.exports = (tasks, cwd, callback) ->
 
     if Norma.dev or dev
       action = "npm i --save-dev #{list}"
-      Norma.emit "message", "Installing dev-packages to your global #{Tool}..."
+      Norma.emit "message", "Installing dev-packages to your global norma..."
     else
       action = "npm i --save #{list}"
-      Norma.emit "message", "Installing packages to your global #{Tool}..."
+      Norma.emit "message", "Installing packages to your global norma..."
 
 
-    MkDir Path.resolve Norma.userHome, "packages"
+    MkDir Path.resolve Norma._.userHome, "packages"
 
-    pgkeJSON = Path.resolve(Norma.userHome, "packages/package.json")
+    pgkeJSON = Path.resolve(Norma._.userHome, "packages/package.json")
 
     if !Fs.existsSync( pgkeJSON )
 
@@ -119,15 +152,13 @@ module.exports = (tasks, cwd, callback) ->
 
 
     # Do work on users global norma
-    process.chdir Path.resolve Norma.userHome, "packages"
+    cwd = Path.resolve Norma._.userHome, "packages"
 
     ExecCommand(
       action
-      process.cwd()
+      cwd
     ,
       ->
-        # Change back to project cwd for further tasks
-        process.chdir cwd
 
         if typeof cb is "function"
           cb null
@@ -139,16 +170,16 @@ module.exports = (tasks, cwd, callback) ->
 
     if Norma.dev or dev
       action = "npm i --save-dev #{list}"
-      Norma.emit "message", "Installing dev-packages to your local #{Tool}..."
+      Norma.emit "message", "Installing dev-packages to your local norma..."
 
     else
       action = "npm i --save #{list}"
 
-      Norma.emit "message", "Installing packages to your local #{Tool}..."
+      Norma.emit "message", "Installing packages to your local norma..."
 
     ExecCommand(
       action
-      process.cwd()
+      cwd
     ,
       ->
 
@@ -163,6 +194,7 @@ module.exports = (tasks, cwd, callback) ->
   count = 1
 
   install = (arr, global, dev) ->
+
     if !arr.length
       return
 
@@ -191,7 +223,7 @@ module.exports = (tasks, cwd, callback) ->
       name: "Missing Info"
       message: message
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
 
   # COMMAND LINE ----------------------------------------------------------
@@ -205,7 +237,7 @@ module.exports = (tasks, cwd, callback) ->
     if task.match /\//g
       cmdLineInstalls.push task
     else
-      cmdLineInstalls.push "#{Tool}-#{task}"
+      cmdLineInstalls.push "norma-#{task}"
 
     tasks.splice(index, 1)
 
@@ -232,13 +264,13 @@ module.exports = (tasks, cwd, callback) ->
         if task.endpoint
           globalInstalls.push task.endpoint
         else
-          globalInstalls.push "#{Tool}-#{task.name}"
+          globalInstalls.push "norma-#{task.name}"
 
       else if task.endpoint
         localInstalls.push task.endpoint
 
       else
-        localInstalls.push "#{Tool}-#{task.name}"
+        localInstalls.push "norma-#{task.name}"
 
       # remove for shorter loops
       tasks.splice(index, 1)
@@ -261,7 +293,6 @@ module.exports = (tasks, cwd, callback) ->
 
 
 
-
   # INSTALL ----------------------------------------------------------------
   # once all installs are done continue
   Q.all(promiseFunctions)
@@ -269,10 +300,10 @@ module.exports = (tasks, cwd, callback) ->
 
       Norma.emit "message", "Packages installed!"
 
-      if typeof callback is "function"
-        callback null
-
+      installStatus.resolve "ok"
     )
+
+  return installStatus
 
 
 

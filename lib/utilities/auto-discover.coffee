@@ -2,18 +2,14 @@
 Chalk = require "chalk"
 _ = require "underscore"
 
-ReadConfig = require "./read-config"
-Add = require "./../methods/add"
+Norma = require "./../norma"
 
+module.exports = (cwd, packages, promise) ->
 
-module.exports = (tasks, cwd, packages) ->
-
-
-  Launcher = require "./launcher"
-
+  if !cwd then cwd = process.cwd()
 
   # set needed variables
-  config = ReadConfig cwd
+  config = Norma.config cwd
   neededPackages = []
 
   # If there are no tasks so we can't do much, so exit with error
@@ -21,10 +17,10 @@ module.exports = (tasks, cwd, packages) ->
 
     err =
       level: "crash"
-      message: "#{Tool}.json needs a tasks object"
+      message: "norma.json needs a tasks object"
       name: "Not Valid"
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
 
 
@@ -51,9 +47,17 @@ module.exports = (tasks, cwd, packages) ->
     packagesCopy = neededPackages.slice()
 
     # add then run norma again
-    Add packagesCopy, cwd, ->
+    Norma.install(packagesCopy, cwd)
+      .then( ->
+        # Norma.run Norma.args, cwd
+        Norma.getPackages(cwd)
+          .then( (packages) ->
+            promise.resolve(packages)
+          )
+      )
 
-      Launcher.run tasks, cwd
+
+
 
 
     prettyPrint = new Array
@@ -67,6 +71,7 @@ module.exports = (tasks, cwd, packages) ->
 
     Norma.emit "message", msg
 
-    return true
+    return promise
 
-  return false
+  else
+    return false

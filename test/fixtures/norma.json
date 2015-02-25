@@ -1,0 +1,9 @@
+{
+  "name": "test-project",
+  "tasks": {
+    "copy": {
+      "src": "lib/**/*",
+      "dest": "out"
+    }
+  }
+}

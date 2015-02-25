@@ -1,5 +1,6 @@
 Exec = require('child_process').exec
 
+Norma = require "./../norma"
 
 module.exports = (tasks, cwd) ->
 
@@ -13,7 +14,7 @@ module.exports = (tasks, cwd) ->
       name: "Missing Info"
       message: "Please specify a package or scaffold to search for"
 
-    Norma.events.emit "error", err
+    Norma.emit "error", err
 
     return
 
@@ -24,7 +25,7 @@ module.exports = (tasks, cwd) ->
 
   exit = ->
     msg =
-      message: "No response from NPM after 30s. Looks like there may be a connection issue or a long task being run. To exit #{Tool}, press ctrl + c"
+      message: "No response from NPM after 30s. Looks like there may be a connection issue or a long task being run. To exit norma, press ctrl + c"
       level: "log"
 
     Norma.emit "error", msg
@@ -34,7 +35,7 @@ module.exports = (tasks, cwd) ->
   timeout = setTimeout exit, 30000
 
 
-  Norma.events.emit "message", "searching..."
+  Norma.emit "message", "searching..."
 
   child = Exec("npm search #{tasks}", (err, stdout, stderr) ->
 

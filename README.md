@@ -1,5 +1,6 @@
 [![Stories in Ready](https://badge.waffle.io/newspring/norma.svg?label=ready&title=Ready)](http://waffle.io/newspring/norma)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NewSpring/Norma?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Circle CI](https://circleci.com/gh/NewSpring/Norma/tree/feature-global.svg?style=svg)](https://circleci.com/gh/NewSpring/Norma/tree/feature-global)
 
 # Norma
 
@@ -133,7 +134,7 @@ When filing a new bug, please include:
 - Norma version
 - Did this work in a previous version? If so, also provide the version that it worked in.
 - OS version
-- Packages? 
+- Packages?
 - Any errors logged in the console
 
 
@@ -184,4 +185,3 @@ Yes please! But first...
 
 - Make sure no one else is already working on it -- if the bug has a milestone assigned or is tagged 'fix in progress', then it's already under way. Otherwise, post a comment on the bug to let others know you're starting to work on it.
 - Read the guidelines for contributing code, pull request guidelines, and coding conventions.
-

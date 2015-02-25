@@ -2,6 +2,7 @@ Path = require "path"
 Fs = require "fs"
 Multimatch = require "multimatch"
 
+Norma = require "./../norma"
 ExecCommand = require "./../utilities/execute-command"
 
 module.exports = (tasks, cwd) ->
@@ -14,9 +15,9 @@ module.exports = (tasks, cwd) ->
       name: "Norma"
       message: "Updating Norma..."
 
-    Norma.events.emit "message", msg
+    Norma.emit "message", msg
 
-    process.chdir Path.resolve __dirname, "../../"
+    # process.chdir Path.resolve __dirname, "../../"
 
     ExecCommand(
       "npm update -g normajs"
@@ -31,8 +32,8 @@ module.exports = (tasks, cwd) ->
 
     # npm package testing
     pattern = [
-      "#{Tool}-*"
-      "#{Tool}.*"
+      "norma-*"
+      "norma.*"
     ]
 
 
@@ -64,7 +65,7 @@ module.exports = (tasks, cwd) ->
       catch err
         err.level = "crash"
 
-        Norma.events.emit "error", err
+        Norma.emit "error", err
 
 
       names = scope.reduce(
@@ -87,7 +88,7 @@ module.exports = (tasks, cwd) ->
         name: "Norma"
         message: "Updating all local packages..."
 
-      Norma.events.emit "message", msg
+      Norma.emit "message", msg
 
       ExecCommand(
         "npm update #{packageList}"
@@ -98,7 +99,7 @@ module.exports = (tasks, cwd) ->
   else
 
     taskList = (
-      "#{Tool}-#{task}" for task in tasks
+      "norma-#{task}" for task in tasks
     )
 
     tasks = taskList.join(" ")
@@ -108,7 +109,7 @@ module.exports = (tasks, cwd) ->
       name: "Norma"
       message: "Updating #{tasks}..."
 
-    Norma.events.emit "message", msg
+    Norma.emit "message", msg
 
     ExecCommand(
       "npm update #{tasks}"

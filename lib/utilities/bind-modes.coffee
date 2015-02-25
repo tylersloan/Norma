@@ -1,8 +1,10 @@
 
 Flags = require("minimist")( process.argv.slice(2) )
 
+Norma = require "./../norma"
 
-module.exports = ->
+
+module.exports = (Norma) ->
 
   # Mode utilities
   link = (string, key) ->
@@ -11,8 +13,10 @@ module.exports = ->
 
   settingsLink = (key) ->
 
-    if Norma.settings.get "modes:#{key}"
-      Norma[key] = true
+    try
+      if Norma.getSettings.get "modes:#{key}"
+        Norma[key] = true
+    catch e
 
 
   # MODES -------------------------------------------------------------------

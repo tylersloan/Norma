@@ -1,11 +1,11 @@
 
 Path = require "path"
 Fs = require "fs"
-Sequence = require "run-sequence"
 Chalk = require "chalk"
 _ = require "underscore"
-Gulp = require "gulp"
+Q = require "kew"
 
+Norma = require "./../norma"
 MapTree = require("./../utilities/directory-tools").mapTree
 ReadConfig = require "./../utilities/read-config"
 ExecCommand = require "./../utilities/execute-command"
@@ -15,8 +15,16 @@ GenerateTaskList = require "./../utilities/generate-task-list"
 
 module.exports = (tasks, cwd) ->
 
+  buildStatus = Q.defer()
+
+  if !cwd then cwd = process.cwd()
+
+  if !Fs.existsSync Path.join(cwd, "norma.json")
+    buildStatus.reject("no norma.json found at #{cwd}")
+    return buildStatus
+
   # Load config
-  config = ReadConfig process.cwd()
+  config = ReadConfig cwd
 
   # After task is done message
   completeMessage =
@@ -34,41 +42,51 @@ module.exports = (tasks, cwd) ->
     if config.scripts and config.scripts.custom
       ExecCommand(
         config.scripts.custom
-        process.cwd()
+        cwd
       ,
         ->
-          Norma.events.emit "message", completeMessage
-          # Norma.stop()
+          Norma.emit "message", completeMessage
+
+          buildStatus.resolve "ok"
+          # Norma.close()
       )
 
     else
 
-      Norma.events.emit "message", completeMessage
-      # Norma.stop()
+      Norma.emit "message", completeMessage
+      buildStatus.resolve "ok"
+      # Norma.close()
 
 
 
   # BUILD ---------------------------------------------------------------
   build = (list) ->
 
-    Gulp.tasks = Norma.tasks
-
-    Gulp.task "final", () ->
+    Norma.task "final", () ->
 
       completeBuild()
 
 
     list.push "final"
 
-    Sequence.apply null, list
+    try
+      Norma.execute.apply null, list
+    catch e
+      buildStatus.reject e
+      return buildStatus
 
 
 
   # GENERATE-LIST --------------------------------------------------------
 
   if !tasks.length
-    # create list from packages and build
-    build GenerateTaskList(config, Norma.tasks)
+
+    try
+      # create list from packages and build
+      build GenerateTaskList(config, Norma.tasks)
+    catch e
+      buildStatus.reject e
+      return buildStatus
 
   else
 
@@ -95,6 +113,9 @@ module.exports = (tasks, cwd) ->
         return
 
     build tasks
+
+
+  return buildStatus
 
 
 
