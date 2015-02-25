@@ -26,9 +26,9 @@ module.exports = (env) ->
   # UTILITY -----------------------------------------------------------------
 
   # Check for version flag and report version
-  if Flags.version
+  if Flags.version or Flags.v
 
-    versionString = "norma CLI version: #{Chalk.cyan(Norma.version)}"
+    versionString = "norma CLI version: #{Chalk.cyan(Norma._.version)}"
 
     Norma.log versionString
 

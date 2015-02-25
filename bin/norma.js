@@ -23,7 +23,7 @@ process.on('SIGINT', function() {
 Domain.on("error", function(err){
   // err.level = "crash";
   // handle the error safely
-  Norma.events.emit("error", err);
+  Norma.emit("error", err);
 });
 
 

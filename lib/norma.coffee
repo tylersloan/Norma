@@ -41,16 +41,13 @@ Norma = ->
     cwd: process.cwd()
     userHome: homePath
     prefix: "Ø "
+    version: require(Path.join __dirname, "../package.json").version
 
   self.args = Flags._
 
   self.packages = []
 
   self.watchStarted = false
-
-
-  # Get the package.json for norma info
-  self.version = require(Path.join __dirname, "../package.json").version
 
 
 
