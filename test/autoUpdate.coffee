@@ -39,57 +39,54 @@ describe "Auto update", ->
     results = []
     errors = []
 
+    _norma = Spawn("norma", [], {cwd: fixtures})
 
-    Exec "npm i ./ -g", {cwd: oldCwd}, ->
+    _norma.stdout.setEncoding("utf8")
 
-      _norma = Spawn("norma", [], {cwd: fixtures})
+    _norma.stderr.on "data", (data) ->
+      str = data.toString()
+      lines = str.split(/(\r?\n)/g)
 
-      _norma.stdout.setEncoding("utf8")
+      i = 0
+      while i < lines.length
+        if !lines[i].match "\n"
+          message = lines[i].split("] ")
 
-      _norma.stderr.on "data", (data) ->
-        str = data.toString()
-        lines = str.split(/(\r?\n)/g)
+          if message.length > 1
+            message.splice(0, 1)
 
-        i = 0
-        while i < lines.length
-          if !lines[i].match "\n"
-            message = lines[i].split("] ")
+          errors.push message.join(" ")
+        i++
 
-            if message.length > 1
-              message.splice(0, 1)
-
-            errors.push message.join(" ")
-          i++
-
-        return
+      return
 
 
-      _norma.stdout.on "data", (data) ->
-        str = data.toString()
-        lines = str.split(/(\r?\n)/g)
+    _norma.stdout.on "data", (data) ->
+      str = data.toString()
+      lines = str.split(/(\r?\n)/g)
 
-        i = 0
-        while i < lines.length
-          if !lines[i].match "\n"
-            message = lines[i].split("] ")
+      i = 0
+      while i < lines.length
+        if !lines[i].match "\n"
+          message = lines[i].split("] ")
 
-            if message.length > 1
-              message.splice(0, 1)
+          if message.length > 1
+            message.splice(0, 1)
 
-            results.push message.join(" ")
-          i++
+          results.push message.join(" ")
+        i++
 
-        return
+      return
 
-      _norma.on "close", ->
-        if errors.length
-          console.log results, errors
-        results.should.include "An update is available for Norma"
-        done()
+    _norma.on "close", ->
+      if errors.length
+        console.log results, errors
+      results.should.include "An update is available for Norma"
+      done()
 
-      setTimeout ->
-        _norma.kill()
-      , 10000
+    setTimeout ->
+      _norma.kill()
+    , 10000
 
 
   after (done) ->
