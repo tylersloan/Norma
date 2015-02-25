@@ -4,7 +4,7 @@ if process.env.CI
 
 Inquirer = require "inquirer"
 
-Norma = require("../index")()
+Norma = require "../index"
 
 name = Norma.getSettings.get "user:name"
 browser = Norma.getSettings.get "user:browser"

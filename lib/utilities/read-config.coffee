@@ -10,6 +10,7 @@ Fs = require "fs"
 Path = require "path"
 Chalk = require "chalk"
 _ = require "underscore"
+Lint = require "json-lint"
 
 Norma = require "./../norma"
 
@@ -43,11 +44,14 @@ config = (cwd) ->
       _config = JSON.parse(data)
     catch err
 
-      if !Norma.silent
-        err.level = "crash"
-        err.message = "norma.json is not a valid JSON"
+      lint = Lint data
+      if lint.error
+        err.message = "#{lint.error} This error was
+          found on line #{lint.line} at character #{lint.character}"
 
-        Norma.emit "error", err
+      err.level = "crash"
+      Norma.emit "error", err
+
 
       return false
 

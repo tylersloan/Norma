@@ -36,8 +36,10 @@ module.exports = (cwd, targetCwd) ->
         taskObject = null
 
         packages.push task.tasks
-    catch e
-
+    catch err
+      console.log "At #{pkgeCwd}"
+      err.level = "crash"
+      Norma.events.emit "error", err
     #
     # else
     #   packages.push task
@@ -81,7 +83,6 @@ module.exports = (cwd, targetCwd) ->
 
   # Package testing (used in building and testing packages)
   if normaConfig.type is "package"
-
 
     # verify we aren't in root
     if cwd isnt Path.resolve Norma._.userHome, 'packages'

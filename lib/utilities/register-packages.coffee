@@ -34,6 +34,9 @@ module.exports = (cwd) ->
 
     _.extend Norma.tasks, task
 
+  # bind gulp / norma for right now
+  # Gulp.tasks = Norma.tasks
+
   # see if we need to download any packages
   isMissingTasks = AutoDiscover(cwd, Norma.tasks, loadedPackages)
 
