@@ -72,3 +72,13 @@ module.exports = (tasks, cwd) ->
   else start({})
 
   return
+
+
+# API ----------------------------------------------------------------------
+
+module.exports.api = [
+  {
+    command: "<method-name>"
+    description: "run any of norma's methods"
+  }
+]

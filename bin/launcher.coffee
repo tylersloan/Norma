@@ -39,7 +39,7 @@ module.exports = (env) ->
 
   # # See if help or h task is trying to be run
   if Flags.help
-    Norma._ = ["help"]
+    Norma.args = ["help"]
 
 
   # DEPENDENCIES ------------------------------------------------------------
@@ -52,7 +52,6 @@ module.exports = (env) ->
 
   Norma.ready(Norma.args, env.cwd).then( ->
 
-    console.log Norma.args
     Norma.run Norma.args, env.cwd
 
 
