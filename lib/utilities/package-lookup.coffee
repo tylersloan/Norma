@@ -39,7 +39,7 @@ module.exports = (cwd, targetCwd) ->
     catch err
       console.log "At #{pkgeCwd}"
       err.level = "crash"
-      Norma.events.emit "error", err
+      Norma.emit "error", err
     #
     # else
     #   packages.push task
