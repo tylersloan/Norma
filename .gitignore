@@ -15,3 +15,5 @@ workbench.coffee
 .norma
 
 xunit.xml
+
+*.tgz
