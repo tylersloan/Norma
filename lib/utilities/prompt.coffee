@@ -77,7 +77,7 @@ initialize = ->
       when "exit", "e", "quit", "q"
         rl.close()
       when "all"
-        Build []
+        Norma.build []
       when "open the pod bay doors"
         name = Norma.settings.get "user:name"
         if name then name = ", " + name else name = ""
