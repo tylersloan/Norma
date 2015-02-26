@@ -65,6 +65,6 @@
     "norma": "./bin/norma.js"
   },
   "preferglobal": true,
-  "engineStrict": true,
+  "engine-strict": false,
   "homepage": "https://github.com/NewSpring/norma"
 }
