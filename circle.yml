@@ -7,4 +7,5 @@ deployment:
   production:
     branch: master
     commands:
+      - npm i semver
       - node ./lib/install/deploy.js
