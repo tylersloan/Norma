@@ -124,4 +124,5 @@ Norma::events =
   listeners: Util.deprecate Norma::listeners, "use Norma.listeners instead"
 
 
-norma = module.exports = new Norma
+inst = new Norma()
+module.exports = inst

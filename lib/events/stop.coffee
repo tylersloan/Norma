@@ -9,11 +9,13 @@ end = ->
 
 module.exports = close = ->
 
+  console.log "calling stop"
+
   if Norma.watchStarted
     Norma.watch.stop()
 
   promiseFunctions = new Array
-  functions = Norma.listeners "stop"
+  functions = Norma.listeners "close"
 
   obj = {}
   count = 1

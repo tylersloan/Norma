@@ -96,7 +96,7 @@ module.exports = (tasks, cwd) ->
 
 
         runTask task, ->
-          Norma.emit 'file-change', event
+          Norma.emit "file-change", event
 
     )
 
@@ -121,7 +121,7 @@ module.exports = (tasks, cwd) ->
     Norma.emit "message", msg
 
 
-  Norma.emit 'watch-start'
+  Norma.emit "watch-start"
 
   for task of Norma.tasks
     if !config.tasks[task] or !Norma.tasks[task].ext
