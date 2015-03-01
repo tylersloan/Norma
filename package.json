@@ -9,8 +9,8 @@
   "main": "lib/index.js",
   "author": "jbaxleyiii",
   "license": {
-      "type": "MIT",
-      "url": "http://fibo.mit-license.org/"
+    "type": "MIT",
+    "url": "http://fibo.mit-license.org/"
   },
   "bugs": {
     "url": "https://github.com/NewSpring/norma/issues"
@@ -65,6 +65,6 @@
     "norma": "./bin/norma.js"
   },
   "preferglobal": true,
-  "engineStrict": true,
+  "engine-strict": false,
   "homepage": "https://github.com/NewSpring/norma"
 }

@@ -9,6 +9,7 @@ var Domain = require("domain").create();
 var Norma = require("../lib/index")
 var Launch = require("./launcher")
 
+
 var cli = new Liftoff({
   name: "norma"
 });
