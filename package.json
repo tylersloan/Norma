@@ -1,6 +1,6 @@
 {
   "name": "normajs",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "description": "Auto Discover Build Utility",
   "repository": {
     "type": "git",
@@ -58,13 +58,9 @@
     "test": "node ./lib/install/test.js",
     "postinstall": "node ./lib/install/post.js"
   },
-  "engines": {
-    "node": ">= 0.10"
-  },
   "bin": {
     "norma": "./bin/norma.js"
   },
   "preferglobal": true,
-  "engine-strict": false,
   "homepage": "https://github.com/NewSpring/norma"
 }

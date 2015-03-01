@@ -9,8 +9,6 @@ end = ->
 
 module.exports = close = ->
 
-  console.log "calling stop"
-
   if Norma.watchStarted
     Norma.watch.stop()
 
