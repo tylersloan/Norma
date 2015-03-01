@@ -46,7 +46,8 @@
     "rimraf": "^2.2.8",
     "semver": "^4.1.0",
     "underscore": "^1.7.0",
-    "user-home": "^1.1.0"
+    "user-home": "^1.1.0",
+    "vinyl-fs": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^2.0.0",
@@ -58,13 +59,9 @@
     "test": "node ./lib/install/test.js",
     "postinstall": "node ./lib/install/post.js"
   },
-  "engines": {
-    "node": ">= 0.10"
-  },
   "bin": {
     "norma": "./bin/norma.js"
   },
   "preferglobal": true,
-  "engineStrict": true,
   "homepage": "https://github.com/NewSpring/norma"
 }

@@ -63,7 +63,7 @@ module.exports = (Norma) ->
     @api public
 
   ###
-  Norma.close = require "./events/stop"
+  Norma.close = require "./events/close"
 
 
 

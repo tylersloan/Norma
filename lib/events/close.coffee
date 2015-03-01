@@ -13,7 +13,7 @@ module.exports = close = ->
     Norma.watch.stop()
 
   promiseFunctions = new Array
-  functions = Norma.listeners "stop"
+  functions = Norma.listeners "norma-close"
 
   obj = {}
   count = 1

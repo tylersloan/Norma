@@ -55,7 +55,7 @@ runSequence = (norma) ->
     if callBack
       callBack err
     else if err
-      Norma.emit "message", "Error running task sequence: #{err}"
+      Norma.emit "message", "Error running task sequence: #{JSON.stringify(err)}"
     return
 
   onError = (err) ->

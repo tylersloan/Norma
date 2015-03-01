@@ -3,7 +3,7 @@ Path = require "path"
 Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
-Watch = require "glob-watcher"
+Vfs = require "vinyl-fs"
 
 Norma = require "./../norma"
 PkgeLookup = require "./../utilities/package-lookup"
@@ -72,7 +72,7 @@ module.exports = (tasks, cwd) ->
 
     obj = {}
 
-    obj[taskName] = Watch(
+    obj[taskName] = Vfs.watch(
       [
         "#{src}.#{exts}"
         "!node_modules/**/*"
@@ -96,7 +96,7 @@ module.exports = (tasks, cwd) ->
 
 
         runTask task, ->
-          Norma.emit 'file-change', event
+          Norma.emit "file-change", event
 
     )
 
@@ -121,7 +121,7 @@ module.exports = (tasks, cwd) ->
     Norma.emit "message", msg
 
 
-  Norma.emit 'watch-start'
+  Norma.emit "watch-start"
 
   for task of Norma.tasks
     if !config.tasks[task] or !Norma.tasks[task].ext
