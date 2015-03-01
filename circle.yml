@@ -3,9 +3,9 @@ machine:
     version: 0.10.33
 
 ### NPM Deploy
-deployment:
-  production:
-    branch: master
-    commands:
-      - npm i ci-npm-publish -g
-      - ci-npm-publish
+# deployment:
+#   production:
+#     branch: master
+#     commands:
+#       - npm i ci-npm-publish -g
+#       - ci-npm-publish

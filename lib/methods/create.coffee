@@ -20,7 +20,9 @@ MkDir = require("./../utilities/directory-tools").mkdir
 module.exports = (tasks, cwd, pkge) ->
 
   if !cwd then cwd = process.cwd()
+
   installPackage = Norma.package
+
 
   if typeof pkge is "boolean"
     installPackage = pkge
@@ -60,6 +62,7 @@ module.exports = (tasks, cwd, pkge) ->
   # process.chdir Path.join(cwd, packageName)
 
   # Make a package if we're supposed to
+
   if installPackage
     try
       Package tasks, cwd
@@ -79,7 +82,7 @@ module.exports = (tasks, cwd, pkge) ->
     .fail( (e) ->
       create.reject e
     )
-  
+
   return create
 
 

@@ -71,6 +71,13 @@ module.exports = (tasks, cwd) ->
     JSON.stringify(pkgeConfig, null, 2)
   )
 
-  Norma.emit "message", "Package Ready!"
+  ExecCommand(
+    "npm i --save normajs"
+    cwd
+  ,
+    ->
+      Norma.emit "message", "Package Ready!"
+  )
+
 
   return
