@@ -75,8 +75,8 @@ module.exports = (tasks, cwd) ->
     obj[taskName] = Vfs.watch(
       [
         "#{src}.#{exts}"
-        "!node_modules/**/*"
-        "!.git/**/*"
+        # "!node_modules/**/*"
+        # "!.git/**/*"
       ], (event) ->
 
 
