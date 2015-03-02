@@ -1,6 +1,6 @@
-[![Stories in Ready](https://badge.waffle.io/newspring/norma.svg?label=ready&title=Ready)](http://waffle.io/newspring/norma)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NewSpring/Norma?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![npm version](https://badge.fury.io/js/normajs.svg)](http://badge.fury.io/js/normajs)
 [![Circle CI](https://circleci.com/gh/NewSpring/Norma.svg?style=svg)](https://circleci.com/gh/NewSpring/Norma)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NewSpring/Norma?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # Norma
 
