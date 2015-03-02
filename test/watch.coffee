@@ -10,7 +10,7 @@ describe "Watch", ->
 
   it "should change Norma.watchStarted to true", ->
     @.timeout 100000
-    Norma.watchStarted.should.be.false
+    Norma.watchStarted = false
 
     Norma.watch([], fixtures)
 
