@@ -1,6 +1,6 @@
 Norma = require "normajs"
 
-module.exports = (config, tasks) ->
+module.exports = (config) ->
 
   ###
 

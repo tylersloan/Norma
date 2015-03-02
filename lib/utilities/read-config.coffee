@@ -84,9 +84,11 @@ config = (cwd) ->
 
 save = (obj, cwd) ->
 
+
   if !cwd then cwd = process.cwd()
 
   if !_.isObject obj
+    Norma.emit "error", "Cannot save norma.json without and object passed to save"
     return false
 
   # Save config

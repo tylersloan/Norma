@@ -69,6 +69,20 @@ module.exports = (Norma) ->
 
   ###
 
+    Restart
+
+    Graceful restarts
+
+    @method close
+    @api public
+
+  ###
+  Norma.restart = require "./events/restart"
+
+
+
+  ###
+
     getSettings
 
     Return in-memory storage of global + local .norma files
