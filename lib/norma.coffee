@@ -6,6 +6,7 @@ Home          = require "user-home"
 Util          = require "util"
 _             = require "underscore"
 Fs            = require "fs"
+Vfs           = require "vinyl-fs"
 Flags = require("minimist")( process.argv.slice(2) )
 
 
@@ -123,5 +124,9 @@ Norma::events =
   emit: Util.deprecate Norma::emit, "use Norma.emit instead"
   listeners: Util.deprecate Norma::listeners, "use Norma.listeners instead"
 
+
+# Shamelessly borrowed from gulp
+Norma::src = Vfs.src
+Norma::dest = Vfs.dest
 
 norma = module.exports = new Norma
