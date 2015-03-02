@@ -129,4 +129,4 @@ Norma::events =
 Norma::src = Vfs.src
 Norma::dest = Vfs.dest
 
-norma = module.exports = new Norma
+module.exports = new Norma
