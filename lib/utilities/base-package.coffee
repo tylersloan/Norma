@@ -1,4 +1,4 @@
-
+Norma = require "normajs"
 
 module.exports = (config, tasks) ->
 
