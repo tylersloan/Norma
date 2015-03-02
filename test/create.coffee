@@ -115,19 +115,8 @@ describe "Create", ->
 
           # hacky way to copy object
           config = (JSON.parse(JSON.stringify(oldConfig)))
+
           config.should.contain.any.keys "tasks"
-          
-          # config.tasks["sample"] =
-          #   src: "./test"
-          #   dest: "./test/out"
-          #
-          # Norma.config.save(config, testProject)
-          #
-          # Norma.getPackages(testProject)
-          #   .then( ->
-          #     # console.log Norma
-          #     Norma.tasks.should.contain.any.keys "sample"
-          #   )
 
         )
 

@@ -1,6 +1,6 @@
 {
   "name": "normajs",
-  "version": "0.9.9",
+  "version": "0.9.5",
   "description": "Auto Discover Build Utility",
   "repository": {
     "type": "git",
@@ -46,7 +46,8 @@
     "rimraf": "^2.2.8",
     "semver": "^4.1.0",
     "underscore": "^1.7.0",
-    "user-home": "^1.1.0"
+    "user-home": "^1.1.0",
+    "vinyl-fs": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^2.0.0",

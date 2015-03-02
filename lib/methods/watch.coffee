@@ -3,7 +3,7 @@ Path = require "path"
 Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
-Watch = require "glob-watcher"
+Vfs = require "vinyl-fs"
 
 Norma = require "./../norma"
 PkgeLookup = require "./../utilities/package-lookup"
@@ -12,7 +12,7 @@ Prompt = require "./../utilities/prompt"
 watching = []
 module.exports = (tasks, cwd) ->
 
-  # if !cwd then cwd = process.cwd()
+  if !cwd then cwd = process.cwd()
 
   # VARIABLES --------------------------------------------------------------
 
@@ -72,7 +72,7 @@ module.exports = (tasks, cwd) ->
 
     obj = {}
 
-    obj[taskName] = Watch(
+    obj[taskName] = Vfs.watch(
       [
         "#{src}.#{exts}"
         "!node_modules/**/*"
