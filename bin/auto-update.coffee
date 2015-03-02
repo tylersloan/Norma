@@ -94,7 +94,7 @@ module.exports = (preference, callback) ->
             else
 
               msg =
-                message: "#{Norma.prefix}OK, I will ask again next update"
+                message: "#{Norma._.prefix}OK, I will ask again next update"
                 color: "cyan"
 
               Norma.log msg

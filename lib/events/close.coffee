@@ -7,13 +7,13 @@ end = ->
   process.exit 0
 
 
-module.exports = close = ->
+module.exports = (stayAlive) ->
 
   if Norma.watchStarted
     Norma.watch.stop()
 
   promiseFunctions = new Array
-  functions = Norma.listeners "norma-close"
+  functions = Norma.listeners "close"
 
   obj = {}
   count = 1
@@ -21,6 +21,10 @@ module.exports = close = ->
   if !functions.length
     if Norma.verbose
       Norma.emit "message", "exiting..."
+
+    if stayAlive
+      return
+
     end()
 
   # Build dynamic list of defered functions
@@ -36,5 +40,9 @@ module.exports = close = ->
     .then( ->
       if Norma.verbose
         Norma.emit "message", "exiting..."
+
+      if stayAlive
+        return
+
       end()
     )
