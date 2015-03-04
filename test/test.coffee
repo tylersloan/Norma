@@ -23,15 +23,6 @@ describe "Test", ->
       )
 
 
-
-  before (done) ->
-
-    Norma.getPackages(fixtures)
-      .then( ->
-        return done()
-      )
-
-
   it "should return a promise", ->
 
     status = Norma.test ["build"], fixtures
