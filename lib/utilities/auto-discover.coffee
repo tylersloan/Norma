@@ -28,6 +28,15 @@ module.exports = (cwd, packages, promise) ->
 
   # collect all missing tasks into array
   for key of config.tasks
+    # @extend "package" handling
+    if key.match /@extend/
+      extension = key.split("@extend")
+      extension = extension[1].trim()
+      key = extension
+      break
+
+
+
     if packages[key] is undefined
       pkge =
         name: key

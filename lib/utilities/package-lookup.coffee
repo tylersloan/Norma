@@ -47,7 +47,7 @@ module.exports = (cwd, targetCwd) ->
 
 
 
-
+  # Loop through file structure to find packages
   checkFile = (file) ->
 
     if file.name is "norma.json"
