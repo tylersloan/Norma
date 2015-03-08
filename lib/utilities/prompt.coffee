@@ -65,7 +65,9 @@ rl = {}
 initialize = ->
 
   rl = Readline.createInterface(
-    process.stdin, process.stdout, interactive
+    input: process.stdin,
+    output: process.stdout
+    completer: interactive
   )
 
   # EVENTS -------------------------------------------------------------

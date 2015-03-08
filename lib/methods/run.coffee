@@ -34,12 +34,13 @@ module.exports = (tasks, cwd) ->
   ]
 
 
-  start = (_pgkes) ->
+  start = ->
 
     # Fire the start event
     Norma.emit "start"
 
     try
+
       task = Norma[_tasks[0]]
       action = _tasks.slice()
       action.shift()
@@ -51,12 +52,12 @@ module.exports = (tasks, cwd) ->
       method = pkge[0]
       pkge.shift()
 
-      if pkge.length
-        method += "-#{pkge[0]}"
+      actions = process.argv.slice(3)
 
-      if pkges[method]
+
+      if Norma.tasks[method]
         pass = -> return
-        Norma.tasks[method].fn( pass, action, cwd)
+        Norma.tasks[method].fn(pass, actions)
       else
         e.level = "crash"
         Norma.emit "error", e
