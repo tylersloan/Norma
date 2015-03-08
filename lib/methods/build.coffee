@@ -69,6 +69,7 @@ module.exports = (tasks, cwd) ->
 
     list.push "final"
 
+
     try
       Norma.execute.apply null, list
     catch e

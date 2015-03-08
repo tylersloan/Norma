@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "norma-copy": "^0.3.0"
-  },
-  "devDependencies": {}
+    "norma-copy": "^0.4.0",
+    "norma-meteor": "^0.3.2"
+  }
 }
