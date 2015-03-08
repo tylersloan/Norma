@@ -22,7 +22,6 @@ module.exports = (cwd, targetCwd) ->
   packageList = new Array
   packages = new Array
 
-  Norma._.pacakgeDirs = Norma._.pacakgeDirs or {}
 
   # Load package and see if it has any task
   mapPkge = (pkgeCwd, name) ->
@@ -30,8 +29,8 @@ module.exports = (cwd, targetCwd) ->
     name = name.split("norma-")[1]
 
     # # store load path for future calls via extension
-    if !Norma._.pacakgeDirs[name]
-      Norma._.pacakgeDirs[name] = pkgeCwd
+    if !Norma._.packageDirs[name]
+      Norma._.packageDirs[name] = pkgeCwd
 
     # taks isnt defined in norma.json
     if !normaConfig.tasks[name]

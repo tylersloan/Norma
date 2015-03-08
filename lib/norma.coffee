@@ -43,6 +43,7 @@ Norma = ->
     userHome: homePath
     prefix: "Ø "
     version: require(Path.join __dirname, "../package.json").version
+    packageDirs: {}
 
   self.args = Flags._
 

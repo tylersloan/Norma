@@ -71,7 +71,7 @@ module.exports = (cwd) ->
       if !Norma.tasks[extension]
         continue
 
-      extendedTask = require Norma._.pacakgeDirs[extension]
+      extendedTask = require Norma._.packageDirs[extension]
 
       # we handle merging of master to extension here
       config.tasks[extensionName] = _.extend(
@@ -82,7 +82,6 @@ module.exports = (cwd) ->
       # copy settings to be sent
       config = JSON.parse JSON.stringify(config)
       taskObject = extendedTask config, extensionName
-
 
 
     loadedPackages.resolve Norma.tasks

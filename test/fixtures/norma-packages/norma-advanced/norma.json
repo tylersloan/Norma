@@ -1,0 +1,6 @@
+{
+  "name": "norma-advanced",
+  "type": "package",
+  "main": "package.coffee",
+  "tasks": {}
+}
