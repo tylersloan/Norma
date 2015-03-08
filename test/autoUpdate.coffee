@@ -103,3 +103,4 @@ describe "Auto update", ->
     Fs.writeFileSync(packageJson, JSON.stringify(pkge, null, 2) )
 
     done()
+#

@@ -3,7 +3,7 @@
   "tasks": {
     "copy": {
       "src": "lib/**/*",
-      "dest": "out"
+      "dest": "./out"
     }
   }
 }

@@ -55,12 +55,15 @@ describe "Extend", ->
 
     Norma.build([], fixtures)
       .then( ->
-        newContents = Fs.readFileSync outFile, encoding: "utf8"
-        newContents.should.equal contents.toString()
-        done()
+        setTimeout ->
+          newContents = Fs.readFileSync outFile, encoding: "utf8"
+          newContents.should.equal contents.toString()
+          done()
+        , 1000
 
       ).fail( (err) ->
         if err then console.log err
+        err.should.not.exist
         done()
       )
 

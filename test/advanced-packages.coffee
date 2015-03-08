@@ -27,7 +27,7 @@ describe "Advanced Package", ->
 
     return
 
-  it "should pass arguments to main package task", ->
+  it "should pass arguments to main package task", (done) ->
 
     @.timeout 100000
 
@@ -36,7 +36,10 @@ describe "Advanced Package", ->
 
     _norma = Spawn(
       "node", [
-        "../../bin/norma.js", "advanced", "printed", "out"
+        "../../bin/norma.js"
+        "advanced"
+        "printed"
+        "out"
       ],
       {
         cwd: fixtures
@@ -87,16 +90,17 @@ describe "Advanced Package", ->
     _norma.on "close", ->
       if errors.length
         console.log errors
+        errors.length.should.be 0
 
-      console.log results
-
-      results.should.include "printed out"
+      results.should.include "[ \'printed\', \'out\' ]"
       done()
       # data.should.be.true
 
     setTimeout ->
       _norma.kill()
     , 10000
+
+
 
 
   after (done) ->
