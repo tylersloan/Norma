@@ -1,6 +1,9 @@
 Norma = require "normajs"
 
-module.exports = (config) ->
+module.exports = (config, name) ->
+
+  name or= "sample"
+
 
   ###
 
@@ -9,8 +12,8 @@ module.exports = (config) ->
     through all tasks in a sequenced method
 
   ###
-  Norma.task "sample", (cb) ->
-    Norma.emit "message", "Your scripts go here"
+  Norma.task "#{name}", (cb) ->
+    Norma.log "Your scripts go here"
 
     cb null
 
@@ -23,7 +26,7 @@ module.exports = (config) ->
     documenation site
 
   ###
-  # Norma.tasks["sample"].order = "post"
+  # Norma.tasks["#{name}"].order = "post"
 
   # Export all of your tasks
   module.exports.tasks = Norma.tasks
