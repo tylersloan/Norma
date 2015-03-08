@@ -25,7 +25,7 @@ describe "Remove", ->
   describe "Scaffolds", ->
 
     beforeEach (done) ->
-
+      @.timeout 5000
       Norma.install(["NewSpring/norma-sample-scaffold"], fixtures, true)
         .then( (result) ->
           done()
