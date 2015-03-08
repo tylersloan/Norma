@@ -22,17 +22,31 @@ module.exports = (cwd, targetCwd) ->
   packageList = new Array
   packages = new Array
 
+  Norma._.pacakgeDirs = Norma._.pacakgeDirs or {}
 
   # Load package and see if it has any task
-  mapPkge = (pkgeCwd) ->
+  mapPkge = (pkgeCwd, name) ->
 
+    name = name.split("norma-")[1]
+
+    # # store load path for future calls via extension
+    if !Norma._.pacakgeDirs[name]
+      Norma._.pacakgeDirs[name] = pkgeCwd
+
+    # taks isnt defined in norma.json
+    if !normaConfig.tasks[name]
+      return
+
+    # console.log pkgeCwd
     try
       # load package
       task = require pkgeCwd
 
       # push task to packages
       if typeof task is "function"
-        taskObject = task normaConfig
+        # copy settings to be sent
+        normaConfig = JSON.parse JSON.stringify(normaConfig)
+        taskObject = task normaConfig, name
         taskObject = null
 
         packages.push task.tasks
@@ -40,9 +54,6 @@ module.exports = (cwd, targetCwd) ->
       console.log "At #{pkgeCwd}"
       err.level = "crash"
       Norma.emit "error", err
-    #
-    # else
-    #   packages.push task
 
 
 
@@ -60,7 +71,7 @@ module.exports = (cwd, targetCwd) ->
         Norma.packages.push pkgeConfig.name
         Norma.packages = _.uniq Norma.packages
 
-        mapPkge entry
+        mapPkge entry, pkgeConfig.name
 
     else if file.children
 
@@ -145,14 +156,18 @@ module.exports = (cwd, targetCwd) ->
       Norma.packages.push name
       Norma.packages = _.uniq Norma.packages
 
-      packageList.push Path.resolve(node_modules, name)
+      _obj = {}
+      _obj[name] = Path.resolve(node_modules, name)
+
+      packageList.push _obj
+
 
       return
 
 
     for pkge in packageList
-
-      packageList[pkge] = mapPkge pkge
+      key = Object.keys(pkge)[0]
+      mapPkge pkge[key], key
 
 
   return packages

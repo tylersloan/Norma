@@ -34,14 +34,57 @@ module.exports = (cwd) ->
 
     _.extend Norma.tasks, task
 
-  # bind gulp / norma for right now
-  # Gulp.tasks = Norma.tasks
 
   # see if we need to download any packages
   isMissingTasks = AutoDiscover(cwd, Norma.tasks, loadedPackages)
 
+  ###
+
+    Package extensions using the API as follows
+
+    tasks: {
+      "copy": {
+        "src": "./raw",
+        "dest": "./out"
+      },
+      "images": {
+        "@extend": "copy"
+        "src": "./second-raw",
+        "dest": "./out"
+      }
+    }
+
+  ###
 
   if !isMissingTasks
+
+    config = Norma.config cwd
+
+    for key of config.tasks
+
+      # @extend "package" handling
+      if config.tasks[key]["@extend"]
+        extensionName =  key
+        extension = config.tasks[key]["@extend"]
+
+      # extended task does exist
+      if !Norma.tasks[extension]
+        continue
+
+      extendedTask = require Norma._.pacakgeDirs[extension]
+
+      # we handle merging of master to extension here
+      config.tasks[extensionName] = _.extend(
+        config.tasks[extension]
+        config.tasks[extensionName]
+      )
+
+      # copy settings to be sent
+      config = JSON.parse JSON.stringify(config)
+      taskObject = extendedTask config, extensionName
+
+
+
     loadedPackages.resolve Norma.tasks
 
   return loadedPackages
