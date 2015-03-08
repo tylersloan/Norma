@@ -1,4 +1,4 @@
-Norma = require "normajs"
+Norma = require "../../../../lib/index"
 
 module.exports = (config, name) ->
 
@@ -15,7 +15,7 @@ module.exports = (config, name) ->
   Norma.task "#{name}", (cb, tasks) ->
 
     if tasks
-      Norma.log tasks
+      console.log tasks
       cb null
       return
 

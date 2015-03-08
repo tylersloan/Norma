@@ -88,6 +88,8 @@ describe "Advanced Package", ->
       if errors.length
         console.log errors
 
+      console.log results
+
       results.should.include "printed out"
       done()
       # data.should.be.true
