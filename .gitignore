@@ -17,3 +17,5 @@ workbench.coffee
 xunit.xml
 
 *.tgz
+
+out/

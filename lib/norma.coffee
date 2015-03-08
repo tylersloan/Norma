@@ -7,7 +7,7 @@ Util          = require "util"
 _             = require "underscore"
 Fs            = require "fs"
 Vfs           = require "vinyl-fs"
-Flags = require("minimist")( process.argv.slice(2) )
+Flags         = require("minimist")( process.argv.slice(2) )
 
 
 MkDir = require("./utilities/directory-tools").mkdir
@@ -43,6 +43,7 @@ Norma = ->
     userHome: homePath
     prefix: "Ø "
     version: require(Path.join __dirname, "../package.json").version
+    packageDirs: {}
 
   self.args = Flags._
 

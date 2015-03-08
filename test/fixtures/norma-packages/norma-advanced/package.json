@@ -1,0 +1,9 @@
+{
+  "name": "norma-advanced",
+  "version": "0.0.1",
+  "description": "advanced package for the Norma build tool",
+  "main": "package.coffee",
+  "keywords": [
+    "norma"
+  ]
+}

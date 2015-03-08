@@ -14,7 +14,6 @@ describe "Build", ->
 
   before (done) ->
 
-
     process.chdir fixtures
 
     Norma.getPackages(fixtures)
@@ -49,7 +48,7 @@ describe "Build", ->
 
   it "should allow passing a task to be built", ->
 
-    Norma.build(["copy"], fixtures)
+    Norma.build(["copy"])
       .then( (result) ->
         result.should.be.equal "ok"
       )

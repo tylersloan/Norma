@@ -127,8 +127,6 @@ describe "Create", ->
       if Fs.existsSync pgkePath
         Rimraf.sync pgkePath
 
-      if Fs.existsSync norma_packages
-        Rimraf.sync norma_packages
 
       return done()
 

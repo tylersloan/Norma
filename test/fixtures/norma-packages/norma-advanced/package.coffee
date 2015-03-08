@@ -1,8 +1,8 @@
-Norma = require "normajs"
+Norma = require "../../../../lib/index"
 
 module.exports = (config, name) ->
 
-  name or= "sample"
+  name or= "advanced"
 
 
   ###
@@ -12,10 +12,17 @@ module.exports = (config, name) ->
     through all tasks in a sequenced method
 
   ###
-  Norma.task "#{name}", (cb) ->
+  Norma.task "#{name}", (cb, tasks) ->
+
+    if tasks
+      console.log tasks
+      cb null
+      return
+
     Norma.log "Your scripts go here"
 
     cb null
+    return
 
 
 

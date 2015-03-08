@@ -3,42 +3,48 @@ Path    = require "path"
 Fs      = require "fs"
 Spawn   = require("child_process").spawn
 
-# Norma = require "./../lib/index"
-autoUpdate = require "./../bin/auto-update"
+Norma = require "./../lib/index"
 
-
-describe "Auto update", ->
-
-  packageJson = Path.resolve __dirname, "../", "package.json"
-  pkge = {}
-  existingVersion = ""
+describe "Advanced Package", ->
 
   fixtures = Path.resolve "./test/fixtures"
   oldCwd = process.cwd()
-
+  oldConfig = Norma.config(fixtures)
 
   before (done) ->
 
     process.chdir fixtures
 
-    pkge = JSON.parse(Fs.readFileSync(packageJson, encoding: "utf8") )
+    newConfig = Norma.config fixtures
 
-    existingVersion = pkge.version
-    pkge.version = "0.1.0"
+    newConfig.tasks["advanced"] =
+      "src": "images/**/*",
+      "dest": "out/images"
 
-    Fs.writeFileSync(packageJson, JSON.stringify(pkge), null, 2)
+    Norma.config.save newConfig, fixtures
 
     done()
 
+    return
 
-  it "should request updating norma if possible", (done) ->
+  it "should pass arguments to main package task", (done) ->
 
     @.timeout 100000
 
     results = []
     errors = []
 
-    _norma = Spawn("node", ["../../bin/norma.js"], {cwd: fixtures})
+    _norma = Spawn(
+      "node", [
+        "../../bin/norma.js"
+        "advanced"
+        "printed"
+        "out"
+      ],
+      {
+        cwd: fixtures
+      }
+    )
 
     _norma.stdout.setEncoding("utf8")
 
@@ -84,8 +90,9 @@ describe "Auto update", ->
     _norma.on "close", ->
       if errors.length
         console.log errors
+        errors.length.should.be 0
 
-      results.should.include "An update is available for Norma"
+      results.should.include "[ \'printed\', \'out\' ]"
       done()
       # data.should.be.true
 
@@ -94,13 +101,14 @@ describe "Auto update", ->
     , 10000
 
 
+
+
   after (done) ->
 
-    pkge = JSON.parse(Fs.readFileSync packageJson, encoding: "utf8")
+    Norma.config.save(oldConfig, fixtures)
 
-    pkge.version = existingVersion
-
-    Fs.writeFileSync(packageJson, JSON.stringify(pkge, null, 2) )
+    process.chdir oldCwd
 
     done()
-#
+
+    return
