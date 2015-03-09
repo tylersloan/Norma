@@ -43,14 +43,42 @@ module.exports = (tasks, cwd) ->
     test = config.test
 
 
+  if typeof test is "string"
 
-  Run test, cwd, (err, result) ->
+    Run test, cwd, (err, result) ->
 
-    if err
-      tested.fail err
+      if err
+        tested.fail err
+        return
+
+      tested.resolve result
+
+    return
+
+  if test.before
+
+    # are we an array
+    if _.isArray test.before
+      Norma.log "build queing method for array here"
+
       return
 
-    tested.resolve result
+    if typeof test.before isnt "string"
+      Norma.emit "error", "before actions must be an array or string"
+      return
+
+    # make a single promise for before script
+    beforeTest = Q.defer()
+    Run test.before, cwd, beforeTest.makeNodeResolver()
+
+    beforeTest
+      .then( (result) ->
+        Norma.log "start running tests now that before task is done"
+      )
+      .fail( (error) ->
+        tested.fail error
+        return
+      )
 
 
 
