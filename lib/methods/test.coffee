@@ -2,9 +2,10 @@ Path = require "path"
 Fs = require "fs"
 _ = require "underscore"
 Q = require "kew"
-Spawn = require("child_process").spawn
+
 
 Norma = require "./../norma"
+Run = require "./../utilities/run-script"
 
 
 
@@ -42,59 +43,14 @@ module.exports = (tasks, cwd) ->
     test = config.test
 
 
-  # TEST-TYPES --------------------------------------------------------------
 
-  # not an object detailing test
-  if typeof test is "string"
-    # split into args
-    testArray = test.split(" ")
+  Run test, cwd, (err, result) ->
 
-    # check norma packages
-    if Norma.tasks[testArray[0]]
-
-      Norma.log "build out package based test here"
-      tested.resolve("ok")
-
-      return tested
-
-
-    # check to see if test is a path
-    if Fs.existsSync Path.resolve(cwd, testArray[0])
-      action = "node"
-      commands = [Path.resolve(cwd, testArray[0])]
-
-    # spawn process executing test action
-    else
-      action = testArray[0]
-      # copy array
-      commands = testArray.slice()
-      # remove first item
-      commands.shift()
-
-
-    _test = Spawn(
-      action
-      commands
-      {
-        cwd: cwd
-        stdio: [
-          0
-          1
-          2
-        ]
-      }
-    )
-
-    _test.on "close", (code, signal) ->
-      if code is not 0
-        tested.fail signal
-        Norma.emit "error", "testing failed"
-        return
-
-      tested.resolve("ok")
+    if err
+      tested.fail err
       return
 
-    return tested
+    tested.resolve result
 
 
 
