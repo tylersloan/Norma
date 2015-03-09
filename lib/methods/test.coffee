@@ -121,9 +121,48 @@ module.exports = (tasks, cwd) ->
       Run test, cwd, actionCallback
 
 
-    # a single string based main task in test object
-    if test.main and typeof test.main is "string"
-      Run test.main, cwd, actionCallback
+    # a set of main tasks
+    if test.main
+
+      # test is a single string
+      if typeof test.main is "string"
+        Run test.main, cwd, actionCallback
+
+        return
+
+      # array of tasks
+      if _.isArray test.main
+
+        # set count to 0 for stepping through array
+        mainCount = 0
+        chainCallbacks mainCount, test.main, actionCallback
+
+        return
+
+      return
+
+
+
+    taskArray = []
+    for task of test
+
+      if task is "before" or task is "after"
+        continue
+
+      taskArray.push task
+
+
+    Norma.build(taskArray, cwd)
+      .then( (result) ->
+        actionCallback null, result
+        return
+      )
+      .fail( (error) ->
+        actionCallback error
+        return
+      )
+
+
 
     return
 
