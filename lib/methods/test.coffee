@@ -1,10 +1,11 @@
 Path = require "path"
-Chalk = require "chalk"
+Fs = require "fs"
 _ = require "underscore"
 Q = require "kew"
+Spawn = require("child_process").spawn
 
 Norma = require "./../norma"
-ReadConfig = require "./../utilities/read-config"
+
 
 
 module.exports = (tasks, cwd) ->
@@ -21,25 +22,88 @@ module.exports = (tasks, cwd) ->
 
   Norma.emit "message", msg
 
+  config = Norma.config cwd
 
-  if tasks[0] is "build"
+  if not config.tests
 
-    tasks.shift()
-    
-    Norma.build(tasks, cwd)
-      .then( ->
-        tested.resolve "ok"
-      )
-      .fail( (err) ->
-        tested.reject err
-      )
+    packageJSON = Path.join(cwd, "package.json")
+    packageJSON = Fs.readFileSync packageJSON, encoding: "utf8"
+    packageJSON = JSON.parse(packageJSON)
 
-    return tested
+    if not packageJSON.scripts.test
+      tested.fail("no tests found")
+      return tested
+
+    test = packageJSON.scripts.test
 
   else
-    Norma.watch tasks, cwd
+    test = config.tests
 
-    return tested
+
+  # TEST-TYPES --------------------------------------------------------------
+
+  # not an object detailing test
+  if typeof test is "string"
+    # split into args
+    testArray = test.split(" ")
+
+    # check norma packages
+    if Norma.tasks[testArray[0]]
+
+      Norma.log "build out package based test here"
+      tested.resolve("ok")
+
+      return tested
+
+    # check to see if test is a path
+    if Fs.existsSync Path.resolve(cwd, testArray[0])
+      _test = Spawn(
+        "node"
+        Path.resolve(cwd, testArray[0])
+        {
+          cwd: cwd
+        }
+      )
+
+    else
+      # copy array
+      commands = testArray.slice()
+      # remove first item
+      commands.shift()
+
+      _test = Spawn(
+        testArray[0]
+        commands
+        {
+          cwd: cwd
+          stdio: [
+            0
+            1
+            2
+          ]
+        }
+      )
+
+      _test.on "close", (code, signal) ->
+        if code is not 0
+          tested.fail signal
+          Norma.emit "error", "testing failed"
+          return
+
+        tested.resolve("ok")
+        return
+
+      return tested
+
+
+
+
+
+  # 1. packages
+  # 2. files? (is this needed? or can you just node ./index.js)
+  # 3. shell commands
+
+
 
 
 
