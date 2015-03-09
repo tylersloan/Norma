@@ -59,11 +59,61 @@ module.exports = (tasks, cwd) ->
 
     # are we an array
     if _.isArray test.before
-      Norma.log "build queing method for array here"
+
+      # set count to 0 for stepping through array
+      count = 0
+
+      chainCallbacks = (count, array) ->
+
+        # have not reached end of array
+        if array.length - 1 > count
+          Run array[count], cwd, (err, result) ->
+
+            if err
+              tested.reject err
+              return
+
+            count++
+            chainCallbacks count, array
+
+          return
+
+        # last element
+        if array.length - 1 is count
+          Run array[count], cwd, (err, result) ->
+
+            if err
+              tested.reject err
+              return
+
+            Norma.log "start running tests now that before task is done"
+
+          return
+
+
+      chainCallbacks 0, test.before
+
+
+      #   _obj = {}
+      #   _obj[testAction] = Q.defer()
+      #
+      #   Run testAction, cwd, _obj[testAction].makeNodeResolver()
+      #   beforePromises.push _obj[testAction]
+      #
+      # Q.all(beforePromises)
+      #   .then( (result) ->
+      #     Norma.log "start running tests now that before task is done"
+      #   )
+      #   .fail( (error) ->
+      #     tested.fail error
+      #     return
+      #   )
+      #
 
       return
 
     if typeof test.before isnt "string"
+
       Norma.emit "error", "before actions must be an array or string"
       return
 

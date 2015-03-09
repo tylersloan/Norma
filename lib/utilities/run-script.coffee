@@ -91,6 +91,8 @@ module.exports = (action, cwd, callback) ->
       callback signal
       return
 
-    callback null, code
+    setTimeout ->
+      callback null, code
+    , Math.random()
 
     return
