@@ -10,6 +10,8 @@ Norma = require "./../norma"
 
 module.exports = (tasks, cwd) ->
 
+  cwd or= process.cwd()
+
   tested = Q.defer()
 
   # Force verbose and debug
@@ -24,7 +26,7 @@ module.exports = (tasks, cwd) ->
 
   config = Norma.config cwd
 
-  if not config.tests
+  if not config.test
 
     packageJSON = Path.join(cwd, "package.json")
     packageJSON = Fs.readFileSync packageJSON, encoding: "utf8"
@@ -37,7 +39,7 @@ module.exports = (tasks, cwd) ->
     test = packageJSON.scripts.test
 
   else
-    test = config.tests
+    test = config.test
 
 
   # TEST-TYPES --------------------------------------------------------------
@@ -55,45 +57,44 @@ module.exports = (tasks, cwd) ->
 
       return tested
 
+
     # check to see if test is a path
     if Fs.existsSync Path.resolve(cwd, testArray[0])
-      _test = Spawn(
-        "node"
-        Path.resolve(cwd, testArray[0])
-        {
-          cwd: cwd
-        }
-      )
+      action = "node"
+      commands = [Path.resolve(cwd, testArray[0])]
 
+    # spawn process executing test action
     else
+      action = testArray[0]
       # copy array
       commands = testArray.slice()
       # remove first item
       commands.shift()
 
-      _test = Spawn(
-        testArray[0]
-        commands
-        {
-          cwd: cwd
-          stdio: [
-            0
-            1
-            2
-          ]
-        }
-      )
 
-      _test.on "close", (code, signal) ->
-        if code is not 0
-          tested.fail signal
-          Norma.emit "error", "testing failed"
-          return
+    _test = Spawn(
+      action
+      commands
+      {
+        cwd: cwd
+        stdio: [
+          0
+          1
+          2
+        ]
+      }
+    )
 
-        tested.resolve("ok")
+    _test.on "close", (code, signal) ->
+      if code is not 0
+        tested.fail signal
+        Norma.emit "error", "testing failed"
         return
 
-      return tested
+      tested.resolve("ok")
+      return
+
+    return tested
 
 
 
