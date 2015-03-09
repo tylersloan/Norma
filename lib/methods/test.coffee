@@ -61,7 +61,7 @@ module.exports = (tasks, cwd) ->
 
     # last element
     if array.length - 1 is indexer
-      Run array[count], cwd, (err, result) ->
+      Run array[indexer], cwd, (err, result) ->
         callback err, result
 
       return
@@ -69,44 +69,95 @@ module.exports = (tasks, cwd) ->
     return
 
 
-  # START TEST -----------------------------------------------------------
-  if typeof test is "string"
+  # AFTER ACTIONS ---------------------------------------------------------
 
-    Run test, cwd, (err, result) ->
+  runAfter = ->
+
+    afterCallback = (err, result) ->
+      if err
+        tested.reject err
+        return
+
+      tested.resolve result
+      return
+
+
+    if test.after
+
+      # are we an array
+      if _.isArray test.after
+        # set count to 0 for stepping through array
+        afterCount = 0
+        chainCallbacks afterCount, test.after, afterCallback
+
+        return
+
+      # invalid data type for after test
+      if typeof test.after isnt "string"
+        Norma.emit "error", "after actions must be an array or string"
+        return
+
+      # Just a string after action
+      Run test.after, cwd, afterCallback
+
+      return
+
+    afterCallback null, "ok"
+
+
+  # MAIN ACTIONS ----------------------------------------------------------
+  runActions = ->
+
+    actionCallback = (err, result) ->
 
       if err
         tested.fail err
         return
 
-      tested.resolve result
+      runAfter null
+
+    # single string as test
+    if typeof test is "string"
+      Run test, cwd, actionCallback
+
+
+    # a single string based main task in test object
+    if test.main and typeof test.main is "string"
+      Run test.main, cwd, actionCallback
 
     return
 
-  if test.before
 
+  do ->
     beforeCallback = (err, result) ->
       if err
         tested.reject err
         return
 
-      Norma.log "start running tests now that before task is done"
+      runActions null
 
+    if test.before
 
-    # are we an array
-    if _.isArray test.before
-      # set count to 0 for stepping through array
-      count = 0
-      chainCallbacks count, test.before, beforeCallback
+      # are we an array
+      if _.isArray test.before
+        # set count to 0 for stepping through array
+        count = 0
+        chainCallbacks count, test.before, beforeCallback
+
+        return
+
+      # invalid data type for before action
+      if typeof test.before isnt "string"
+
+        Norma.emit "error", "before actions must be an array or string"
+        return
+
+      # just a string before action
+      Run test.before, cwd, beforeCallback
 
       return
 
-
-    if typeof test.before isnt "string"
-
-      Norma.emit "error", "before actions must be an array or string"
-      return
-
-    Run test.before, cwd, beforeCallback
+    beforeCallback null
 
 
 
