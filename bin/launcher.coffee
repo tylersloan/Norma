@@ -38,9 +38,11 @@ module.exports = (env) ->
 
 
   # # See if help or h task is trying to be run
-  if Flags.help
+  if Flags.help and not Norma.args.length
     Norma.args = ["help"]
 
+  if Flags.test and not Norma.args.length
+    Norma.args = ["test"]
 
   # DEPENDENCIES ------------------------------------------------------------
 
