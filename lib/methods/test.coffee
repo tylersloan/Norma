@@ -78,6 +78,8 @@ module.exports = (tasks, cwd) ->
         tested.reject err
         return
 
+      # force prompt to close if open for graceful exit
+      Norma.prompt.pause()
       tested.resolve result
       return
 
@@ -142,7 +144,7 @@ module.exports = (tasks, cwd) ->
       return
 
 
-
+    # create build queue
     taskArray = []
     for task of test
 
@@ -152,16 +154,14 @@ module.exports = (tasks, cwd) ->
       taskArray.push task
 
 
+
     Norma.build(taskArray, cwd)
       .then( (result) ->
         actionCallback null, result
-        return
       )
       .fail( (error) ->
         actionCallback error
-        return
       )
-
 
 
     return

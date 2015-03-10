@@ -30,15 +30,28 @@ module.exports = (action, cwd, callback) ->
   ###
   if Norma.tasks[actionArray[0]]
 
-    Norma.build([actionArray[0]], cwd)
-      .then( (result) ->
-        callback null, result
-      )
-      .fail( (error) ->
-        callback error
-      )
+    if actionArray.length is 1
+      Norma.build([actionArray[0]], cwd)
+        .then( (result) ->
+          callback null, result
+        )
+        .fail( (error) ->
+          callback error
+        )
 
-    return
+      return
+    else
+      pkge = actionArray.slice()
+      method = pkge[0]
+      pkge.shift()
+
+
+      if Norma.tasks[method]
+        Norma.tasks[method].fn(callback, pkge)
+
+      return
+
+
 
 
   ###

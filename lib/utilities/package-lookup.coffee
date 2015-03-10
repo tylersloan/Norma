@@ -28,31 +28,29 @@ module.exports = (cwd, targetCwd) ->
 
     name = name.split("norma-")[1]
 
-    # # store load path for future calls via extension
-    if !Norma._.packageDirs[name]
-      Norma._.packageDirs[name] = pkgeCwd
+    # task isnt defined in norma.json in tasks or test
+    if normaConfig.tasks[name] or normaConfig.test[name]
 
-    # taks isnt defined in norma.json
-    if !normaConfig.tasks[name]
-      return
+      # store load path for future calls via extension
+      if !Norma._.packageDirs[name]
+        Norma._.packageDirs[name] = pkgeCwd
 
-    # console.log pkgeCwd
-    try
-      # load package
-      task = require pkgeCwd
+      try
+        # load package
+        task = require pkgeCwd
 
-      # push task to packages
-      if typeof task is "function"
-        # copy settings to be sent
-        normaConfig = JSON.parse JSON.stringify(normaConfig)
-        taskObject = task normaConfig, name
-        taskObject = null
+        # push task to packages
+        if typeof task is "function"
+          # copy settings to be sent
+          normaConfig = JSON.parse JSON.stringify(normaConfig)
+          taskObject = task normaConfig, name
+          taskObject = null
 
-        packages.push task.tasks
-    catch err
-      console.log "At #{pkgeCwd}"
-      err.level = "crash"
-      Norma.emit "error", err
+          packages.push task.tasks
+      catch err
+        err.message = "At #{pkgeCwd}: #{err.message}"
+        err.level = "crash"
+        Norma.emit "error", err
 
 
 
