@@ -285,12 +285,6 @@ describe "Test", ->
 
     Norma.config.save _config, fixtures
 
-    # FILE SAVE -----------------------------------------------------------
-
-    secondConents = Math.random()
-    Fs.writeFileSync "./lib/test.js", secondConents
-    saveFile()
-
 
     # TEST ----------------------------------------------------------------
     # force package lookup from config change
@@ -392,6 +386,72 @@ describe "Test", ->
       )
 
     return
+
+
+
+  # // extending main tasks in order
+  # "test": {
+  #   // run an extended package
+  #   "mocha test": {
+  #     "@extend": "mocha"
+  #   }
+  #   "mocha second test": {
+  #     "@extend": "mocha"
+  #     "src": "lib/**/*",
+  #     "dest": "./out"
+  #   }
+  # }
+  it "should allow extending main tasks", (done) ->
+
+    # CONIFG --------------------------------------------------------------
+    _config = Norma.config()
+
+    _config.test =
+      "mocha test":
+        "@extend": "mocha"
+      "mocha second test":
+        "@extend": "mocha"
+        "src": "lib/**/*",
+        "dest": "./out"
+
+
+    Norma.config.save _config, fixtures
+
+    # FILE SAVE -----------------------------------------------------------
+
+    secondContent = Math.random()
+    Fs.writeFileSync "./lib/test.js", secondContent
+    saveFile()
+
+
+    # TEST ----------------------------------------------------------------
+    # force package lookup from config change
+    Norma.getPackages(fixtures)
+      .then( ->
+
+        Norma.test([])
+          .then( (result) ->
+            setTimeout ->
+
+              secondFile = Fs.readFileSync(
+                "./out/test.js"
+                encoding: "utf8"
+              )
+              secondFile.should.equal secondContent.toString()
+
+              readFile().should.equal contents.toString()
+
+              done()
+            , 100
+          )
+          .fail( (err) ->
+            done()
+          )
+      )
+
+
+
+
 
   afterEach (done) ->
 

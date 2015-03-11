@@ -60,7 +60,6 @@ module.exports = (config, name) ->
 
 
   # COPY ------------------------------------------------------------------
-
   Norma.task "#{name}", (cb) ->
 
     Norma.execute "#{name}-compile", ->

@@ -76,8 +76,8 @@ module.exports = (cwd) ->
 
       # we handle merging of master to extension here
       object[extensionName] = _.extend(
-        object[extensionName]
         config.tasks[extension]
+        object[extensionName]
       )
 
 
