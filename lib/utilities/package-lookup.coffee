@@ -68,7 +68,6 @@ module.exports = (cwd, targetCwd) ->
       if pkgeConfig.type is "package" and pkgeConfig.main
         entry = Path.resolve file.path, "../", pkgeConfig.main
 
-
         Norma.packages.push pkgeConfig.name
         Norma.packages = _.uniq Norma.packages
 

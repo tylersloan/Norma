@@ -48,7 +48,7 @@ describe "Watch", ->
 
       if Path.resolve(event.path) is Path.resolve(inFile)
         setTimeout ->
-          Fs.writeFileSync inFile, contents
+          # Fs.writeFileSync inFile, contents
 
           newContents = Fs.readFileSync outFile, encoding: "utf8"
           newContents.should.equal contents.toString()

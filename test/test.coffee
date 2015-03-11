@@ -11,14 +11,69 @@ describe "Test", ->
   fixtures = Path.resolve "./test/fixtures"
   Norma.silent = true
   oldCwd = process.cwd()
-  oldConfig = Norma.config()
+  oldConfig = Norma.config fixtures
+  inFile = Path.join(fixtures, "images/test.html")
+  outFile = Path.join(fixtures, "out/images/test.html")
+  contents = 0
+
+  saveFile = ->
+    contents = Math.random()
+
+    Fs.writeFileSync inFile, contents
+    return
+
+
+  readFile = ->
+    return Fs.readFileSync(outFile, encoding: "utf8")
+
+
 
   # change into fixtures directory for testing
   before (done) ->
 
+    newConfig = Norma.config fixtures
+
+    # set defaults for "mocha" task
+    newConfig.tasks["mocha"] =
+      "src": "images/**/*",
+      "dest": "out/images"
+    newConfig.test = "mocha"
+
+
+    Norma.config.save newConfig, fixtures
     process.chdir fixtures
 
-    done()
+    Norma.getPackages(fixtures)
+      .then( ->
+        done()
+      )
+
+
+
+  ###
+
+    For this testing suite, we are using a fork of norma-copy
+    as the **testing** package. This way we can run file
+    comparisons to make sure it executes correctly. It is being called
+    norma-mocha for purposes of this test to relate to actual use
+
+  ###
+
+  it "should allow a string to represent a package to be run", (done) ->
+
+    @.timeout 2000
+    saveFile()
+
+    Norma.test([])
+      .then( (result) ->
+        setTimeout ->
+          readFile().should.equal contents.toString()
+          done()
+        , 100
+      )
+      .fail( (err) ->
+        console.log err
+      )
 
 
   # /*
@@ -131,6 +186,8 @@ describe "Test", ->
 
 
   after (done) ->
+
+    # Norma.config.save oldConfig, fixtures
 
     process.chdir oldCwd
 

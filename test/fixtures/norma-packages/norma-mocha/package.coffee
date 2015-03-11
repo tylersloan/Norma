@@ -1,10 +1,13 @@
 Path        = require "path"
-Norma       = require "normajs"
-Clipboard   = require "gulp-clipboard"
-Plumber     = require "gulp-plumber"
+Norma       = require "../../../../lib/index"
+# Clipboard   = require "gulp-clipboard"
+
+# piggy back on clipboard for testing
+Clipboard   = require "../../node_modules/norma-copy/node_modules/gulp-clipboard/index"
 
 
 module.exports = (config, name) ->
+
 
   # console.log config.tasks[name]
   # CONFIG ----------------------------------------------------------------
@@ -12,9 +15,9 @@ module.exports = (config, name) ->
 
   # can be required in tasks or test
   if config.test and config.test[name]
-    object = config.test[name]
+    options = config.test[name]
   else
-    object = config.tasks[name]
+    options = config.tasks[name]
 
 
   src = Path.normalize(options.src)
@@ -51,7 +54,6 @@ module.exports = (config, name) ->
     Norma.src([
       src + ".#{extType}"
     ])
-      .pipe Plumber()
       .pipe Clipboard()
       .pipe Norma.dest(dest)
 

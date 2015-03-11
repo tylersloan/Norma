@@ -42,6 +42,7 @@ module.exports = (cwd, packages, promise) ->
       neededPackages.push pkge
 
 
+
   # collect all missing tasks into array
   for _task of config.tasks
     setPackageDetails _task, config.tasks
@@ -49,23 +50,23 @@ module.exports = (cwd, packages, promise) ->
 
 
   # collect missing test packages into an array
-  for _test of config.test
+  if _.isObject config.test
+    for _test of config.test
 
-    if _test is "before" or _test is "after"
-      continue
+      if _test is "before" or _test is "after"
+        continue
 
-    if _test is "main"
+      if _test is "main"
 
-      if _.isArray config.test.main
-        for item in config.test.main
-          setPackageDetails item, config.test.main, true
+        if _.isArray config.test.main
+          for item in config.test.main
+            setPackageDetails item, config.test.main, true
 
-        return
+          return
 
-      _test = config.test[_test]
+        _test = config.test[_test]
 
-    setPackageDetails _test, config.test, true
-
+      setPackageDetails _test, config.test, true
 
 
   # verify unique package (don't download duplicates)

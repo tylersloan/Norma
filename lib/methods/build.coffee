@@ -85,6 +85,7 @@ module.exports = (tasks, cwd) ->
     try
       # create list from packages and build
       build GenerateTaskList(config, Norma.tasks)
+
     catch e
       buildStatus.reject e
       return buildStatus

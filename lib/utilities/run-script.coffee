@@ -22,7 +22,6 @@ module.exports = (action, cwd, callback) ->
   # split action into args
   actionArray = action.split " "
 
-
   ###
 
     Round one: check existing Norma packages
@@ -51,6 +50,7 @@ module.exports = (action, cwd, callback) ->
 
       return
 
+    return
 
 
 

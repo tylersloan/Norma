@@ -14,7 +14,7 @@ module.exports = (tasks, cwd) ->
   cwd or= process.cwd()
 
   tested = Q.defer()
-  
+
 
   # Force verbose and debug
   Norma.verbose = true
@@ -27,6 +27,7 @@ module.exports = (tasks, cwd) ->
   Norma.emit "message", msg
 
   config = Norma.config cwd
+
 
   if not config.test
 
@@ -108,7 +109,9 @@ module.exports = (tasks, cwd) ->
     afterCallback null, "ok"
 
 
+
   # MAIN ACTIONS ----------------------------------------------------------
+
   runActions = ->
 
     actionCallback = (err, result) ->
@@ -122,83 +125,84 @@ module.exports = (tasks, cwd) ->
     # single string as test
     if typeof test is "string"
       Run test, cwd, actionCallback
-
-
-    # a set of main tasks
-    if test.main
-
-      # test is a single string
-      if typeof test.main is "string"
-        Run test.main, cwd, actionCallback
-
-        return
-
-      # array of tasks
-      if _.isArray test.main
-
-        # set count to 0 for stepping through array
-        mainCount = 0
-        chainCallbacks mainCount, test.main, actionCallback
-
-        return
-
       return
 
 
-    # create build queue
-    taskArray = []
-    for task of test
-
-      if task is "before" or task is "after"
-        continue
-
-      taskArray.push task
-
-
-
-    Norma.build(taskArray, cwd)
-      .then( (result) ->
-        actionCallback null, result
-      )
-      .fail( (error) ->
-        actionCallback error
-      )
+    # # a set of main tasks
+    # if test.main
+    #
+    #   # test is a single string
+    #   if typeof test.main is "string"
+    #     Run test.main, cwd, actionCallback
+    #
+    #     return
+    #
+    #   # array of tasks
+    #   if _.isArray test.main
+    #
+    #     # set count to 0 for stepping through array
+    #     mainCount = 0
+    #     chainCallbacks mainCount, test.main, actionCallback
+    #
+    #     return
+    #
+    #   return
+    #
+    #
+    # # create build queue
+    # taskArray = []
+    # for task of test
+    #
+    #   if task is "before" or task is "after"
+    #     continue
+    #
+    #   taskArray.push task
+    #
+    #
+    #
+    # Norma.build(taskArray, cwd)
+    #   .then( (result) ->
+    #     actionCallback null, result
+    #   )
+    #   .fail( (error) ->
+    #     actionCallback error
+    #   )
 
 
     return
 
 
-  do ->
-    beforeCallback = (err, result) ->
-      if err
-        tested.reject err
-        return
 
-      runActions null
+  beforeCallback = (err, result) ->
+    if err
+      tested.reject err
+      return
 
-    if test.before
+    runActions null
 
-      # are we an array
-      if _.isArray test.before
-        # set count to 0 for stepping through array
-        count = 0
-        chainCallbacks count, test.before, beforeCallback
+  if test.before
 
-        return
-
-      # invalid data type for before action
-      if typeof test.before isnt "string"
-
-        Norma.emit "error", "before actions must be an array or string"
-        return
-
-      # just a string before action
-      Run test.before, cwd, beforeCallback
+    # are we an array
+    if _.isArray test.before
+      # set count to 0 for stepping through array
+      count = 0
+      chainCallbacks count, test.before, beforeCallback
 
       return
 
-    beforeCallback null
+    # invalid data type for before action
+    if typeof test.before isnt "string"
 
+      Norma.emit "error", "before actions must be an array or string"
+      return
+
+    # just a string before action
+    Run test.before, cwd, beforeCallback
+
+    return
+
+  process.nextTick ->
+    beforeCallback null
 
   return tested
 
