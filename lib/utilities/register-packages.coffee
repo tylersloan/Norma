@@ -60,15 +60,12 @@ module.exports = (cwd) ->
 
     config = Norma.config cwd
 
-    mergeExtendedTask = (key, _object) ->
-
-      object = JSON.parse JSON.stringify(_object)
+    mergeExtendedTask = (key, object) ->
 
       # @extend "package" handling
       if object[key]["@extend"]
         extensionName = key
         extension = object[key]["@extend"]
-
 
       # extended task does exist
       if !Norma.tasks[extension]
@@ -79,8 +76,8 @@ module.exports = (cwd) ->
 
       # we handle merging of master to extension here
       object[extensionName] = _.extend(
-        object[extension]
         object[extensionName]
+        config.tasks[extension]
       )
 
 
@@ -95,21 +92,22 @@ module.exports = (cwd) ->
       mergeExtendedTask key, config.tasks
 
 
-    for _test of config.test
+    if _.isObject config.test
 
-      if _test is "before" or _test is "after"
-        continue
+      for _test of config.test
 
-      if _test is "main"
+        if _test is "before" or _test is "after"
+          continue
 
-        if _.isArray config.test.main
-          for item in config.test.main
-            mergeExtendedTask item, config.test.main
+        if _test is "main"
 
-          return
+          if _.isArray config.test.main
+            for item in config.test.main
+              mergeExtendedTask item, config.test.main
 
-      mergeExtendedTask _test, config.test
+            return
 
+        mergeExtendedTask _test, config.test
 
 
 

@@ -7,7 +7,6 @@ Clipboard   = require "gulp-clipboard"
 
 module.exports = (config, name) ->
 
-
   # console.log config.tasks[name]
   # CONFIG ----------------------------------------------------------------
   if !name then name = "mocha"

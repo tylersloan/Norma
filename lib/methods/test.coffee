@@ -45,6 +45,7 @@ module.exports = (tasks, cwd) ->
     test = config.test
 
 
+
   # METHODS --------------------------------------------------------------
   chainCallbacks = (indexer, array, callback) ->
 
@@ -205,7 +206,7 @@ module.exports = (tasks, cwd) ->
       Run test.before, cwd, beforeCallback
 
       return
-    
+
     else runActions null
 
 

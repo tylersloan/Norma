@@ -266,7 +266,51 @@ describe "Test", ->
         done()
       )
 
-  #
+  # // extending main tasks
+  # "test": {
+  #   // run an extended package
+  #   "mocha test": {
+  #     "@extend": "mocha"
+  #   }
+  # }
+  it "should allow extending main tasks", (done) ->
+
+    # CONIFG --------------------------------------------------------------
+    _config = Norma.config()
+
+    _config.test =
+      "mocha test":
+        "@extend": "mocha"
+
+
+    Norma.config.save _config, fixtures
+
+    # FILE SAVE -----------------------------------------------------------
+
+    secondConents = Math.random()
+    Fs.writeFileSync "./lib/test.js", secondConents
+    saveFile()
+
+
+    # TEST ----------------------------------------------------------------
+    # force package lookup from config change
+    Norma.getPackages(fixtures)
+      .then( ->
+
+        Norma.test([])
+          .then( (result) ->
+            setTimeout ->
+
+              readFile().should.equal contents.toString()
+
+              done()
+            , 100
+          )
+          .fail( (err) ->
+            done()
+          )
+      )
+
   # // multi task testing with before and after actions
   # "test": {
   #   // before can be a string or an array
@@ -295,9 +339,9 @@ describe "Test", ->
   #     "docker close"
   #   ]
   # }
-  #
-  #
-  #
+
+
+
   # // complex testing scenario with tasks dependents
   # // multi action before, task loading tests, and
   # // mutli action after
