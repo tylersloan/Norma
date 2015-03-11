@@ -1,0 +1,6 @@
+{
+  "name": "norma-mocha",
+  "type": "package",
+  "main": "package.coffee",
+  "tasks": {}
+}

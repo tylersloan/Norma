@@ -14,6 +14,7 @@ module.exports = (tasks, cwd) ->
   cwd or= process.cwd()
 
   tested = Q.defer()
+  
 
   # Force verbose and debug
   Norma.verbose = true
@@ -199,12 +200,7 @@ module.exports = (tasks, cwd) ->
     beforeCallback null
 
 
-
-
-  # 1. packages
-  # 2. files? (is this needed? or can you just node ./index.js)
-  # 3. shell commands
-
+  return tested
 
 
 
