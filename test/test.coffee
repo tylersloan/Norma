@@ -140,7 +140,7 @@ describe "Test", ->
         setTimeout ->
           readFile().should.equal contents.toString()
           done()
-        , 100
+        , 200
       )
       .fail( (err) ->
         console.log err
