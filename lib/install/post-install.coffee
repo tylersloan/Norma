@@ -1,4 +1,4 @@
-if process.env.CI
+if process.env.CI or process.env.NODE_ENV isnt "development"
   return
 
 

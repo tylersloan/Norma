@@ -1,4 +1,4 @@
-## v.NEXT (1.1)
+## 1.1
 
 * Added ability for packages to be extended in norma.json
 
