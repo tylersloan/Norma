@@ -13,11 +13,11 @@ module.exports = (cwd, packages, promise) ->
   neededPackages = []
 
   # If there are no tasks so we can't do much, so exit with error
-  if !config.tasks
+  if !config.tasks and !config.test
 
     err =
       level: "crash"
-      message: "norma.json needs a tasks object"
+      message: "norma.json needs a tasks or test object"
       name: "Not Valid"
 
     Norma.emit "error", err
@@ -25,28 +25,53 @@ module.exports = (cwd, packages, promise) ->
 
 
   # LOOKUP -----------------------------------------------------------------
-
-  # collect all missing tasks into array
-  for key of config.tasks
+  setPackageDetails = (key, _obj, dev) ->
 
     # @extend "package" handling
-    if config.tasks[key]["@extend"]
-      key = config.tasks[key]["@extend"]
+    if _obj[key]["@extend"]
+      key = _obj[key]["@extend"]
 
 
     if packages[key] is undefined
       pkge =
         name: key
-        global: config.tasks[key].global
-        endpoint: config.tasks[key].endpoint
-        dev: config.tasks[key].dev
+        global: _obj[key].global
+        endpoint: _obj[key].endpoint
+        dev: dev or _obj[key].dev
 
       neededPackages.push pkge
 
 
 
+  # collect all missing tasks into array
+  for _task of config.tasks
+    setPackageDetails _task, config.tasks
+
+
+
+  # collect missing test packages into an array
+  if _.isObject config.test
+    for _test of config.test
+
+      if _test is "before" or _test is "after"
+        continue
+
+      if _test is "main"
+
+        if _.isArray config.test.main
+          for item in config.test.main
+            setPackageDetails item, config.test.main, true
+
+          return
+
+        _test = config.test[_test]
+
+      setPackageDetails _test, config.test, true
+
+
   # verify unique package (don't download duplicates)
   neededPackges = _.uniq neededPackages
+
 
   if neededPackages.length
 

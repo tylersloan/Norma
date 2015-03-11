@@ -1,0 +1,9 @@
+{
+  "name": "norma-mocha",
+  "version": "0.0.1",
+  "description": "mocha package for the Norma build tool",
+  "main": "package.coffee",
+  "keywords": [
+    "norma"
+  ]
+}

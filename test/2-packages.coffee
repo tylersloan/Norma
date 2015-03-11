@@ -24,7 +24,7 @@ describe "Packages", ->
       description: ""
       main: "index.js"
       scripts:
-        test: "echo \"Error: no test specified\" && exit 1"
+        test: "node ./testing-scripts/index.js"
       author: ""
       license: "MIT"
 

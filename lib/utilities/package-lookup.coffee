@@ -28,31 +28,33 @@ module.exports = (cwd, targetCwd) ->
 
     name = name.split("norma-")[1]
 
-    # # store load path for future calls via extension
-    if !Norma._.packageDirs[name]
-      Norma._.packageDirs[name] = pkgeCwd
+    # short variable assignment
+    n = normaConfig
+    # found in the tasks object
+    if (n.tasks and n.tasks[name]) or (n.test and n.test[name])
 
-    # taks isnt defined in norma.json
-    if !normaConfig.tasks[name]
-      return
+      # store load path for future calls via extension
+      if !Norma._.packageDirs[name]
+        Norma._.packageDirs[name] = pkgeCwd
 
-    # console.log pkgeCwd
-    try
-      # load package
-      task = require pkgeCwd
+      try
+        # load package
+        task = require pkgeCwd
 
-      # push task to packages
-      if typeof task is "function"
-        # copy settings to be sent
-        normaConfig = JSON.parse JSON.stringify(normaConfig)
-        taskObject = task normaConfig, name
-        taskObject = null
+        # push task to packages
+        if typeof task is "function"
+          # copy settings to be sent
+          normaConfig = JSON.parse JSON.stringify(normaConfig)
+          taskObject = task normaConfig, name
+          taskObject = null
 
-        packages.push task.tasks
-    catch err
-      console.log "At #{pkgeCwd}"
-      err.level = "crash"
-      Norma.emit "error", err
+          packages.push task.tasks
+      catch err
+        err.message = "At #{pkgeCwd}: #{err.message}"
+        err.level = "crash"
+        Norma.emit "error", err
+
+    return
 
 
 
@@ -65,7 +67,6 @@ module.exports = (cwd, targetCwd) ->
 
       if pkgeConfig.type is "package" and pkgeConfig.main
         entry = Path.resolve file.path, "../", pkgeConfig.main
-
 
         Norma.packages.push pkgeConfig.name
         Norma.packages = _.uniq Norma.packages
@@ -126,10 +127,7 @@ module.exports = (cwd, targetCwd) ->
   if Fs.existsSync(config) and Fs.existsSync(node_modules)
 
     # Using the require method keeps the same in memory, instead we use
-    # a synchronous fileread of the JSON. This should probably be in a try
-    # with a Norma error emitted on fail
-
-    # TODO - wrap in try catch with error
+    # a synchronous fileread of the JSON.
     config = Fs.readFileSync config, encoding: "utf8"
 
 

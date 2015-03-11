@@ -60,28 +60,55 @@ module.exports = (cwd) ->
 
     config = Norma.config cwd
 
-    for key of config.tasks
+    mergeExtendedTask = (key, object) ->
 
       # @extend "package" handling
-      if config.tasks[key]["@extend"]
-        extensionName =  key
-        extension = config.tasks[key]["@extend"]
+      if object[key]["@extend"]
+        extensionName = key
+        extension = object[key]["@extend"]
 
       # extended task does exist
       if !Norma.tasks[extension]
-        continue
+        return
+
 
       extendedTask = require Norma._.packageDirs[extension]
 
       # we handle merging of master to extension here
-      config.tasks[extensionName] = _.extend(
+      object[extensionName] = _.extend(
         config.tasks[extension]
-        config.tasks[extensionName]
+        object[extensionName]
       )
+
 
       # copy settings to be sent
       config = JSON.parse JSON.stringify(config)
       taskObject = extendedTask config, extensionName
+
+      return
+
+
+    for key of config.tasks
+      mergeExtendedTask key, config.tasks
+
+
+    if _.isObject config.test
+
+      for _test of config.test
+
+        if _test is "before" or _test is "after"
+          continue
+
+        if _test is "main"
+
+          if _.isArray config.test.main
+            for item in config.test.main
+              mergeExtendedTask item, config.test.main
+
+            return
+
+        mergeExtendedTask _test, config.test
+
 
 
     loadedPackages.resolve Norma.tasks

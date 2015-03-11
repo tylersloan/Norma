@@ -55,3 +55,22 @@ module.exports = (action, cwd, cb) ->
         i++
 
       return
+
+    child.stderr.on "data", (data) ->
+      str = data.toString()
+      lines = str.split(/(\r?\n)/g)
+
+      i = 0
+      while i < lines.length
+        if !lines[i].match "\n"
+          message = lines[i].split("] ")
+
+          if message.length > 1
+            message.splice(0, 1)
+
+          message = message.join(" ")
+
+          Norma.emit "message", message
+        i++
+
+      return
