@@ -150,6 +150,8 @@ module.exports = (tasks, cwd) ->
 
         return
 
+      return
+
 
 
     # create build queue
@@ -182,6 +184,7 @@ module.exports = (tasks, cwd) ->
       return
 
     runActions null
+
 
   # return promise before executing runs
   process.nextTick ->

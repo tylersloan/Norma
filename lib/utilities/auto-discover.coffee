@@ -6,11 +6,13 @@ Norma = require "./../norma"
 
 module.exports = (cwd, packages, promise) ->
 
+
   if !cwd then cwd = process.cwd()
 
   # set needed variables
   config = Norma.config cwd
   neededPackages = []
+
 
   # If there are no tasks so we can't do much, so exit with error
   if !config.tasks and !config.test
@@ -27,6 +29,9 @@ module.exports = (cwd, packages, promise) ->
   # LOOKUP -----------------------------------------------------------------
   setPackageDetails = (key, _obj, dev) ->
 
+    if not _obj[key]
+      return
+
     # @extend "package" handling
     if _obj[key]["@extend"]
       key = _obj[key]["@extend"]
@@ -39,7 +44,10 @@ module.exports = (cwd, packages, promise) ->
         endpoint: _obj[key].endpoint
         dev: dev or _obj[key].dev
 
+
       neededPackages.push pkge
+
+    return
 
 
 
@@ -58,15 +66,17 @@ module.exports = (cwd, packages, promise) ->
 
       if _test is "main"
 
-        if _.isArray config.test.main
-          for item in config.test.main
-            setPackageDetails item, config.test.main, true
+        # if _.isArray config.test.main
+        #   for item in config.test.main
+        #     setPackageDetails item, config.test.main, true
+        #
+        #   return
 
-          return
+        # _test = config.test.main
+        setPackageDetails config.test.main, config.test, true
 
-        _test = config.test[_test]
-
-      setPackageDetails _test, config.test, true
+      # setPackageDetails _test, config.test, true
+    return
 
 
   # verify unique package (don't download duplicates)
@@ -86,7 +96,6 @@ module.exports = (cwd, packages, promise) ->
             promise.resolve(packages)
           )
       )
-
 
 
 
