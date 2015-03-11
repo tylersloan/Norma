@@ -210,6 +210,7 @@ describe "Test", ->
         done()
       )
 
+    return
 
   # // simple before, mutliple main, and simple after tasks
   # "test": {
@@ -222,7 +223,47 @@ describe "Test", ->
   #   // run an after task
   #   "after": "meteor close"
   # }
-  #
+  it "should allow running simple before, mutliple main, and simple after tasks", (done) ->
+
+    _config = Norma.config()
+    _config.test =
+      before: "mkdir ./complexTest"
+      main: [
+        "./testing-scripts/second-index.js"
+        "./testing-scripts/index.js"
+      ]
+      after: "touch ./complexTest/index.js"
+
+
+    Norma.config.save _config, fixtures
+
+    saveFile()
+
+    Norma.test([])
+      .then( (result) ->
+        setTimeout ->
+          fileExists = Fs.existsSync("./complexTest/index.js")
+
+          fileExists.should.be.true
+
+          readFile().should.equal contents.toString()
+
+          secondTest = Fs.readFileSync(
+            "./out/images/second-test.html"
+            encoding: "utf8"
+          )
+
+          secondTest.should.equal contents.toString()
+
+          Rimraf.sync("./complexTest")
+          done()
+        , 100
+      )
+      .fail( (err) ->
+        Rimraf.sync("./complexTest")
+        done()
+      )
+
   #
   # // multi task testing with before and after actions
   # "test": {
