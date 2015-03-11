@@ -1,9 +1,8 @@
 Path        = require "path"
 Norma       = require "../../../../lib/index"
-# Clipboard   = require "gulp-clipboard"
+Clipboard   = require "gulp-clipboard"
 
-# piggy back on clipboard for testing
-Clipboard   = require "../../node_modules/norma-copy/node_modules/gulp-clipboard/index"
+
 
 
 module.exports = (config, name) ->
