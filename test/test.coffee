@@ -339,44 +339,59 @@ describe "Test", ->
   #     "docker close"
   #   ]
   # }
+  it "should multi task testing with before and after actions", (done) ->
+
+    _config = Norma.config()
+    _config.test =
+      before: [
+        "mkdir ./complexTest"
+        "mkdir ./secondComplexTest"
+      ]
+      main: [
+        "./testing-scripts/second-index.js"
+        "./testing-scripts/index.js"
+      ]
+      after: [
+        "touch ./complexTest/index.js"
+        "touch ./secondComplexTest/index.js"
+      ]
 
 
+    Norma.config.save _config, fixtures
 
-  # // complex testing scenario with tasks dependents
-  # // multi action before, task loading tests, and
-  # // mutli action after
-  # "tasks": {
-  #   "meteor": {
-  #     "src": "out",
-  #     "packages": [
-  #       "meteor-platform",
-  #       "iron:router"
-  #     ],
-  #     "platforms": [
-  #       "server",
-  #       "browser"
-  #     ]
-  #   }
-  # },
-  # "test": {
-  #   "before": [
-  #     "docker start",
-  #     "./index.js",
-  #     // use norma-meteor and pass run command
-  #     "meteor run"
-  #   ]
-  #   "mocha": {
-  #     "src": "./tests/mocha/**/*"
-  #   }
-  #   "after": [
-  #     // stop active meteor from norma meteor
-  #     "meteor close"
-  #     "docker close"
-  #   ]
-  # }
+    saveFile()
 
+    Norma.test([])
+      .then( (result) ->
+        setTimeout ->
+          fileExists = Fs.existsSync("./complexTest/index.js")
+          fileExists.should.be.true
 
+          secondFileEx = Fs.existsSync(
+            "./secondComplexTest/index.js"
+          )
+          secondFileEx.should.be.true
 
+          readFile().should.equal contents.toString()
+
+          secondTest = Fs.readFileSync(
+            "./out/images/second-test.html"
+            encoding: "utf8"
+          )
+
+          secondTest.should.equal contents.toString()
+
+          Rimraf.sync("./complexTest")
+          Rimraf.sync("./secondComplexTest")
+          done()
+        , 100
+      )
+      .fail( (err) ->
+        Rimraf.sync("./complexTest")
+        done()
+      )
+
+    return
 
   afterEach (done) ->
 
