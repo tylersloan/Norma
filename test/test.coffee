@@ -32,6 +32,8 @@ describe "Test", ->
   # change into fixtures directory for testing
   beforeEach (done) ->
 
+    # give time to download packages
+    @.timeout 100000
     newConfig = Norma.config fixtures
 
     # set defaults for "mocha" task
