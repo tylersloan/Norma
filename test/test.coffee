@@ -1,6 +1,7 @@
 Chai    = require("chai").should()
 Path    = require "path"
 Fs      = require "fs"
+Rimraf  = require "rimraf"
 
 Norma = require "./../lib/index"
 
@@ -29,7 +30,7 @@ describe "Test", ->
 
 
   # change into fixtures directory for testing
-  before (done) ->
+  beforeEach (done) ->
 
     newConfig = Norma.config fixtures
 
@@ -37,8 +38,6 @@ describe "Test", ->
     newConfig.tasks["mocha"] =
       "src": "images/**/*",
       "dest": "out/images"
-    newConfig.test = "mocha"
-
 
     Norma.config.save newConfig, fixtures
     process.chdir fixtures
@@ -49,7 +48,6 @@ describe "Test", ->
       )
 
 
-
   ###
 
     For this testing suite, we are using a fork of norma-copy
@@ -58,10 +56,15 @@ describe "Test", ->
     norma-mocha for purposes of this test to relate to actual use
 
   ###
-
+  # // simple test method using norma package
+  # "test": "mocha"
   it "should allow a string to represent a package to be run", (done) ->
 
-    @.timeout 2000
+    _config = Norma.config()
+    _config.test = "mocha"
+
+    Norma.config.save _config, fixtures
+
     saveFile()
 
     Norma.test([])
@@ -76,25 +79,98 @@ describe "Test", ->
       )
 
 
-  # /*
-  #   new testing methods
-  #
-  # */
-  #
-  # // simple test method using norma package
-  # "test": "mocha"
-  #
   # // will try to load a file and execute it
-  # "test": "./testingscripts/test.js"
-  #
+  # "test": "./testing-scripts/test.js"
+  it "should allow a file to represent an action to be run", (done) ->
+
+    _config = Norma.config()
+    _config.test = "./testing-scripts/index.js"
+
+    Norma.config.save _config, fixtures
+
+    saveFile()
+
+    Norma.test([])
+      .then( (result) ->
+        setTimeout ->
+          readFile().should.equal contents.toString()
+          done()
+        , 100
+      )
+      .fail( (err) ->
+        console.log err
+      )
+
+
+
   # // will try to run shell script if package and file not found
   # "test": "casper test"
-  #
+  it "should allow shell actions to be run", (done) ->
+
+    _config = Norma.config()
+    _config.test = "cp #{inFile} #{outFile}"
+
+    Norma.config.save _config, fixtures
+
+
+    saveFile()
+
+    Norma.test([])
+      .then( (result) ->
+        setTimeout ->
+          readFile().should.equal contents.toString()
+          done()
+        , 100
+      )
+      .fail( (err) ->
+        console.log err
+      )
+
+
   # // will fall back to npm test if no test is found
   # "test": "npm test" // implied
-  #
-  #
-  #
+  it "should fall back to npm test if no test is found", (done) ->
+
+    saveFile()
+
+    Norma.test([])
+      .then( (result) ->
+        setTimeout ->
+          readFile().should.equal contents.toString()
+          done()
+        , 100
+      )
+      .fail( (err) ->
+        console.log err
+      )
+
+
+  # // can run a task in the `main` key of test
+  # "test": {
+  #   main: "casper test"
+  # }
+  it "should run a task in the `main` key of test", (done) ->
+
+    _config = Norma.config()
+    _config.test =
+      main: "cp #{inFile} #{outFile}"
+
+    Norma.config.save _config, fixtures
+
+
+    saveFile()
+
+    Norma.test([])
+      .then( (result) ->
+        setTimeout ->
+          readFile().should.equal contents.toString()
+          done()
+        , 100
+      )
+      .fail( (err) ->
+        console.log err
+      )
+
   # // simple before, main, and after tasks
   # "test": {
   #   // run a before script from package
@@ -104,7 +180,37 @@ describe "Test", ->
   #   // run an after task
   #   "after": "meteor close"
   # }
-  #
+  it "should allow running simple before, main, and after tasks", (done) ->
+
+    _config = Norma.config()
+    _config.test =
+      before: "mkdir ./complexTest"
+      main: "./testing-scripts/index.js"
+      after: "touch ./complexTest/index.js"
+
+
+    Norma.config.save _config, fixtures
+
+    saveFile()
+
+    Norma.test([])
+      .then( (result) ->
+        setTimeout ->
+          fileExists = Fs.existsSync("./complexTest/index.js")
+
+          fileExists.should.be.true
+
+          readFile().should.equal contents.toString()
+          Rimraf.sync("./complexTest")
+          done()
+        , 100
+      )
+      .fail( (err) ->
+        Rimraf.sync("./complexTest")
+        done()
+      )
+
+
   # // simple before, mutliple main, and simple after tasks
   # "test": {
   #   // run a before script from package
@@ -185,9 +291,9 @@ describe "Test", ->
 
 
 
-  after (done) ->
+  afterEach (done) ->
 
-    # Norma.config.save oldConfig, fixtures
+    Norma.config.save oldConfig, fixtures
 
     process.chdir oldCwd
 

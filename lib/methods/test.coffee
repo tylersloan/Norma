@@ -83,6 +83,7 @@ module.exports = (tasks, cwd) ->
       # force prompt to close if open for graceful exit
       Norma.prompt.pause()
       tested.resolve result
+
       return
 
 
@@ -108,6 +109,8 @@ module.exports = (tasks, cwd) ->
 
     afterCallback null, "ok"
 
+    return
+
 
 
   # MAIN ACTIONS ----------------------------------------------------------
@@ -128,45 +131,44 @@ module.exports = (tasks, cwd) ->
       return
 
 
-    # # a set of main tasks
-    # if test.main
-    #
-    #   # test is a single string
-    #   if typeof test.main is "string"
-    #     Run test.main, cwd, actionCallback
-    #
-    #     return
-    #
-    #   # array of tasks
-    #   if _.isArray test.main
-    #
-    #     # set count to 0 for stepping through array
-    #     mainCount = 0
-    #     chainCallbacks mainCount, test.main, actionCallback
-    #
-    #     return
-    #
-    #   return
-    #
-    #
-    # # create build queue
-    # taskArray = []
-    # for task of test
-    #
-    #   if task is "before" or task is "after"
-    #     continue
-    #
-    #   taskArray.push task
-    #
-    #
-    #
-    # Norma.build(taskArray, cwd)
-    #   .then( (result) ->
-    #     actionCallback null, result
-    #   )
-    #   .fail( (error) ->
-    #     actionCallback error
-    #   )
+    # a set of main tasks
+    if test.main
+
+      # test is a single string
+      if typeof test.main is "string"
+        Run test.main, cwd, actionCallback
+
+        return
+
+      # array of tasks
+      if _.isArray test.main
+
+        # set count to 0 for stepping through array
+        mainCount = 0
+        chainCallbacks mainCount, test.main, actionCallback
+
+        return
+
+
+
+    # create build queue
+    taskArray = []
+    for task of test
+
+      if task is "before" or task is "after"
+        continue
+
+      taskArray.push task
+
+
+
+    Norma.build(taskArray, cwd)
+      .then( (result) ->
+        actionCallback null, result
+      )
+      .fail( (error) ->
+        actionCallback error
+      )
 
 
     return
@@ -180,29 +182,34 @@ module.exports = (tasks, cwd) ->
 
     runActions null
 
-  if test.before
-
-    # are we an array
-    if _.isArray test.before
-      # set count to 0 for stepping through array
-      count = 0
-      chainCallbacks count, test.before, beforeCallback
-
-      return
-
-    # invalid data type for before action
-    if typeof test.before isnt "string"
-
-      Norma.emit "error", "before actions must be an array or string"
-      return
-
-    # just a string before action
-    Run test.before, cwd, beforeCallback
-
-    return
-
+  # return promise before executing runs
   process.nextTick ->
-    beforeCallback null
+
+    if test.before
+
+      # are we an array
+      if _.isArray test.before
+        # set count to 0 for stepping through array
+        count = 0
+        chainCallbacks count, test.before, beforeCallback
+
+        return
+
+      # invalid data type for before action
+      if typeof test.before isnt "string"
+
+        Norma.emit "error", "before actions must be an array or string"
+        return
+
+      # just a string before action
+      Run test.before, cwd, beforeCallback
+
+      return
+    
+    else runActions null
+
+
+
 
   return tested
 

@@ -4,11 +4,6 @@
     "copy": {
       "src": "lib/**/*",
       "dest": "./out"
-    },
-    "mocha": {
-      "src": "images/**/*",
-      "dest": "out/images"
     }
-  },
-  "test": "mocha"
+  }
 }
