@@ -16,7 +16,10 @@ message =
   # extra information available.
   log: (msg) ->
 
-    output = [Chalk.grey(Norma._.prefix)]
+    output = []
+
+    if not process.env.CI
+      output = [Chalk.grey(Norma._.prefix)]
 
 
     if Norma.prompt._.initialized and Norma.prompt.open
