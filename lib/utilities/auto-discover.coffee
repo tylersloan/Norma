@@ -66,17 +66,17 @@ module.exports = (cwd, packages, promise) ->
 
       if _test is "main"
 
-        # if _.isArray config.test.main
-        #   for item in config.test.main
-        #     setPackageDetails item, config.test.main, true
-        #
-        #   return
+        if _.isArray config.test.main
+          for item in config.test.main
+            setPackageDetails item, config.test.main, true
 
-        # _test = config.test.main
-        setPackageDetails config.test.main, config.test, true
+          return
 
-      # setPackageDetails _test, config.test, true
-    return
+        _test = config.test.main
+
+
+      setPackageDetails _test, config.test, true
+
 
 
   # verify unique package (don't download duplicates)
