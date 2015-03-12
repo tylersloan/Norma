@@ -78,6 +78,9 @@ module.exports = (tasks, cwd, flush) ->
           if !globalAlreadyInstalled[pkge] or !config[type][pkge]
             continue
 
+          if config[type][pkge].match /git/
+            continue
+
           # local is same as global
           if Semver.satisfies(globalAlreadyInstalled[pkge], config[type][pkge])
             delete config[type][pkge]
