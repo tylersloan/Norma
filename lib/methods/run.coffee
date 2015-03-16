@@ -46,7 +46,7 @@ module.exports = (tasks, cwd) ->
       action = _tasks.slice()
       action.shift()
 
-      task action, cwd
+      _task = task(action, cwd)
 
     catch e
       pkge = _tasks.slice()
@@ -58,10 +58,15 @@ module.exports = (tasks, cwd) ->
 
       if Norma.tasks[method]
         pass = -> return
-        Norma.tasks[method].fn(pass, actions)
+        _task = Norma.tasks[method].fn(pass, actions)
       else
         e.level = "crash"
         Norma.emit "error", e
+
+    if _task._isPromise
+      _task.then( ->
+        Norma.close()
+      )
 
   # lookup packages if necessary
   if noPackageTasks.indexOf(_tasks[0]) is -1

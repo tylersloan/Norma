@@ -3,8 +3,17 @@ Q = require "kew"
 
 Norma = require "./../norma"
 
+
 end = ->
-  process.exit 0
+
+  code = if Norma._.status then Norma._.status else 0
+
+  if Norma._.bin
+
+    process.exit code
+  else
+    return
+
 
 
 module.exports = (stayAlive) ->
