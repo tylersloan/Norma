@@ -9,6 +9,9 @@ var Domain = require("domain").create();
 var Norma = require("../lib/index")
 var Launch = require("./launcher")
 
+// Set process status
+Norma._.bin = true
+
 var cli = new Liftoff({
   name: "norma"
 });

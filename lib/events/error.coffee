@@ -19,7 +19,12 @@ error =
   # extra information available.
   log: (msg) ->
 
+    code = if msg.code then msg.code else 1
+
     msg.level = "log"
+
+    Norma._.status = code
+
     Log msg
 
 
@@ -28,9 +33,8 @@ error =
   warn: (msg) =>
 
     Norma.emit "warn", msg
-    msg.level = "log"
 
-    Log msg
+    @.log msg
 
 
   ###
@@ -45,10 +49,10 @@ error =
 
     Norma.emit "crash", msg
 
-    msg.level = "log"
-    Log msg
+    @.log msg
 
     Norma.close()
+
 
 
 module.exports = Error = (err) ->
