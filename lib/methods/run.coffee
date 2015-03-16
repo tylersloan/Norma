@@ -25,6 +25,7 @@ module.exports = (tasks, cwd) ->
     "config"
     "create"
     "help"
+    "list"
     "init"
     "install"
     "open"

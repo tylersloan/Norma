@@ -19,6 +19,7 @@ module.exports = (tasks, cwd, scaffolds) ->
       scaffold.name for scaffold in scaffolds when scaffold.type is type
     )
 
+
     return scaffoldList
 
 
@@ -26,10 +27,11 @@ module.exports = (tasks, cwd, scaffolds) ->
 
     scaffoldLocation = Path.join Norma._.userHome, "scaffolds"
 
+
     types = listTypes scaffoldLocation, "folder"
 
     if types.length
-      Norma.emit "message", types
+      Norma.log types.join(", ")
     else
       Norma.emit "message", "No scaffolds installed"
 
