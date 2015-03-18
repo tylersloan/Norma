@@ -36,11 +36,12 @@ doAfterPreInstall = (proj, _config, cwd, promise) ->
     JSON.stringify(_config, null, 2)
   )
 
+
   if !Fs.existsSync( Path.join(cwd, "package.json") )
 
     defaultPackageData =
       name: _config.name
-      version: "0.0.0"
+      version: "0.1.0"
       description: ""
       main: "index.js"
       scripts:
@@ -49,7 +50,7 @@ doAfterPreInstall = (proj, _config, cwd, promise) ->
       license: "MIT"
 
 
-    Fs.writeFile(
+    Fs.writeFileSync(
       Path.join(cwd, "package.json")
       JSON.stringify(defaultPackageData, null, 2)
     )
