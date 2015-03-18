@@ -1,4 +1,4 @@
-## v.Next (1.2)
+## 1.2
 
 * First run of Norma test orchestration for local and CI
   environments. The test method revolves around the new
