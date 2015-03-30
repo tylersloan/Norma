@@ -66,7 +66,6 @@ config = (cwd) ->
     try
       file = Fs.readFileSync fileLoc, encoding: "utf8"
     catch err
-      console.log err
       err.level = "crash"
 
 

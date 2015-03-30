@@ -12,7 +12,6 @@ main = Path.resolve __dirname, "../../", "bin/norma.js"
 
 
 module.exports = restart = ->
-  console.log "restarting"
 
   Norma.close(true)
 
