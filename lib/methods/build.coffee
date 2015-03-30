@@ -113,7 +113,7 @@ module.exports = (tasks, cwd) ->
         Norma.emit "error", msg
 
         return
-    console.log tasks
+
     build tasks
 
 

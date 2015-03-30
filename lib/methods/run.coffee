@@ -63,10 +63,10 @@ module.exports = (tasks, cwd) ->
         e.level = "crash"
         Norma.emit "error", e
 
-    if _task._isPromise
-      _task.then( ->
-        Norma.close()
-      )
+    # if _task._isPromise
+    #   _task.then( ->
+    #     Norma.close()
+    #   )
 
   # lookup packages if necessary
   if noPackageTasks.indexOf(_tasks[0]) is -1
