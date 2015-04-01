@@ -71,7 +71,7 @@ config = (cwd) ->
     try
       _config = JSON.parse(data)
       _process _config
-      console.log _config
+
     catch err
 
       lint = Lint data
