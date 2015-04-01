@@ -1,3 +1,17 @@
+
+## 1.3
+
+* Added the ability to run javascript from a norma function via a special
+  key: value keyword EVAL:$
+
+  This is particularly useful for env variables with fallbacks
+
+   ```javascript
+   {
+     "branch": "EVAL:$ process.env.CIRCLE_BRANCH || 'master' "
+   }
+   ```
+
 ## 1.2
 
 * First run of Norma test orchestration for local and CI
@@ -8,16 +22,16 @@
   ```javascript
   // simple test method using norma package
   "test": "mocha"
-  
+
   // will try to load a file and execute it
   "test": "./testingscripts/test.js"
-  
+
   // will try to run shell script if package and file not found
   "test": "casper test"
-  
+
   // will fall back to npm test if no test is found
   "test": "npm test" // implied
-  
+
   // simple before, main, and after tasks
   "test": {
     // run a before script from package
@@ -27,7 +41,7 @@
     // run an after task
     "after": "meteor close"
   }
-  
+
   // simple before, mutliple main, and simple after tasks
   "test": {
     // run a before script from package
@@ -39,7 +53,7 @@
     // run an after task
     "after": "meteor close"
   }
-  
+
   // multi task testing with before and after actions
   "test": {
     // before can be a string or an array
@@ -68,7 +82,7 @@
       "docker close"
     ]
   }
-  
+
   // complex testing scenario with tasks dependents
   // multi action before, task loading tests, and
   // mutli action after
