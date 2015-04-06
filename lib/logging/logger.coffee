@@ -18,9 +18,9 @@ MapTree = require("./../utilities/directory-tools").mapTree
 logTasks = ->
 
   console.log(
-    Chalk.gray.bgBlack('-v'),
+    Chalk.white('-v'),
     'or',
-    Chalk.gray.bgBlack('--version'),
+    Chalk.white('--version'),
     "to print out the version of your norma CLI\n"
   )
 
@@ -40,7 +40,7 @@ logTasks = ->
 
       for api in method
 
-        message = Chalk.gray.bgBlack(name)
+        message = Chalk.white(name)
 
         commands = api.command.split(" ")
         for command in commands
@@ -81,7 +81,7 @@ logInfo = (cliPackage) ->
     '\  1111111     111     1111111\n' +
     '\   t1111111111111111111111111\n' +
     '\     i11111111111111111111111\n',
-    Chalk.gray.bgBlack('\nv' + cliPackage.version + '\nI just want to build websites\n' +
+    Chalk.white('\nv' + cliPackage.version + '\nI just want to build websites\n' +
     '➳  //newspring.io\n' +
     '\n' +
     '-------')

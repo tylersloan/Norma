@@ -88,7 +88,7 @@ module.exports = (tasks, cwd) ->
         if Norma.verbose
           msg = Chalk.cyan(taskName.toUpperCase()) +
             " saw " +
-            Chalk.gray.bgBlack(fileName) +
+            Chalk.white(fileName) +
             " was #{event.type}"
 
           Norma.emit "message", msg
@@ -138,7 +138,7 @@ module.exports = (tasks, cwd) ->
   Norma.prompt.listen (err, line) ->
 
     if runnableTasks.indexOf(line) > -1
-      Norma.emit "message", Chalk.gray.bgBlack("Running #{line}")
+      Norma.emit "message", Chalk.white("Running #{line}")
       runTask line
 
     return
