@@ -14,6 +14,34 @@ Lint = require "json-lint"
 
 Norma = require "./../norma"
 
+_process = (obj) ->
+
+  # Iterate over arrays
+  if Array.isArray(obj)
+    return obj.map((val) ->
+      _process val
+    )
+
+  # Iterate over object
+  if typeof obj == 'object' and obj != null
+    Object.keys(obj).forEach (key) ->
+      obj[key] = _process(obj[key])
+      return
+    return obj
+
+  # A string to test
+  if typeof obj == 'string'
+    # Not correct prefix?
+    if obj.substr(0, 6) != 'EVAL:$'
+      return obj
+    # Get name and test existence
+    name = obj.substr(6)
+    # YIKES!
+    name = eval(name)
+    return name
+
+  return obj
+
 
 config = (cwd) ->
 
@@ -42,6 +70,8 @@ config = (cwd) ->
     # Try parsing the config data as JSON
     try
       _config = JSON.parse(data)
+      _process _config
+
     catch err
 
       lint = Lint data

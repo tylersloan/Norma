@@ -79,7 +79,6 @@ module.exports = (tasks, cwd) ->
         # "!.git/**/*"
       ], (event) ->
 
-
         if ignoreChange[event.path] > 0
           ignoreChange[event.path]--
           return
@@ -89,7 +88,7 @@ module.exports = (tasks, cwd) ->
         if Norma.verbose
           msg = Chalk.cyan(taskName.toUpperCase()) +
             " saw " +
-            Chalk.magenta(fileName) +
+            Chalk.gray.bgBlack(fileName) +
             " was #{event.type}"
 
           Norma.emit "message", msg
@@ -139,7 +138,7 @@ module.exports = (tasks, cwd) ->
   Norma.prompt.listen (err, line) ->
 
     if runnableTasks.indexOf(line) > -1
-      Norma.emit "message", Chalk.grey("Running #{line}")
+      Norma.emit "message", Chalk.gray.bgBlack("Running #{line}")
       runTask line
 
     return

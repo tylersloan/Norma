@@ -11,11 +11,11 @@ Norma = require "./../norma"
 # HELP --------------------------------------------------------------------
 
 help = [
-  "who are you   " + Chalk.grey("introduce myself")
-  "help          " + Chalk.grey("display this message.")
-  "all           " + Chalk.grey("run a build on all files.")
-  "e[xit]        " + Chalk.grey("exit console.")
-  "q[uit]        " + Chalk.grey("exit console.")
+  "who are you   " + Chalk.gray.bgBlack("introduce myself")
+  "help          " + Chalk.gray.bgBlack("display this message.")
+  "all           " + Chalk.gray.bgBlack("run a build on all files.")
+  "e[xit]        " + Chalk.gray.bgBlack("exit console.")
+  "q[uit]        " + Chalk.gray.bgBlack("exit console.")
 ]
 
 
@@ -75,7 +75,7 @@ initialize = ->
   rl.on("line", (line) ->
     switch line.toLowerCase().trim()
       when "help"
-        Util.puts(Chalk.grey(help.join("\n")))
+        Util.puts(Chalk.gray.bgBlack(help.join("\n")))
       when "exit", "e", "quit", "q"
         rl.close()
       when "all"
@@ -110,7 +110,7 @@ prompt = ->
   if !Norma.prompt._.initialized
     initialize()
 
-  rl.setPrompt Chalk.grey(Norma._.prefix), Norma._.prefix.length
+  rl.setPrompt Chalk.gray.bgBlack(Norma._.prefix), Norma._.prefix.length
   rl.prompt()
 
   Norma.prompt.open = true
