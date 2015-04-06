@@ -19,7 +19,7 @@ message =
     output = []
 
     if not process.env.CI
-      output = [Chalk.grey(Norma._.prefix)]
+      output = [Chalk.gray.bgBlack(Norma._.prefix)]
 
 
     if Norma.prompt._.initialized and Norma.prompt.open
@@ -28,13 +28,13 @@ message =
 
     # Build the error output by priority
     # if msg.name
-    #   output.push Chalk.grey(Norma.prefix + msg.name + ": ")
+    #   output.push Chalk.gray.bgBlack(Norma.prefix + msg.name + ": ")
 
     if msg.message
       if msg.color
         output.push Chalk[msg.color] msg.message
       else
-        output.push Chalk.grey msg.message
+        output.push Chalk.gray.bgBlack msg.message
 
 
     if msg.fileName
