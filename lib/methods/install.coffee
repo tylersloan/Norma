@@ -201,7 +201,7 @@ module.exports = (tasks, cwd, scaffold) ->
     count++
     obj[count] = Q.defer()
 
-    arr = _.unique arr
+    arr = _.uniq arr
 
     if Norma.global or global
       globalAdd arr, dev, obj[count].makeNodeResolver()
