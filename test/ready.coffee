@@ -56,6 +56,8 @@ describe "Ready", ->
 
   it "should update installed modules", ->
 
+    @.timeout 100000
+
     packageJson = Fs.readFileSync fixturesJson, encoding: "utf8"
     packageJson = JSON.parse packageJson
 
