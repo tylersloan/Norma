@@ -201,7 +201,6 @@ module.exports = (tasks, cwd, scaffold) ->
     count++
     obj[count] = Q.defer()
 
-    arr = _.uniq arr
 
     if Norma.global or global
       globalAdd arr, dev, obj[count].makeNodeResolver()
@@ -277,7 +276,9 @@ module.exports = (tasks, cwd, scaffold) ->
       # remove for shorter loops
       tasks.splice(index, 1)
 
+    localInstalls = _.uniq localInstalls
     localInstalls = localInstalls.join(" ")
+    globalInstalls = _.uniq globalInstalls
     globalInstalls = globalInstalls.join(" ")
 
     # no global Norma in package.json
