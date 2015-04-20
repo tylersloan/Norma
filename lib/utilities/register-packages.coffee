@@ -22,6 +22,7 @@ module.exports = (cwd) ->
   # Get global packages added to Norma
   rootTasks = PkgeLookup (Path.resolve Norma._.userHome, "packages"), cwd
 
+
   combinedTasks = projectTasks.concat rootTasks
 
 
