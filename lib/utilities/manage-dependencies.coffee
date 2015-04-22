@@ -1,9 +1,10 @@
 Path = require "path"
 Fs = require "fs"
 Semver = require "semver"
-Npm = require "npm"
 Q = require "kew"
 _ = require "underscore"
+# Exec = require("child_process").exec
+Spawn = require "./promise-spawn"
 
 
 Norma = require "./../norma"
@@ -137,24 +138,6 @@ module.exports = (tasks, cwd, flush) ->
 
   installs = []
 
-  npmLoaded = false
-
-  loadNPM = (cb) ->
-
-    if npmLoaded and !flush
-      cb()
-      return
-
-    npmReady = Q.defer()
-
-    Npm.load npmReady.makeNodeResolver()
-
-    npmReady.then( ->
-
-      npmLoaded = false
-      cb()
-    )
-
   for addedName of added
 
     update = (name, message) ->
@@ -163,16 +146,10 @@ module.exports = (tasks, cwd, flush) ->
 
       obj = {}
 
-      obj[name] = Q.defer()
+      obj[name] = Spawn("npm", ["i", name], cwd)
 
-      install = ->
-        Npm.commands.install(
-          cwd
-          [name]
-          obj[name].makeNodeResolver()
-        )
+      # Exec("npm i #{name}", {cwd: cwd}, obj[name].makeNodeResolver())
 
-      loadNPM install
 
       installs.push obj[name]
 
@@ -186,14 +163,14 @@ module.exports = (tasks, cwd, flush) ->
 
         message =
           name: addedName
-          message: "#{addedName}@#{added[addedName]} needs updating"
+          message: "Updating #{addedName}@#{added[addedName]}..."
 
         update "#{addedName}@#{added[addedName]}", message
 
     else
       message =
         name: addedName
-        message: "#{addedName}@#{added[addedName]} needs installing"
+        message: "Installing #{addedName}@#{added[addedName]}..."
 
       update "#{addedName}@#{added[addedName]}", message
 
