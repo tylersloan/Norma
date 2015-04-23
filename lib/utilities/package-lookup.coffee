@@ -115,11 +115,14 @@ module.exports = (cwd, targetCwd) ->
 
   node_modules = Path.resolve cwd, "node_modules"
 
+
   scope = [
     "dependencies"
-    "devDependencies"
     "peerDependencies"
   ]
+
+  if not process.env.CI and not Norma.production
+    scope.push "devDependencies"
 
   replaceString = /^norma(-|\.)/
 

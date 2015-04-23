@@ -35,9 +35,11 @@ module.exports = (tasks, cwd, flush) ->
 
   scope = [
     "dependencies"
-    "devDependencies"
     "peerDependencies"
   ]
+
+  if not process.env.CI and not Norma.production
+    scope.push "devDependencies"
 
 
   # compare with global packages

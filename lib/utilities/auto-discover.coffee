@@ -38,6 +38,11 @@ module.exports = (cwd, packages, promise) ->
 
 
     if packages[key] is undefined
+
+      if process.env.CI or process.env.production
+        if dev or _obj[key].dev
+          return
+
       pkge =
         name: key
         global: _obj[key].global
