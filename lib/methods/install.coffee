@@ -202,7 +202,7 @@ module.exports = (tasks, cwd, scaffold) ->
     obj[count] = Q.defer()
 
 
-    if Norma.global or global and  not process.env.CI
+    if Norma.global or global
       globalAdd arr, dev, obj[count].makeNodeResolver()
     else
       localAdd arr, dev, obj[count].makeNodeResolver()
