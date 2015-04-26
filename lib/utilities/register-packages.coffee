@@ -100,13 +100,11 @@ module.exports = (cwd) ->
         if _test is "before" or _test is "after"
           continue
 
-        if _test is "main"
+        if _test is "main" and  _.isArray config.test.main
+          for item in config.test.main
+            mergeExtendedTask item, config.test.main
 
-          if _.isArray config.test.main
-            for item in config.test.main
-              mergeExtendedTask item, config.test.main
-
-            return
+          return
 
         mergeExtendedTask _test, config.test
 

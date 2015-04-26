@@ -129,6 +129,7 @@ module.exports = (cwd, targetCwd) ->
 
   if Fs.existsSync(config) and Fs.existsSync(node_modules)
 
+
     # Using the require method keeps the same in memory, instead we use
     # a synchronous fileread of the JSON.
     config = Fs.readFileSync config, encoding: "utf8"
@@ -152,6 +153,10 @@ module.exports = (cwd, targetCwd) ->
 
     Multimatch(names, pattern).forEach (name) ->
 
+      localInstall = Path.resolve node_modules, "#{name}"
+
+      if not Fs.existsSync localInstall
+        return
 
       Norma.packages.push name
       Norma.packages = _.uniq Norma.packages
