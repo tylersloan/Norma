@@ -110,12 +110,12 @@ module.exports = (tasks, cwd) ->
 
 
   # START ------------------------------------------------------------------
-  normaPath = Path.join cwd, "norma.json"
-
-  selfAware = Vfs.watch [normaPath], (event) ->
-    Norma.restart()
-
-  watching.push selfAware
+  # normaPath = Path.join cwd, "norma.json"
+  #
+  # selfAware = Vfs.watch [normaPath], (event) ->
+  #   Norma.restart()
+  #
+  # watching.push selfAware
 
   if Norma.verbose
     msg =
