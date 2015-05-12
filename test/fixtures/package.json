@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./testing-scripts/index.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "norma-copy": "^0.4.0",
-    "norma-meteor": "^0.3.6"
-  }
+    "norma-copy": "^0.4.2"
+  },
+  "devDependencies": {}
 }

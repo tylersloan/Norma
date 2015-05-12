@@ -23,16 +23,16 @@ _process = (obj) ->
     )
 
   # Iterate over object
-  if typeof obj == 'object' and obj != null
+  if typeof obj is "object" and obj isnt null
     Object.keys(obj).forEach (key) ->
       obj[key] = _process(obj[key])
       return
     return obj
 
   # A string to test
-  if typeof obj == 'string'
+  if typeof obj is "string"
     # Not correct prefix?
-    if obj.substr(0, 6) != 'EVAL:$'
+    if obj.substr(0, 6) isnt "EVAL:$"
       return obj
     # Get name and test existence
     name = obj.substr(6)

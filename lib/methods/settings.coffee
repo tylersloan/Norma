@@ -19,11 +19,11 @@ Norma = require "./../norma"
 
 module.exports = (tasks, cwd, global) ->
 
+
   # remove memory settings to use just files for CLI usage
   Norma.getSettings._.remove('memory')
 
 
-  if Norma.global then gloal = true
 
   # CONFIG-TYPE -----------------------------------------------------------
 
@@ -34,7 +34,7 @@ module.exports = (tasks, cwd, global) ->
     directory level to create and use config (local)
 
   ###
-  if gloal
+  if Norma.global
     Norma.getSettings._.remove "local"
   else
     Norma.getSettings._.remove "global"
@@ -52,10 +52,21 @@ module.exports = (tasks, cwd, global) ->
     console.log configData
 
 
+
+
+
+  # SAVE ------------------------------------------------------------------
+
+  # Save config with value
+  if tasks[1]
+    Norma.getSettings._.set tasks[0], tasks[1]
+
+
+
   # KEY-TASKS ------------------------------------------------------------
 
   # Read config of a value
-  if tasks[0] and tasks[1] is `undefined`
+  if tasks[0] and not tasks[1]
 
 
     # Gives users the options to remove config items
@@ -67,13 +78,6 @@ module.exports = (tasks, cwd, global) ->
     else
       Norma.getSettings._.clear tasks[0]
 
-
-
-  # SAVE ------------------------------------------------------------------
-
-  # Save config with value
-  if tasks[1]
-    Norma.getSettings._.set tasks[0], tasks[1]
 
 
 
