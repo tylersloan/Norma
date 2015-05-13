@@ -47,12 +47,18 @@ module.exports = (config, tasks, cb) ->
     if !config.tasks[task]
       continue
 
-    if tasks[task].order
+
+    if tasks[task].order or config.tasks[task].order
+
+      order = tasks[task].order
+
+      if config.tasks[task].order
+        order = config.tasks[task].order
 
       tasks[task].type = tasks[task].type or "async"
 
       saveTask(
-        taskList[tasks[task].order][tasks[task].type]
+        taskList[order][tasks[task].type]
         task
       )
 
