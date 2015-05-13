@@ -31,6 +31,7 @@ module.exports = (tasks, cwd) ->
     "remove"
     "search"
     "update"
+    "settings"
   ]
 
 

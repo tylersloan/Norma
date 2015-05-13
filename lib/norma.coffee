@@ -22,9 +22,9 @@ Norma = ->
 
   # Home directory for storage of globals and scaffolds
   if Home
-    homePath = Path.resolve Home, "norma"
+    homePath = Path.resolve Home, ".norma"
   else
-    homePath = Path.resolve __dirname, "../../norma"
+    homePath = Path.resolve __dirname, "../../.norma"
 
   if !Fs.existsSync homePath
     MkDir homePath

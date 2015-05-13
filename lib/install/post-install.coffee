@@ -1,8 +1,39 @@
 if process.env.CI or process.env.NODE_ENV isnt "development"
   return
 
-
 Inquirer = require "inquirer"
+
+
+# Temporary shim to move ~/norma to ~/.norma
+Fs = require "fs-extra"
+Path = require "path"
+Rimraf = require "rimraf"
+Home = require "user-home"
+
+if Home
+  homePath = Path.resolve Home, ".norma"
+else
+  homePath = Path.resolve __dirname, "../../.norma"
+
+oldHome = Path.resolve homePath, "../norma"
+
+if Fs.existsSync oldHome
+
+  if Fs.existsSync homePath
+    existingFile = Fs.lstatSync homePath
+    if not existingFile.isDirectory()
+      Rimraf.sync homePath
+    else
+      # things already moved over
+      return
+
+  Fs.mkdirSync homePath
+  Fs.copySync oldHome, homePath
+  Rimraf.sync oldHome
+
+# End shim
+
+
 
 Norma = require "../index"
 
