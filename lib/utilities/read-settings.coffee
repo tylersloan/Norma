@@ -2,11 +2,15 @@
 Fs    = require "fs"
 Path = require "path"
 Nconf = require "nconf"
+Bcrypt = require "bcrypt"
+Crypto = require "crypto"
 
 Norma = require "./../norma"
 intialized = false
 
 initialize = ->
+
+
   # CONFIG-TYPE -----------------------------------------------------------
 
   ###
@@ -16,16 +20,15 @@ initialize = ->
     directory level to create and use config (local)
 
   ###
-
   global = Path.resolve Norma._.userHome, ".norma"
-  local = Path.join process.cwd(), ".norma"
-
-
   # See if a config file already exists (for global files)
   globalConfigExists = Fs.existsSync global
 
+
+  local = Path.join process.cwd(), ".norma"
   # See if a config file already exists (for local files)
   localConfigExists = Fs.existsSync local
+
 
 
   # CONFIG-CREATE -------------------------------------------------------------
@@ -41,16 +44,6 @@ initialize = ->
       JSON.stringify(config, null, 2)
     )
 
-  # If no file, then we create a new one with some preset items
-  # if !localConfigExists
-  #   config =
-  #     path: local
-  #
-  #   # Save config
-  #   Fs.writeFileSync(
-  #     local
-  #     JSON.stringify(config, null, 2)
-  #   )
 
 
   # CONFIG-SET ---------------------------------------------------------------
@@ -70,16 +63,90 @@ initialize = ->
 
 
 
+privateFile = Path.join Norma._.userHome, ".private"
+
+setSalt = (obj) ->
+  obj.salt = Bcrypt.genSaltSync(10)
+
+  try
+    Fs.writeFileSync(
+      privateFile
+      JSON.stringify(obj, null, 2)
+    )
+  catch err
+    Norma.emit "error", "Cannot save private configuration"
+    return false
+
+  return obj.salt
+
+
+getSalt = ->
+
+  # lookup file
+  if Fs.existsSync privateFile
+    try
+      file = Fs.readFileSync privateFile, encoding: "utf8"
+      file = JSON.parse file
+      file or= {}
+    catch err
+      err.level = "crash"
+      Norma.emit "error", err
+      return false
+
+    # is there a salt
+    if file.salt
+      return file.salt
+
+    return setSalt(file)
+
+
+  return setSalt({})
+
+
+
+decrypt = (salt, value) ->
+
+  decipher = Crypto.createDecipher "aes-256-cbc", salt
+
+  decrypted = decipher.update value["norma-hashed"], "base64", "utf8"
+  decrypted += decipher.final "utf8"
+
+  return decrypted
+
+
+
+encrypt = (salt, value) ->
+
+  obj = {}
+  cipher = Crypto.createCipher "aes-256-cbc", salt
+
+  encrypted = cipher.update value, "utf8", "base64"
+  encrypted += cipher.final "base64"
+
+  obj["norma-hashed"] = encrypted
+  return obj
+
+
 
 get = (getter) ->
   if !intialized
     initialize()
 
-  return Nconf.get getter
+  gotten = Nconf.get getter
+
+  if gotten?["norma-hashed"]
+    salt = getSalt()
+    gotten = decrypt salt, gotten
+
+  return gotten
 
 
+set = (setter, value, hide) ->
 
-set = (setter, value) ->
+  if Norma.hide or hide
+    salt = getSalt()
+    value = encrypt salt, value
+
   return Nconf.set setter, value
 
 
