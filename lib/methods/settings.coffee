@@ -13,6 +13,8 @@ Fs    = require "fs"
 Flags = require("minimist")(process.argv.slice(2))
 Chalk = require "chalk"
 Path = require "path"
+CSON = require "cson"
+PrettyPrint = require "prettyjson"
 
 Norma = require "./../norma"
 
@@ -49,36 +51,14 @@ module.exports = (tasks, cwd, global) ->
     configData = Norma.getSettings()
 
     # Print out cofing data for easy lookup
-    console.log configData
+    Norma.log(PrettyPrint.render(configData))
 
-
-
-  createLocal = ->
-    local = Path.join process.cwd(), ".norma"
-    # See if a config file already exists (for local files)
-    localConfigExists = Fs.existsSync local
-
-
-    if localConfigExists
-      return
-
-    # If no file, then we create a new one with some preset items
-    config =
-      path: local
-
-    # Save config
-    Fs.writeFileSync(
-      local
-      JSON.stringify(config, null, 2)
-    )
 
 
   # SAVE ------------------------------------------------------------------
 
   # Save config with value
   if tasks[1]
-    if not Norma.global
-      createLocal()
     Norma.getSettings.set tasks[0], tasks[1]
 
 
