@@ -19,7 +19,7 @@ module.exports = (cwd, packages, promise) ->
 
     err =
       level: "crash"
-      message: "norma.json needs a tasks or test object"
+      message: "norma file needs a tasks or test object"
       name: "Not Valid"
 
     Norma.emit "error", err

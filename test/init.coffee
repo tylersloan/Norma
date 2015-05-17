@@ -37,12 +37,12 @@ describe "Init", ->
       )
 
 
-  it "should contain a norma.json", ->
+  it "should contain a Norma file", ->
 
     Norma.init(["test"], tempProject, answers)
       .then( (resolve) ->
 
-        normaJson = Path.join tempProject, "norma.json"
+        normaJson = Path.join tempProject, "Norma"
 
         exists = Fs.existsSync normaJson
 
@@ -59,11 +59,8 @@ describe "Init", ->
     Norma.init(["test"], tempProject, answers)
       .then( (resolve) ->
 
-        normaJson = Path.join tempProject, "norma.json"
+        _config = Norma.config(tempProject)
 
-        _config = Fs.readFileSync normaJson, encoding: "utf8"
-
-        _config = JSON.parse _config
         _config.name.should.equal "second-test"
 
       )
