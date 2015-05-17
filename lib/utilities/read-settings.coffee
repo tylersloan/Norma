@@ -21,7 +21,6 @@ initialize = ->
         throw new Error("invalid object to be saved, #{obj}")
         return
 
-
       CSON.stringify(obj)
 
     parse: (obj, options) ->
