@@ -33,11 +33,13 @@ Domain.on("error", function(err){
 // CLI ----------------------------------------------------------
 Domain.run(function(){
 
+
   // Require main file
   cli.launch({
     cwd: Flags.cwd,
     verbose: Flags.verbose,
     extensions: require('interpret').jsVariants
   }, Launch);
+
 
 });

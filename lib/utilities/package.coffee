@@ -35,7 +35,7 @@ module.exports = (tasks, cwd) ->
     Path.join cwd, "package.coffee"
   )
 
-  # NORMA.JSON ----------------------------------------------------------
+  # NORMA FILE ----------------------------------------------------------
 
   packageName = tasks[0]
 
@@ -48,11 +48,8 @@ module.exports = (tasks, cwd) ->
     main: "package.coffee"
     tasks: {}
 
-  # Save config
-  Fs.writeFileSync(
-    Path.join(cwd, "norma.json")
-    JSON.stringify(config, null, 2)
-  )
+  Norma.config.save(config, cwd)
+
 
   # PACKAGE.JSON --------------------------------------------------------
 

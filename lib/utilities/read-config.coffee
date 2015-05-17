@@ -1,6 +1,6 @@
 ###
 
-  This file finds the norma.json for a project.
+  This file finds the norma file for a project.
   It then parses it and returns the object as the result of the function
 
 ###
@@ -11,6 +11,7 @@ Path = require "path"
 Chalk = require "chalk"
 _ = require "underscore"
 Lint = require "json-lint"
+CSON = require "cson"
 
 Norma = require "./../norma"
 
@@ -43,15 +44,28 @@ _process = (obj) ->
   return obj
 
 
+getExt = (cwd) ->
+
+  ext = "json"
+
+  cson = Path.join(cwd, "norma.cson")
+  if Fs.existsSync cson
+    ext = "cson"
+
+  return ext
+
+
 config = (cwd) ->
+
 
   if !cwd then cwd = process.cwd()
 
   # Find file based on cwd argument
-  fileLoc = Path.join(cwd, "norma.json")
+  ext = getExt(cwd)
 
-  # Create empty config object for empty returns
-  _config = {}
+
+  fileLoc = Path.join(cwd, "norma.#{ext}")
+
 
   parse = (data) ->
 
@@ -67,23 +81,15 @@ config = (cwd) ->
 
       return false
 
-    # Try parsing the config data as JSON
-    try
-      _config = JSON.parse(data)
-      _process _config
+    # Create empty config object for empty returns
+    data or= {}
 
-    catch err
+    data = _process(data)
 
-      lint = Lint data
-      if lint.error
-        err.message = "#{lint.error} This error was
-          found on line #{lint.line} at character #{lint.character}"
-
-      err.level = "crash"
-      Norma.emit "error", err
+    return data
 
 
-      return false
+
 
   ###
 
@@ -94,7 +100,7 @@ config = (cwd) ->
 
   if Fs.existsSync fileLoc
     try
-      file = Fs.readFileSync fileLoc, encoding: "utf8"
+      file = CSON.parseFile fileLoc
     catch err
       err.level = "crash"
 
@@ -120,11 +126,23 @@ save = (obj, cwd) ->
     Norma.emit "error", "Cannot save norma.json without and object passed to save"
     return false
 
+
+  process = (obj) ->
+    ext = getExt()
+
+    if ext is "cson"
+      obj = CSON.stringify(obj)
+    else
+      obj = JSON.stringify(obj)
+
+    return obj
+
+
   # Save config
   try
     Fs.writeFileSync(
       Path.join(cwd, "norma.json")
-      JSON.stringify(obj, null, 2)
+      JSON.stringify(process(obj), null, 2)
     )
   catch err
 

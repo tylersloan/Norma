@@ -62,7 +62,7 @@ module.exports = (cwd, targetCwd) ->
   # Loop through file structure to find packages
   checkFile = (file) ->
 
-    if file.name is "norma.json"
+    if file.name is "norma.json" or file.name is "norma.cson"
       pkgeConfig = Norma.config Path.resolve file.path, "../"
 
       if pkgeConfig.type is "package" and pkgeConfig.main

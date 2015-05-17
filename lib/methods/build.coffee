@@ -19,12 +19,13 @@ module.exports = (tasks, cwd) ->
 
   if !cwd then cwd = process.cwd()
 
-  if !Fs.existsSync Path.join(cwd, "norma.json")
-    buildStatus.reject("no norma.json found at #{cwd}")
-    return buildStatus
 
   # Load config
   config = ReadConfig cwd
+
+  if not config.tasks
+    buildStatus.reject("No tasks configured in norma-file found at #{cwd}")
+    return buildStatus
 
   # After task is done message
   completeMessage =

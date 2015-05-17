@@ -98,7 +98,7 @@ module.exports = (Norma) ->
 
     config
 
-    Return object of norma.json file
+    Return object of norma file
 
     @method getSettings
     @api public

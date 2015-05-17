@@ -30,11 +30,8 @@ doAfterPreInstall = (proj, _config, cwd, promise) ->
     CopySync proj.path, cwd
 
 
-  # Save config
-  Fs.writeFileSync(
-    Path.join(cwd, "norma.json")
-    JSON.stringify(_config, null, 2)
-  )
+  Norma.config.save(_config, cwd)
+
 
 
   if !Fs.existsSync( Path.join(cwd, "package.json") )
@@ -97,7 +94,15 @@ module.exports = (project, name, cwd) ->
   #   children: [Object] }
 
   # See if a config file already exists (for local files)
-  configExists = Fs.existsSync Path.join(project.path, "norma.json")
+  configExists = ->
+    if Fs.existsSync Path.join(project.path, "norma.json")
+      return true
+
+    if Fs.existsSync Path.join(project.path, "norma.cson")
+      return true
+
+    return false
+
 
   ###
 
@@ -106,7 +111,7 @@ module.exports = (project, name, cwd) ->
     will be needed for more complex initializations as well
 
   ###
-  if configExists
+  if configExists()
 
     scaffoldConfig = ReadConfig project.path
     scaffoldConfig.name = name
