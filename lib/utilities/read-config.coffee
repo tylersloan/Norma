@@ -55,15 +55,13 @@ getExt = (cwd) ->
   return ext
 
 
+
 config = (cwd) ->
 
-
-  if !cwd then cwd = process.cwd()
+  cwd or= process.cwd()
 
   # Find file based on cwd argument
   ext = getExt(cwd)
-
-
   fileLoc = Path.join(cwd, "norma.#{ext}")
 
 
@@ -115,25 +113,32 @@ config = (cwd) ->
 
 
 
+exists = (cwd) ->
+
+  cwd or= process.cwd()
+
+  ext = getExt cwd
+
+  return Fs.existsSync(Path.join(cwd, "norma.#{ext}"))
 
 
 save = (obj, cwd) ->
 
 
-  if !cwd then cwd = process.cwd()
-
   if !_.isObject obj
     Norma.emit "error", "Cannot save norma.json without and object passed to save"
     return false
 
+  cwd or= process.cwd()
+
+  ext = getExt cwd
 
   process = (obj) ->
-    ext = getExt()
 
     if ext is "cson"
       obj = CSON.stringify(obj)
     else
-      obj = JSON.stringify(obj)
+      obj = JSON.stringify(obj, null, 2)
 
     return obj
 
@@ -141,8 +146,8 @@ save = (obj, cwd) ->
   # Save config
   try
     Fs.writeFileSync(
-      Path.join(cwd, "norma.json")
-      JSON.stringify(process(obj), null, 2)
+      Path.join(cwd, "norma.#{ext}")
+      process(obj)
     )
   catch err
 
