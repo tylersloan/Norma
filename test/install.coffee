@@ -67,6 +67,7 @@ describe "Install", ->
 
     beforeEach (done) ->
 
+      @.timeout 10000
       if Fs.existsSync js
         Rimraf.sync js
 

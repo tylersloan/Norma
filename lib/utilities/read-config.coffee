@@ -44,16 +44,19 @@ _process = (obj) ->
   return obj
 
 
-getExt = (cwd) ->
 
-  ext = "json"
+getFile = (cwd) ->
 
   cson = Path.join(cwd, "norma.cson")
   if Fs.existsSync cson
-    ext = "cson"
+    return cson
 
-  return ext
+  file =  Path.join(cwd, "norma.json")
+  if Fs.existsSync file
+    return file
 
+  _norma = Path.join(cwd, "Norma")
+  return _norma
 
 
 config = (cwd) ->
@@ -61,8 +64,7 @@ config = (cwd) ->
   cwd or= process.cwd()
 
   # Find file based on cwd argument
-  ext = getExt(cwd)
-  fileLoc = Path.join(cwd, "norma.#{ext}")
+  fileLoc = getFile cwd
 
 
   parse = (data) ->
@@ -72,7 +74,7 @@ config = (cwd) ->
       if !Norma.silent
         err =
           level: "crash"
-          message: "norma.json is empty, have you initiated norma?"
+          message: "norma file is empty, have you initiated norma?"
           name: "Missing File"
 
         Norma.emit "error", err
@@ -117,28 +119,26 @@ exists = (cwd) ->
 
   cwd or= process.cwd()
 
-  ext = getExt cwd
-
-  return Fs.existsSync(Path.join(cwd, "norma.#{ext}"))
+  return Fs.existsSync(getFile(cwd))
 
 
 save = (obj, cwd) ->
 
 
   if !_.isObject obj
-    Norma.emit "error", "Cannot save norma.json without and object passed to save"
+    Norma.emit "error", "Cannot save norma file without and object passed to save"
     return false
 
   cwd or= process.cwd()
 
-  ext = getExt cwd
-
   process = (obj) ->
 
-    if ext is "cson"
-      obj = CSON.stringify(obj)
-    else
+    ext = Path.extname(getFile(cwd))
+
+    if ext is ".json"
       obj = JSON.stringify(obj, null, 2)
+    else
+      obj = CSON.stringify(obj)
 
     return obj
 
@@ -146,12 +146,12 @@ save = (obj, cwd) ->
   # Save config
   try
     Fs.writeFileSync(
-      Path.join(cwd, "norma.#{ext}")
+      getFile(cwd)
       process(obj)
     )
   catch err
 
-    Norma.emit "error", "Cannot save norma.json"
+    Norma.emit "error", "Cannot save #{getFile(cwd)}"
     return false
 
 
@@ -161,3 +161,4 @@ save = (obj, cwd) ->
 # Return the config object
 module.exports = config
 module.exports.save = save
+module.exports.exists = exists

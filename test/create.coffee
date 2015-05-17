@@ -69,11 +69,11 @@ describe "Create", ->
       Norma.create(["test"], norma_packages, true)
         .then( (resolve) ->
 
-          normaJson = Path.join pgkePath, "norma.json"
+          # normaJson = Path.join pgkePath, "norma.json"
+          #
+          # exists = Fs.existsSync normaJson
 
-          exists = Fs.existsSync normaJson
-
-          exists.should.be.true
+          Norma.config.exists(pgkePath).should.be.true
 
         )
 
@@ -178,9 +178,9 @@ describe "Create", ->
       Norma.create(["test"], tempProject, answers)
         .then( (resolve) ->
 
-          normaJson = Path.join tempProject, "test", "norma.json"
+          normaJson = Path.join tempProject, "test"
 
-          exists = Fs.existsSync normaJson
+          exists = Norma.config.exists normaJson
 
           exists.should.be.true
 
@@ -195,11 +195,12 @@ describe "Create", ->
       Norma.create(["test"], tempProject, answers)
         .then( (resolve) ->
 
-          normaJson = Path.join tempProject, "test", "norma.json"
-
-          _config = Fs.readFileSync normaJson, encoding: "utf8"
-
-          _config = JSON.parse _config
+          # normaJson = Path.join tempProject, "test", "norma.json"
+          #
+          # _config = Fs.readFileSync normaJson, encoding: "utf8"
+          #
+          # _config = JSON.parse _config
+          _config = Norma.config(Path.join(tempProject, "test"))
           _config.name.should.equal "test"
 
         )

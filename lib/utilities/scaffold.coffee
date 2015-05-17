@@ -93,15 +93,6 @@ module.exports = (project, name, cwd) ->
   #   type: "folder",
   #   children: [Object] }
 
-  # See if a config file already exists (for local files)
-  configExists = ->
-    if Fs.existsSync Path.join(project.path, "norma.json")
-      return true
-
-    if Fs.existsSync Path.join(project.path, "norma.cson")
-      return true
-
-    return false
 
 
   ###
@@ -111,7 +102,7 @@ module.exports = (project, name, cwd) ->
     will be needed for more complex initializations as well
 
   ###
-  if configExists()
+  if Norma.config.exists(project.path)
 
     scaffoldConfig = ReadConfig project.path
     scaffoldConfig.name = name
