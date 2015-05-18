@@ -16,12 +16,13 @@ module.exports = (cwd) ->
 
   if !cwd then cwd = process.cwd()
 
-  # Get any project specific packages (from package.json)
-  projectTasks = PkgeLookup cwd
+  console.log Norma.settings(cwd)
 
   # Get global packages added to Norma
   rootTasks = PkgeLookup (Path.resolve Norma._.userHome, "packages"), cwd
 
+  # Get any project specific packages (from package.json)
+  projectTasks = PkgeLookup cwd
 
   combinedTasks = projectTasks.concat rootTasks
 
