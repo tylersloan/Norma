@@ -10,7 +10,6 @@ Fs = require "fs"
 Path = require "path"
 Chalk = require "chalk"
 _ = require "underscore"
-Lint = require "json-lint"
 CSON = require "cson"
 
 Norma = require "./../norma"

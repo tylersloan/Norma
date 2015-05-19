@@ -4,6 +4,8 @@ Path = require "path"
 Nconf = require "nconf"
 Bcrypt = require "bcrypt"
 Crypto = require "crypto"
+CSON = require "cson"
+
 
 Norma = require "./../norma"
 intialized = false
@@ -12,6 +14,28 @@ initialize = ->
 
 
   # CONFIG-TYPE -----------------------------------------------------------
+  csonFormat =
+    stringify: (obj, options) ->
+
+      if not Object.keys(obj).length
+        throw new Error("invalid object to be saved, #{obj}")
+        return
+
+      CSON.stringify(obj)
+
+    parse: (obj, options) ->
+      try
+        parsed = JSON.parse(obj)
+      catch e
+
+        try
+          parsed = CSON.parse obj
+
+          return parsed
+        catch error
+          error.level = "crash"
+          Norma.emit "error", error
+          return
 
   ###
 
@@ -33,6 +57,7 @@ initialize = ->
 
   # CONFIG-CREATE -------------------------------------------------------------
 
+
   # If no file, then we create a new one with some preset items
   if !globalConfigExists
     config =
@@ -41,21 +66,21 @@ initialize = ->
     # Save config
     Fs.writeFileSync(
       global
-      JSON.stringify(config, null, 2)
+      CSON.stringify(config)
     )
 
 
 
   # CONFIG-SET ---------------------------------------------------------------
 
-  if localConfigExists
-    Nconf.use "memory"
-      .file "local", local
-      .file "global", global
-  else
-    Nconf.use "memory"
-      .file "global", global
 
+  Nconf.use "memory"
+    .file("local", { file: local, format: csonFormat })
+    .file("global", { file: global, format: csonFormat })
+  # else
+  #   Nconf.use "memory"
+  #     .file("global", { file: global, format: csonFormat })
+  #
 
   intialized = true
 
@@ -71,7 +96,7 @@ setSalt = (obj) ->
   try
     Fs.writeFileSync(
       privateFile
-      JSON.stringify(obj, null, 2)
+      CSON.stringify(obj)
     )
   catch err
     Norma.emit "error", "Cannot save private configuration"
@@ -86,7 +111,7 @@ getSalt = ->
   if Fs.existsSync privateFile
     try
       file = Fs.readFileSync privateFile, encoding: "utf8"
-      file = JSON.parse file
+      file = CSON.parse file
       file or= {}
     catch err
       err.level = "crash"
