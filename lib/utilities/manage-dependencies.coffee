@@ -17,7 +17,8 @@ module.exports = (tasks, cwd, flush) ->
 
   if !cwd then cwd = process.cwd()
 
-  update = Norma.getSettings.get("autoUpdate")
+  # update = Norma.getSettings.get("autoUpdate")
+  update = ""
 
   if update is "false" or update is false
     loaded.resolve("ok")

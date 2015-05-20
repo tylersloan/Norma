@@ -62,8 +62,12 @@ config = (cwd) ->
 
   cwd or= process.cwd()
 
+  if _.isArray cwd
+    cwd = process.cwd()
+
   # Find file based on cwd argument
   fileLoc = getFile cwd
+
 
 
   parse = (data) ->

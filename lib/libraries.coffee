@@ -91,7 +91,7 @@ module.exports = (Norma) ->
     @api public
 
   ###
-  Norma.getSettings = require "./utilities/read-settings"
+  # Norma.getSettings = require "./utilities/read-settings"
 
 
   ###

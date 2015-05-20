@@ -8,6 +8,7 @@ Flags = require("minimist")( process.argv.slice(2) )
 Chalk = require "chalk"
 Path = require "path"
 Fs = require "fs"
+Q = require "kew"
 
 Norma = require "../lib/norma"
 AutoUpdate = require "./auto-update"
@@ -15,9 +16,11 @@ AutoUpdate = require "./auto-update"
 
 module.exports = (env) ->
 
+
   # AUTOUPDATE --------------------------------------------------------------
 
-  update = Norma.getSettings.get "autoupdate"
+  # update = Norma.getSettings.get "autoupdate"
+  update = true
 
   # This should only run locally
   if !Norma.production or !process.env.CI or update is "false"
@@ -46,19 +49,25 @@ module.exports = (env) ->
 
   # DEPENDENCIES ------------------------------------------------------------
 
-  name = Norma.getSettings.get "user:name"
+  # name = Norma.getSettings.get "user:name"
 
   if name then name = " " + name else name = ""
 
   Norma.log "I'm getting everything ready#{name}..."
 
-  Norma.ready(Norma.args, env.cwd).then( ->
+  promises = [
+    Norma.ready(Norma.args, env.cwd)
+    Norma.ready(Norma.args, Path.join(env.cwd, ".norma") )
+  ]
 
-    Norma.run Norma.args, env.cwd
+  Q.all(promises)
+    .then( ->
+
+      Norma.run Norma.args, env.cwd
 
 
-  ).fail( (err) ->
+    ).fail( (err) ->
 
-    # Map captured errors back to domain
-    Norma.domain._events.error err
-  )
+      # Map captured errors back to domain
+      Norma.domain._events.error err
+    )

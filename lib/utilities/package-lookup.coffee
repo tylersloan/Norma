@@ -11,13 +11,8 @@ MapTree = require("./directory-tools").mapTree
 
 module.exports = (cwd, targetCwd) ->
 
-  if !cwd then cwd = process.cwd()
-
-  if targetCwd
-    # Get config for task comparison
-    normaConfig = Norma.config(targetCwd)
-  else
-    normaConfig = Norma.config(cwd)
+  cwd or= process.cwd()
+  normaConfig = Norma.config(cwd)
 
   packageList = new Array
   packages = new Array
@@ -30,6 +25,7 @@ module.exports = (cwd, targetCwd) ->
 
     # short variable assignment
     n = normaConfig
+
     # found in the tasks object
     if (n.tasks and n.tasks[name]) or (n.test and n.test[name])
 
@@ -81,16 +77,12 @@ module.exports = (cwd, targetCwd) ->
         checkFile nestedFile
 
 
-
-
   # Norma-packages (non npm based)
   if Fs.existsSync Path.join( cwd, "norma-packages")
 
       customs = MapTree Path.join( cwd, "norma-packages")
 
       checkFile pkge for pkge in customs.children
-
-
 
 
   # Package testing (used in building and testing packages)
@@ -115,6 +107,7 @@ module.exports = (cwd, targetCwd) ->
   config = Path.resolve cwd, "package.json"
 
   node_modules = Path.resolve cwd, "node_modules"
+
 
 
   scope = [
@@ -176,4 +169,5 @@ module.exports = (cwd, targetCwd) ->
       mapPkge pkge[key], key
 
 
+  packages = _.uniq packages
   return packages
