@@ -236,7 +236,8 @@ get = (getter, store) ->
 set = (setter, value, hide) ->
 
   for store, obj of Nconf.stores
-    prepareFile obj.file
+    if obj.file
+      prepareFile obj.file
 
   if Norma.hide or hide
     salt = getSalt()

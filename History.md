@@ -1,4 +1,8 @@
 
+## v.Next
+
+* First class support for gulp plugins. The idea behind this is to allow devs to `write` packages using gulp plugins directly in the Norma file. Then Norma will fetch the packages, and dynamically build a norma packages based on the configuration.
+
 ## 1.6
 
 * Massive reworking of the settings method within Norma. Settings can now include tasks to be run as well as general settings. To update your projects you will need to delete your .norma files globally and locally. To remove globaly `rm -rf ~/.norma/.norma` and locally `rm -rf ./.norma`. This is only if you have used settings before. The new settings are stored in a Norma file just like project config. The idea behind this is to unify the Norma file types and to share a common core of interactions between project configuration and personal configuration. Settings and config share tasks so you can `@extend` from the config file into the settings file. The idea behind this is to separate the concerns of what the project needs to be executed (compiliation, file creation, etc) and what a developer likes to set up to run the application (live reload, hosts file management, notifications). That way a team can work together but the individual devs can still have a unique experience. The new settings method tracks its own `node_modules` and `package.json` and all of this for a local project can be found at the root level under .norma. Typically this is not tracked in version control
