@@ -53,6 +53,12 @@ module.exports = (cwd, packages, promise) ->
     if _obj[key]["@extend"]
       key = _obj[key]["@extend"]
 
+      if not Object.keys(_obj[key]).length
+        err = new Error("No task defined for #{key} to extend")
+        err.level = "crash"
+        Norma.emit "error", err
+        return
+
 
     if packages[key] is undefined
 

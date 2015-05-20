@@ -12,7 +12,7 @@ Prompt = require "./../utilities/prompt"
 watching = []
 module.exports = (tasks, cwd) ->
 
-  if !cwd then cwd = process.cwd()
+  cwd or= process.cwd()
 
   # VARIABLES --------------------------------------------------------------
 

@@ -49,7 +49,7 @@ message =
 
 
     if msg.stack
-      output.push msg.stack
+      output.push "\n" + msg.stack
 
 
     console.log output.join ""

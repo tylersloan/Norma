@@ -49,7 +49,7 @@ module.exports = (env) ->
 
   # DEPENDENCIES ------------------------------------------------------------
 
-  # name = Norma.getSettings.get "user:name"
+  name = Norma.getSettings.get "user:name"
 
   if name then name = " " + name else name = ""
 

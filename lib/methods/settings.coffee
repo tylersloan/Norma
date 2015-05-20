@@ -56,51 +56,6 @@ module.exports = (tasks, cwd, global) ->
 
 
 
-  prepareFile = (loc) ->
-
-    dir = Path.resolve(loc, "../")
-    packageJson = Path.resolve(dir, "../", "package.json")
-    newPackage = Path.resolve(dir, "package.json")
-
-    if Fs.existsSync(loc) and Fs.existsSync(newPackage)
-      return
-
-    dir = Path.resolve(loc, "../")
-
-    if not Fs.existsSync dir
-      Fs.mkdirSync dir
-
-    Fs.writeFileSync loc
-
-    if Fs.existsSync packageJson
-
-      # read file
-      # Using the require method keeps the same in memory, instead we use
-      # a synchronous fileread of the JSON.
-      config = Fs.readFileSync packageJson, encoding: "utf8"
-
-      try
-        config = JSON.parse(config)
-      catch err
-        err.level = "crash"
-
-        Norma.emit "error", err
-
-      # remove dependenices
-      delete config["dependencies"]
-      delete config["devDependencies"]
-      delete config["peerDependencies"]
-
-      # save
-      try
-        Fs.writeFileSync(
-          newPackage
-          JSON.stringify(config, null, 2)
-        )
-      catch err
-        Norma.emit "error", "Cannot save #{getFile(cwd)}"
-
-      return
 
 
 
@@ -109,9 +64,6 @@ module.exports = (tasks, cwd, global) ->
 
   # Save config with value
   if tasks[1]
-
-    for store, obj of Norma.getSettings._.stores
-      prepareFile obj.file
 
     Norma.getSettings.set tasks[0], tasks[1]
     msg = Chalk.cyan( tasks[0] + ": ") + tasks[1]

@@ -37,10 +37,8 @@ module.exports = (cwd) ->
     _.extend Norma.tasks, task
 
 
-
   # see if we need to download any packages
   isMissingTasks = AutoDiscover(cwd, Norma.tasks, loadedPackages)
-
 
 
   ###
