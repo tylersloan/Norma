@@ -50,8 +50,58 @@ module.exports = (tasks, cwd, global) ->
 
     configData = Norma.getSettings()
 
-    # Print out cofing data for easy lookup
-    Norma.log(PrettyPrint.render(configData))
+    if Object.keys(configData).length
+      # Print out cofing data for easy lookup
+      Norma.log(PrettyPrint.render(configData))
+
+
+
+  prepareFile = (loc) ->
+
+    dir = Path.resolve(loc, "../")
+    packageJson = Path.resolve(dir, "../", "package.json")
+    newPackage = Path.resolve(dir, "package.json")
+
+    if Fs.existsSync(loc) and Fs.existsSync(newPackage)
+      return
+
+    dir = Path.resolve(loc, "../")
+
+    if not Fs.existsSync dir
+      Fs.mkdirSync dir
+
+    Fs.writeFileSync loc
+
+    if Fs.existsSync packageJson
+
+      # read file
+      # Using the require method keeps the same in memory, instead we use
+      # a synchronous fileread of the JSON.
+      config = Fs.readFileSync packageJson, encoding: "utf8"
+
+      try
+        config = JSON.parse(config)
+      catch err
+        err.level = "crash"
+
+        Norma.emit "error", err
+
+      # remove dependenices
+      delete config["dependencies"]
+      delete config["devDependencies"]
+      delete config["peerDependencies"]
+
+      # save
+      try
+        Fs.writeFileSync(
+          newPackage
+          JSON.stringify(config, null, 2)
+        )
+      catch err
+        Norma.emit "error", "Cannot save #{getFile(cwd)}"
+
+      return
+
 
 
 
@@ -59,7 +109,13 @@ module.exports = (tasks, cwd, global) ->
 
   # Save config with value
   if tasks[1]
+
+    for store, obj of Norma.getSettings._.stores
+      prepareFile obj.file
+
     Norma.getSettings.set tasks[0], tasks[1]
+    msg = Chalk.cyan( tasks[0] + ": ") + tasks[1]
+    Norma.log msg
 
 
 
@@ -71,10 +127,13 @@ module.exports = (tasks, cwd, global) ->
 
     # Gives users the options to remove config items
     if !Flags.remove
-      msg = Chalk.cyan( tasks[0] + ": ") +
-        Norma.getSettings.get(tasks[0])
+      value = Norma.getSettings.get(tasks[0])
+      msg = Chalk.cyan( tasks[0] + ": ") + value
 
-      Norma.emit "message", msg
+      if value
+        Norma.log msg
+      else
+        Norma.log "No value found for #{tasks[0]}"
     else
       if not Norma.global
         createLocal()
@@ -94,10 +153,13 @@ module.exports = (tasks, cwd, global) ->
 
   # CONFIG-SAVE -----------------------------------------------------------
 
+  if Object.keys(Norma.getSettings()).length
 
-  # Save the configuration object to file
-  Norma.getSettings._.save (err, data) ->
-    throw err if err
+    # Save the configuration object to file
+    Norma.getSettings._.save (err, data) ->
+      throw err if err
+  else
+    Norma.log "No settings found"
 
 
 
