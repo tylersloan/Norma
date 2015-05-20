@@ -165,8 +165,6 @@ prepareFile = (loc) ->
   if Fs.existsSync(loc) and Fs.existsSync(newPackage)
     return
 
-  dir = Path.resolve(loc, "../")
-
   if not Fs.existsSync dir
     Fs.mkdirSync dir
 

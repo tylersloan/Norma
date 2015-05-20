@@ -1,4 +1,46 @@
 
+## 1.6
+
+* Massive reworking of the settings method within Norma. Settings can now include tasks to be run as well as general settings. To update your projects you will need to delete your .norma files globally and locally. To remove globaly `rm -rf ~/.norma/.norma` and locally `rm -rf ./.norma`. This is only if you have used settings before. The new settings are stored in a Norma file just like project config. The idea behind this is to unify the Norma file types and to share a common core of interactions between project configuration and personal configuration. Settings and config share tasks so you can `@extend` from the config file into the settings file. The idea behind this is to separate the concerns of what the project needs to be executed (compiliation, file creation, etc) and what a developer likes to set up to run the application (live reload, hosts file management, notifications). That way a team can work together but the individual devs can still have a unique experience. The new settings method tracks its own `node_modules` and `package.json` and all of this for a local project can be found at the root level under .norma. Typically this is not tracked in version control
+
+## 1.5
+
+* Changed requirements of norma.json to expand and be written in JSON or CSON. Norma will now accept `norma.json`, `norma.cson`, or the preferred `Norma` file written in CSON (coffeescript object notation). This new notation also allows for comments in line.
+
+```coffeescript
+# Welcome ruby friends
+name: "norma-projects"
+
+tasks:
+  javascript:
+    src: "_source/pre/**/*"
+    dest: "_source/tmp"
+  build:
+    "@extend": "javascript"
+    src: "_source/build.min"
+    dest: ""
+    order: "post"
+
+```
+
+## 1.4.1
+
+* Order of a package can now be set / overwritten in the Norma file
+```javascript
+"tasks": {
+  "javascript": {
+    "order": "post"
+  }
+}
+
+```
+
+## 1.4
+
+* Moved Norma's global configuration storage from ~/norma to ~/.norma to hide on unix machines and bring tooling in line with industry standard practices
+* Added method to encrypt stored passwords that can be decrypted by packages. Each user gets a unique encryption key stored on their system to encrypt the password. To set this in settings use `norma settings password secret --hide`. This will set the value of password to be `{norma-hashed: <hashed value>}`. When you run Norma.getSettings("password") it will de-encrypt the password for you on the fly.
+
+
 ## 1.3
 
 * Added the ability to run javascript from a norma function via a special
