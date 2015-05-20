@@ -129,9 +129,8 @@ module.exports = (tasks, cwd, scaffold) ->
       Norma.emit "message", "Installing packages to your global norma..."
 
 
-    MkDir Path.resolve Norma._.userHome, "packages"
 
-    pgkeJSON = Path.resolve(Norma._.userHome, "packages/package.json")
+    pgkeJSON = Path.resolve(Norma._.userHome, "package.json")
 
     if !Fs.existsSync( pgkeJSON )
 
@@ -153,7 +152,7 @@ module.exports = (tasks, cwd, scaffold) ->
 
 
     # Do work on users global norma
-    cwd = Path.resolve Norma._.userHome, "packages"
+    cwd = Path.resolve Norma._.userHome
 
     ExecCommand(
       action

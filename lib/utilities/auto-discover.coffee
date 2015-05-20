@@ -129,10 +129,12 @@ module.exports = (cwd, packages, promise) ->
     logInstalling neededPackges
 
 
-    promises = [
-      Norma.install(packagesCopy, cwd)
-      Norma.install(settingsTasks, Path.join(cwd, ".norma"))
-    ]
+    promises = []
+    if packagesCopy.length
+      promises.push Norma.install(packagesCopy, cwd)
+
+    if settingsTasks.length
+      promises.push Norma.install(settingsTasks, Path.join(cwd, ".norma"))
 
     # add then run norma again
     Q.all(promises)

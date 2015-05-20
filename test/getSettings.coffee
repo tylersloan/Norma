@@ -14,20 +14,20 @@ describe "getSettings", ->
 
     settings.should.be.an "object"
 
-  it "should be contain a path key", ->
-
-    settings = Norma.getSettings()
-
-    settings.should.contain.any.keys "path"
+  # it "should be contain a path key", ->
+  #
+  #   settings = Norma.getSettings()
+  #
+  #   settings.should.contain.any.keys "path"
 
 
   describe "get", ->
 
-    it "should return a value if passed a key", ->
-
-      path = Norma.getSettings.get "path"
-
-      path.should.be.a "string"
+    # it "should return a value if passed a key", ->
+    #
+    #   path = Norma.getSettings.get "path"
+    #
+    #   path.should.be.a "string"
 
     it "should return an object if passed nothing", ->
 

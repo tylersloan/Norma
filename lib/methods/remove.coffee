@@ -109,7 +109,7 @@ module.exports = (tasks, cwd, scaffold) ->
 
 
     # Do work on users global norma
-    process.chdir Path.resolve Norma._.userHome, "packages"
+    process.chdir Path.resolve Norma._.userHome
 
     ExecCommand(
       action

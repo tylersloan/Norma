@@ -49,8 +49,11 @@ initialize = ->
   # See if a config file already exists (for global files)
   globalConfigExists = Fs.existsSync global
 
+  localSettings = Path.join(process.cwd(), ".norma")
+  # if not Fs.existsSync localSettings
+  #   Fs.mkdirSync localSettings
 
-  local = Norma.config.getFile(Path.join(process.cwd(), ".norma"))
+  local = Norma.config.getFile(localSettings)
   # See if a config file already exists (for local files)
   localConfigExists = Fs.existsSync local
 
