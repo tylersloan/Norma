@@ -11,12 +11,12 @@ module.exports = (Norma) ->
     Norma[string] = Flags[key]
     return
 
-  # settingsLink = (key) ->
-  #
-  #   try
-  #     if Norma.getSettings.get "modes:#{key}"
-  #       Norma[key] = true
-  #   catch e
+  settingsLink = (key) ->
+
+    try
+      if Norma.getSettings.get "modes:#{key}"
+        Norma[key] = true
+    catch e
 
 
   # MODES -------------------------------------------------------------------
@@ -29,8 +29,8 @@ module.exports = (Norma) ->
 
 
   # settings vars
-  # modes = ["production", "development", "verbose", "silent", "debug"]
-  # settingsLink mode for mode in modes
+  modes = ["production", "development", "verbose", "silent", "debug"]
+  settingsLink mode for mode in modes
 
 
 

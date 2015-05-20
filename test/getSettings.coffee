@@ -64,14 +64,14 @@ describe "getSettings", ->
 
     describe "stores", ->
 
-      it "should be from a .norma file if type is `file`", ->
+      it "should be from a norma file if type is `file`", ->
 
         _settings = Norma.getSettings._
 
         for store of _settings.stores
 
           if _settings.stores[store].type is "file"
-            _settings.stores[store].file.should.contain ".norma"
+            _settings.stores[store].file.should.contain "norma"
 
 
       it "should be at Norma.userHome if global", ->

@@ -165,3 +165,4 @@ save = (obj, cwd) ->
 module.exports = config
 module.exports.save = save
 module.exports.exists = exists
+module.exports.getFile = getFile

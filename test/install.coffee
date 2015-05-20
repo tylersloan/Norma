@@ -62,7 +62,7 @@ describe "Install", ->
 
     js = Path.join node_modules, "norma-meteor"
     globalJs = Path.join(
-      Norma._.userHome, "packages", "node_modules", "norma-meteor"
+      Norma._.userHome, "node_modules", "norma-meteor"
     )
 
     beforeEach (done) ->
