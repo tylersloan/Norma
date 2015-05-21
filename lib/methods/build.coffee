@@ -7,7 +7,6 @@ Q = require "kew"
 
 Norma = require "./../norma"
 MapTree = require("./../utilities/directory-tools").mapTree
-ReadConfig = require "./../utilities/read-config"
 ExecCommand = require "./../utilities/execute-command"
 GenerateTaskList = require "./../utilities/generate-task-list"
 
@@ -21,7 +20,15 @@ module.exports = (tasks, cwd) ->
 
 
   # Load config
-  config = ReadConfig cwd
+  config = Norma.config cwd
+  localConfig = Norma.config(Path.join(cwd, ".norma"))
+
+  # map tasks
+  config.tasks = _.extend config.tasks, localConfig.tasks
+  # map test
+  config.test = _.extend config.test, localConfig.test
+
+
 
   if not config.tasks
     buildStatus.reject("No tasks configured in norma-file found at #{cwd}")

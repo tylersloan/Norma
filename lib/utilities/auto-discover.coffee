@@ -1,21 +1,38 @@
-
+Path = require "path"
 Chalk = require "chalk"
 _ = require "underscore"
+Q = require "kew"
+
 
 Norma = require "./../norma"
 
 module.exports = (cwd, packages, promise) ->
 
 
-  if !cwd then cwd = process.cwd()
+  cwd or= process.cwd()
 
   # set needed variables
   config = Norma.config cwd
+  settings = Norma.config Path.join(cwd, ".norma")
+
+  # add temp flag for installation of settings projects
+  if settings.tasks
+    for task, obj of settings.tasks
+      obj.__settings = true
+
+  config.tasks = _.extend config.tasks, settings.tasks
+
+
+  if settings.test
+    for task, obj of settings.test
+      obj.__settings = true
+
+  config.test = _.extend config.test, settings.test
+
+
   neededPackages = []
-
-
   # If there are no tasks so we can't do much, so exit with error
-  if !config.tasks and !config.test
+  if not config.tasks and not config.test
 
     err =
       level: "crash"
@@ -36,6 +53,12 @@ module.exports = (cwd, packages, promise) ->
     if _obj[key]["@extend"]
       key = _obj[key]["@extend"]
 
+      if _.isObject _obj[key] and not Object.keys(_obj[key]).length
+        err = new Error("No task defined for #{key} to extend")
+        err.level = "crash"
+        Norma.emit "error", err
+        return
+
 
     if packages[key] is undefined
 
@@ -48,7 +71,7 @@ module.exports = (cwd, packages, promise) ->
         global: _obj[key].global
         endpoint: _obj[key].endpoint
         dev: dev or _obj[key].dev
-
+        settings: _obj[key].__settings
 
       neededPackages.push pkge
 
@@ -92,12 +115,40 @@ module.exports = (cwd, packages, promise) ->
 
     packagesCopy = neededPackages.slice()
 
+    settingsTasks = packagesCopy.filter (x) ->
+      x.settings
+
+    packagesCopy = packagesCopy.filter (x) ->
+      not x.settings
+
+    logInstalling = (array) ->
+
+      prettyPrint = array.map (x) ->
+        return x.name
+
+      msg = Chalk.green("Installing the following packages: ") +
+        "#{prettyPrint.join(', ')}"
+
+      Norma.emit "message", msg
+
+
+    logInstalling neededPackges
+
+
+    promises = []
+    if packagesCopy.length
+      promises.push Norma.install(packagesCopy, cwd)
+
+    if settingsTasks.length
+      promises.push Norma.install(settingsTasks, Path.join(cwd, ".norma"))
+
     # add then run norma again
-    Norma.install(packagesCopy, cwd)
+    Q.all(promises)
       .then( ->
-        # Norma.run Norma.args, cwd
+
         Norma.getPackages(cwd)
           .then( (packages) ->
+
             promise.resolve(packages)
           )
       )
@@ -105,16 +156,6 @@ module.exports = (cwd, packages, promise) ->
 
 
 
-    prettyPrint = new Array
-
-    for pkge in neededPackages
-      prettyPrint.push pkge.name
-
-
-    msg = Chalk.green("Installing the following packages: ") +
-      "#{prettyPrint.join(', ')}"
-
-    Norma.emit "message", msg
 
     return promise
 

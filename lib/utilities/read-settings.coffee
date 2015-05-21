@@ -4,6 +4,8 @@ Path = require "path"
 Nconf = require "nconf"
 Bcrypt = require "bcrypt"
 Crypto = require "crypto"
+CSON = require "cson"
+
 
 Norma = require "./../norma"
 intialized = false
@@ -12,6 +14,28 @@ initialize = ->
 
 
   # CONFIG-TYPE -----------------------------------------------------------
+  csonFormat =
+    stringify: (obj, options) ->
+
+      if not Object.keys(obj).length
+        throw new Error("invalid object to be saved, #{obj}")
+        return
+
+      CSON.stringify(obj)
+
+    parse: (obj, options) ->
+      try
+        parsed = JSON.parse(obj)
+      catch e
+
+        try
+          parsed = CSON.parse obj
+
+          return parsed
+        catch error
+          error.level = "crash"
+          Norma.emit "error", error
+          return
 
   ###
 
@@ -20,18 +44,23 @@ initialize = ->
     directory level to create and use config (local)
 
   ###
-  global = Path.resolve Norma._.userHome, ".norma"
+  # global = Path.resolve Norma._.userHome, ".norma"
+  global = Norma.config.getFile Norma._.userHome
   # See if a config file already exists (for global files)
   globalConfigExists = Fs.existsSync global
 
+  localSettings = Path.join(process.cwd(), ".norma")
+  # if not Fs.existsSync localSettings
+  #   Fs.mkdirSync localSettings
 
-  local = Path.join process.cwd(), ".norma"
+  local = Norma.config.getFile(localSettings)
   # See if a config file already exists (for local files)
   localConfigExists = Fs.existsSync local
 
 
 
   # CONFIG-CREATE -------------------------------------------------------------
+
 
   # If no file, then we create a new one with some preset items
   if !globalConfigExists
@@ -41,20 +70,17 @@ initialize = ->
     # Save config
     Fs.writeFileSync(
       global
-      JSON.stringify(config, null, 2)
+      CSON.stringify(config)
     )
 
 
 
   # CONFIG-SET ---------------------------------------------------------------
 
-  if localConfigExists
-    Nconf.use "memory"
-      .file "local", local
-      .file "global", global
-  else
-    Nconf.use "memory"
-      .file "global", global
+
+  Nconf.use "memory"
+    .file("local", { file: local, format: csonFormat })
+    .file("global", { file: global, format: csonFormat })
 
 
   intialized = true
@@ -62,6 +88,8 @@ initialize = ->
   return Nconf
 
 
+
+# ENCODING ---------------------------------------------------------------
 
 privateFile = Path.join Norma._.userHome, ".private"
 
@@ -71,7 +99,7 @@ setSalt = (obj) ->
   try
     Fs.writeFileSync(
       privateFile
-      JSON.stringify(obj, null, 2)
+      CSON.stringify(obj)
     )
   catch err
     Norma.emit "error", "Cannot save private configuration"
@@ -79,14 +107,13 @@ setSalt = (obj) ->
 
   return obj.salt
 
-
 getSalt = ->
 
   # lookup file
   if Fs.existsSync privateFile
     try
       file = Fs.readFileSync privateFile, encoding: "utf8"
-      file = JSON.parse file
+      file = CSON.parse file
       file or= {}
     catch err
       err.level = "crash"
@@ -128,9 +155,73 @@ encrypt = (salt, value) ->
 
 
 
-get = (getter) ->
+# Create files
+prepareFile = (loc) ->
+
+  dir = Path.resolve(loc, "../")
+  packageJson = Path.resolve(dir, "../", "package.json")
+  newPackage = Path.resolve(dir, "package.json")
+
+  if Fs.existsSync(loc) and Fs.existsSync(newPackage)
+    return
+
+  if not Fs.existsSync dir
+    Fs.mkdirSync dir
+
+  Fs.writeFileSync loc
+
+  if Fs.existsSync packageJson
+
+    # read file
+    # Using the require method keeps the same in memory, instead we use
+    # a synchronous fileread of the JSON.
+    config = Fs.readFileSync packageJson, encoding: "utf8"
+
+    try
+      config = JSON.parse(config)
+    catch err
+      err.level = "crash"
+
+      Norma.emit "error", err
+
+    # remove dependenices
+    delete config["dependencies"]
+    delete config["devDependencies"]
+    delete config["peerDependencies"]
+  else
+    config =
+      name: "global-packages"
+      version: "1.0.0"
+      description: "global packages for Norma build tool"
+      main: "index.js"
+      scripts:
+        test: "echo \"Error: no test specified\" && exit 1"
+      author: ""
+      license: "MIT"
+      repository:
+        type: "git"
+        url: "https://github.com/NewSpring/norma.git"
+      README: "  "
+
+  # save
+  try
+    Fs.writeFileSync(
+      newPackage
+      JSON.stringify(config, null, 2)
+    )
+  catch err
+    Norma.emit "error", "Cannot save #{getFile(cwd)}"
+
+  return
+
+
+# ACCESS ------------------------------------------------------------------
+
+get = (getter, store) ->
+
   if !intialized
     initialize()
+
 
   gotten = Nconf.get getter
 
@@ -138,10 +229,15 @@ get = (getter) ->
     salt = getSalt()
     gotten = decrypt salt, gotten
 
+
   return gotten
 
 
 set = (setter, value, hide) ->
+
+  for store, obj of Nconf.stores
+    if obj.file
+      prepareFile obj.file
 
   if Norma.hide or hide
     salt = getSalt()

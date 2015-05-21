@@ -13,6 +13,8 @@ Fs    = require "fs"
 Flags = require("minimist")(process.argv.slice(2))
 Chalk = require "chalk"
 Path = require "path"
+CSON = require "cson"
+PrettyPrint = require "prettyjson"
 
 Norma = require "./../norma"
 
@@ -48,38 +50,24 @@ module.exports = (tasks, cwd, global) ->
 
     configData = Norma.getSettings()
 
-    # Print out cofing data for easy lookup
-    console.log configData
+    if Object.keys(configData).length
+      # Print out cofing data for easy lookup
+      Norma.log(PrettyPrint.render(configData))
 
 
 
-  createLocal = ->
-    local = Path.join process.cwd(), ".norma"
-    # See if a config file already exists (for local files)
-    localConfigExists = Fs.existsSync local
 
 
-    if localConfigExists
-      return
-
-    # If no file, then we create a new one with some preset items
-    config =
-      path: local
-
-    # Save config
-    Fs.writeFileSync(
-      local
-      JSON.stringify(config, null, 2)
-    )
 
 
   # SAVE ------------------------------------------------------------------
 
   # Save config with value
   if tasks[1]
-    if not Norma.global
-      createLocal()
+
     Norma.getSettings.set tasks[0], tasks[1]
+    msg = Chalk.cyan( tasks[0] + ": ") + tasks[1]
+    Norma.log msg
 
 
 
@@ -91,10 +79,13 @@ module.exports = (tasks, cwd, global) ->
 
     # Gives users the options to remove config items
     if !Flags.remove
-      msg = Chalk.cyan( tasks[0] + ": ") +
-        Norma.getSettings.get(tasks[0])
+      value = Norma.getSettings.get(tasks[0])
+      msg = Chalk.cyan( tasks[0] + ": ") + value
 
-      Norma.emit "message", msg
+      if value
+        Norma.log msg
+      else
+        Norma.log "No value found for #{tasks[0]}"
     else
       if not Norma.global
         createLocal()
@@ -114,10 +105,13 @@ module.exports = (tasks, cwd, global) ->
 
   # CONFIG-SAVE -----------------------------------------------------------
 
+  if Object.keys(Norma.getSettings()).length
 
-  # Save the configuration object to file
-  Norma.getSettings._.save (err, data) ->
-    throw err if err
+    # Save the configuration object to file
+    Norma.getSettings._.save (err, data) ->
+      throw err if err
+  else
+    Norma.log "No settings found"
 
 
 

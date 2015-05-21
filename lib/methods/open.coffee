@@ -11,7 +11,7 @@ module.exports = (tasks, cwd) ->
 
     if !editor
       msg = "no editor specified, to add one run" +
-        "`norma config user:editor <editor> --global`"
+        "`norma settings user:editor <editor> --global`"
 
       Norma.emit "message", msg
 

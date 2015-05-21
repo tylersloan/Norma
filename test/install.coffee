@@ -61,9 +61,7 @@ describe "Install", ->
   describe "Packages", ->
 
     js = Path.join node_modules, "norma-meteor"
-    globalJs = Path.join(
-      Norma._.userHome, "packages", "node_modules", "norma-meteor"
-    )
+    globalJs = Path.join(Norma._.userHome, "node_modules", "norma-meteor")
 
     beforeEach (done) ->
 
@@ -117,6 +115,7 @@ describe "Install", ->
         .then( ->
           Fs.existsSync(globalJs).should.be.true
         )
+
 
     it "install allow packages to be installed from a git repo", ->
 

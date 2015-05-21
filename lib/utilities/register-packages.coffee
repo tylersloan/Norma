@@ -11,19 +11,20 @@ AutoDiscover = require "./auto-discover"
 
 module.exports = (cwd) ->
 
+
   loadedPackages = Q.defer()
 
+  cwd or= process.cwd()
 
-  if !cwd then cwd = process.cwd()
-
-  # Get any project specific packages (from package.json)
+  # Get global, local, and settings packages already installed
+  rootTasks = PkgeLookup Path.resolve(Norma._.userHome)
   projectTasks = PkgeLookup cwd
-
-  # Get global packages added to Norma
-  rootTasks = PkgeLookup (Path.resolve Norma._.userHome, "packages"), cwd
+  settingsTasks = PkgeLookup Path.join(cwd, ".norma")
 
 
-  combinedTasks = projectTasks.concat rootTasks
+  combinedTasks = settingsTasks.concat projectTasks, rootTasks
+
+
 
 
   # Combine all tasks list in order of local - local npm - global npm
@@ -38,6 +39,7 @@ module.exports = (cwd) ->
 
   # see if we need to download any packages
   isMissingTasks = AutoDiscover(cwd, Norma.tasks, loadedPackages)
+
 
   ###
 
@@ -57,59 +59,66 @@ module.exports = (cwd) ->
 
   ###
 
-  if !isMissingTasks
-
-    config = Norma.config cwd
-
-    mergeExtendedTask = (key, object) ->
-
-      # @extend "package" handling
-      if object[key]["@extend"]
-        extensionName = key
-        extension = object[key]["@extend"]
-
-      # extended task does exist
-      if !Norma.tasks[extension]
-        return
+  if isMissingTasks
+    return loadedPackages
 
 
-      extendedTask = require Norma._.packageDirs[extension]
+  config = Norma.config cwd
 
-      # we handle merging of master to extension here
-      object[extensionName] = _.extend(
-        config.tasks[extension]
-        object[extensionName]
-      )
+  # merge in settings
+  settings = Norma.config Path.join(cwd, ".norma")
+  config.tasks = _.extend config.tasks, settings.tasks
+  config.test = _.extend config.test, settings.test
 
+  mergeExtendedTask = (key, object) ->
 
-      # copy settings to be sent
-      config = JSON.parse JSON.stringify(config)
-      taskObject = extendedTask config, extensionName
+    # @extend "package" handling
+    if object[key]["@extend"]
+      extensionName = key
+      extension = object[key]["@extend"]
 
+    # extended task does exist
+    if !Norma.tasks[extension]
       return
 
 
-    for key of config.tasks
-      mergeExtendedTask key, config.tasks
+    extendedTask = require Norma._.packageDirs[extension]
+
+    # we handle merging of master to extension here
+    object[extensionName] = _.extend(
+      config.tasks[extension]
+      object[extensionName]
+    )
 
 
-    if _.isObject config.test
+    # copy settings to be sent
+    config = JSON.parse JSON.stringify(config)
+    taskObject = extendedTask config, extensionName
 
-      for _test of config.test
-
-        if _test is "before" or _test is "after"
-          continue
-
-        if _test is "main" and  _.isArray config.test.main
-          for item in config.test.main
-            mergeExtendedTask item, config.test.main
-
-          return
-
-        mergeExtendedTask _test, config.test
+    return
 
 
+  for key of config.tasks
+    mergeExtendedTask key, config.tasks
 
-    loadedPackages.resolve Norma.tasks
+
+  if _.isObject config.test
+
+    for _test of config.test
+
+      if _test is "before" or _test is "after"
+        continue
+
+      if _test is "main" and  _.isArray config.test.main
+        for item in config.test.main
+          mergeExtendedTask item, config.test.main
+
+        return
+
+      mergeExtendedTask _test, config.test
+
+
+
+  loadedPackages.resolve Norma.tasks
 
   return loadedPackages

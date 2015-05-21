@@ -10,7 +10,6 @@ Fs = require "fs"
 Path = require "path"
 Chalk = require "chalk"
 _ = require "underscore"
-Lint = require "json-lint"
 CSON = require "cson"
 
 Norma = require "./../norma"
@@ -63,8 +62,12 @@ config = (cwd) ->
 
   cwd or= process.cwd()
 
+  if _.isArray cwd
+    cwd = process.cwd()
+
   # Find file based on cwd argument
   fileLoc = getFile cwd
+
 
 
   parse = (data) ->
@@ -162,3 +165,4 @@ save = (obj, cwd) ->
 module.exports = config
 module.exports.save = save
 module.exports.exists = exists
+module.exports.getFile = getFile

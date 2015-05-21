@@ -41,7 +41,6 @@ name = Norma.getSettings.get "user:name"
 browser = Norma.getSettings.get "user:browser"
 editor = Norma.getSettings.get "user:editor"
 
-# console.log name, browser, editor
 
 if name or browser or editor
   return
