@@ -17,6 +17,8 @@ initialize = ->
   csonFormat =
     stringify: (obj, options) ->
 
+      obj or= {}
+      
       if not Object.keys(obj).length
         throw new Error("invalid object to be saved, #{obj}")
         return
