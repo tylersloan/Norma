@@ -17,13 +17,18 @@ initialize = ->
   csonFormat =
     stringify: (obj, options) ->
 
-      obj or= {}
-      
-      if not Object.keys(obj).length
-        throw new Error("invalid object to be saved, #{obj}")
-        return
+      oldObj = obj
 
-      CSON.stringify(obj)
+      # if not Object.keys(obj).length
+      #   throw new Error("invalid object to be saved, #{obj}")
+      #   return
+      try
+        data = CSON.stringify(obj)
+        return data
+      catch error
+        Norma.emit "error", error
+
+      return oldObj
 
     parse: (obj, options) ->
       try
