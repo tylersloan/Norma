@@ -1,7 +1,18 @@
 
-## v.Next
+## v.Future
 
 * First class support for gulp plugins. The idea behind this is to allow devs to `write` packages using gulp plugins directly in the Norma file. Then Norma will fetch the packages, and dynamically build a norma packages based on the configuration.
+
+
+## v.Next
+
+* Overall speed improvments thanks to benchmarking and tweaking
+* The ability to group tasks into task sets similar to how guard can group tasks.
+
+
+## 1.6.2
+
+* Moved to using Chokidar for watcher function behind the scenes. It has better support for io.js and has automatic watches on file addtions
 
 ## 1.6
 
