@@ -3,11 +3,12 @@ Path = require "path"
 Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
-Vfs = require "vinyl-fs"
+
 
 Norma = require "./../norma"
 PkgeLookup = require "./../utilities/package-lookup"
 Prompt = require "./../utilities/prompt"
+Watch = require "./../utilities/watch"
 
 watching = []
 module.exports = (tasks, cwd) ->
@@ -56,9 +57,6 @@ module.exports = (tasks, cwd) ->
 
     src = if config.tasks[task]? then config.tasks[task].src else "./**/*/"
 
-    # src = Path.resolve cwd, src
-    # console.log src
-
     taskName = task
 
     exts = (
@@ -72,30 +70,30 @@ module.exports = (tasks, cwd) ->
 
     obj = {}
 
-    obj[taskName] = Vfs.watch(
-      [
-        "#{src}.#{exts}"
-        # "!node_modules/**/*"
-        # "!.git/**/*"
-      ], (event) ->
+    obj[taskName] = Watch([
+      "#{src}.#{exts}"
+      # "!node_modules/**/*"
+      # "!.git/**/*"
+    ])
 
-        if ignoreChange[event.path] > 0
-          ignoreChange[event.path]--
-          return
+    obj[taskName].on("change", (event) ->
 
-        fileName = Path.basename event.path
+      if ignoreChange[event.path] > 0
+        ignoreChange[event.path]--
+        return
 
-        if Norma.verbose
-          msg = Chalk.cyan(taskName.toUpperCase()) +
-            " saw " +
-            Chalk.white(fileName) +
-            " was #{event.type}"
+      fileName = Path.basename event.path
 
-          Norma.emit "message", msg
+      if Norma.verbose
+        msg = Chalk.cyan(taskName.toUpperCase()) +
+          " saw " +
+          Chalk.white(fileName) +
+          " was #{event.type}"
 
+        Norma.emit "message", msg
 
-        runTask task, ->
-          Norma.emit "file-change", event
+      runTask task, ->
+        Norma.emit "file-change", event
 
     )
 
