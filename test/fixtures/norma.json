@@ -2,30 +2,8 @@
   "name": "test-project",
   "tasks": {
     "copy": {
-      "src": "images/**/*",
-      "dest": "out/images",
-      "@extend": "copy"
-    },
-    "advanced": {
-      "src": "images/**/*",
-      "dest": "out/images"
-    },
-    "images": {
-      "src": "images/**/*",
-      "dest": "out/images",
-      "@extend": "copy"
-    },
-    "mocha": {
-      "src": "images/**/*",
-      "dest": "out/images"
+      "src": "lib/**/*",
+      "dest": "./out"
     }
-  },
-  "test": {
-    "before": "mkdir ./complexTest",
-    "main": [
-      "./testing-scripts/second-index.js",
-      "./testing-scripts/index.js"
-    ],
-    "after": "touch ./complexTest/index.js"
   }
 }
