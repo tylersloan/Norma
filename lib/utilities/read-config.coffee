@@ -58,14 +58,6 @@ getFile = (cwd) ->
   return _norma
 
 
-###
-
-  Because we use the configs a decent amount within the process,
-  we cache them to bypass the sync read each time
-
-###
-
-_configs = {}
 
 config = (cwd) ->
 
@@ -76,10 +68,6 @@ config = (cwd) ->
 
   # Find file based on cwd argument
   fileLoc = getFile cwd
-
-  # read from cache and return
-  if _configs[fileLoc]
-    return _configs[fileLoc]
 
   parse = (data, save) ->
 

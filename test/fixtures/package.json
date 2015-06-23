@@ -11,5 +11,7 @@
   "dependencies": {
     "norma-copy": "^0.4.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "norma-meteor": "git://github.com/NewSpring/norma-meteor"
+  }
 }

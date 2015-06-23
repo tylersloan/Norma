@@ -2,8 +2,18 @@
   "name": "test-project",
   "tasks": {
     "copy": {
-      "src": "lib/**/*",
-      "dest": "./out"
+      "src": "images/**/*",
+      "dest": "out/images",
+      "@extend": "copy"
+    },
+    "advanced": {
+      "src": "images/**/*",
+      "dest": "out/images"
+    },
+    "images": {
+      "src": "images/**/*",
+      "dest": "out/images",
+      "@extend": "copy"
     }
   }
 }
