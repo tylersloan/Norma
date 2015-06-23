@@ -6,19 +6,18 @@
   user and then execute the scaffold script.
 
 ###
+
 Fs = require "fs"
 Path = require "path"
-Inquirer = require "inquirer"
 Q = require "kew"
 
-Norma = require "./../norma"
-Scaffold = require "./../utilities/scaffold"
-MapTree = require("./../utilities/directory-tools").mapTree
-RemoveTree = require("./../utilities/directory-tools").removeTree
-
-
-
 module.exports = (tasks, cwd, answers) ->
+
+  Norma = require "./../norma"
+  Scaffold = require "./../utilities/scaffold"
+  MapTree = require("./../utilities/directory-tools").mapTree
+  RemoveTree = require("./../utilities/directory-tools").removeTree
+
 
   installed = Q.defer()
 
@@ -89,7 +88,7 @@ module.exports = (tasks, cwd, answers) ->
   # INIT ------------------------------------------------------------------
 
   doInit = (scaffoldNames, scaffolds) ->
-
+    Inquirer = require "inquirer"
     Inquirer.prompt([
       {
         type: "list"

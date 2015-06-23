@@ -3,16 +3,16 @@ Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
 
-Norma = require "./../norma"
-MapTree = require("./../utilities/directory-tools").mapTree
-PkgeLookup = require "./../utilities/package-lookup"
-
 
 
 module.exports = (tasks, cwd, scaffolds) ->
 
+  Norma = require "./../norma"
+
   listTypes = (folderLocation, type) ->
 
+    MapTree = require("./../utilities/directory-tools").mapTree
+    
     scaffolds = MapTree(folderLocation).children
 
     scaffoldList = (

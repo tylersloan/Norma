@@ -4,14 +4,11 @@ Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
 
-
 Norma = require "./../norma"
-PkgeLookup = require "./../utilities/package-lookup"
-Prompt = require "./../utilities/prompt"
-Watch = require "./../utilities/watch"
 
 watching = []
 module.exports = (tasks, cwd) ->
+  Watch = require "./../utilities/watch"
 
   cwd or= process.cwd()
 
@@ -134,6 +131,7 @@ module.exports = (tasks, cwd) ->
       runTask line
 
     return
+
 
 
 module.exports.stop = ->

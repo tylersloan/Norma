@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 "use strict";
-
+require("time-require");
 require("coffee-script/register");
 var Liftoff = require("liftoff");
 var Flags = require("minimist")(process.argv.slice(2));
 var Domain = require("domain").create();
+
 
 var Norma = require("../lib/index")
 var Launch = require("./launcher")

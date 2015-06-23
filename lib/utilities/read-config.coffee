@@ -58,6 +58,15 @@ getFile = (cwd) ->
   return _norma
 
 
+###
+
+  Because we use the configs a decent amount within the process,
+  we cache them to bypass the sync read each time
+
+###
+
+_configs = {}
+
 config = (cwd) ->
 
   cwd or= process.cwd()
@@ -68,9 +77,11 @@ config = (cwd) ->
   # Find file based on cwd argument
   fileLoc = getFile cwd
 
+  # read from cache and return
+  if _configs[fileLoc]
+    return _configs[fileLoc]
 
-
-  parse = (data) ->
+  parse = (data, save) ->
 
     if data is `undefined`
 
@@ -89,10 +100,10 @@ config = (cwd) ->
 
     data = _process(data)
 
+    if save
+      _configs[fileLoc] = data
 
     return data
-
-
 
 
   ###
@@ -103,6 +114,7 @@ config = (cwd) ->
   ###
 
   if Fs.existsSync fileLoc
+
     try
       file = CSON.parseFile fileLoc
     catch err
@@ -115,7 +127,7 @@ config = (cwd) ->
   else return false
 
 
-  return parse(file)
+  return parse(file, true)
 
 
 

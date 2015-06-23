@@ -1,11 +1,9 @@
 
-Npm = require "npm"
+
 Path = require "path"
 Fs = require "fs"
-Semver = require "semver"
-Inquirer = require "inquirer"
-Norma = require "../lib/norma"
 
+Norma = require "../lib/norma"
 ExecCommand = require "./../lib/utilities/execute-command"
 
 module.exports = (preference, callback) ->
@@ -31,7 +29,7 @@ module.exports = (preference, callback) ->
 
 
   # UPDATE ------------------------------------------------------------------
-
+  Npm = require "npm"
   # Run npm tasks within load per API found here:
   # https://docs.npmjs.com/api/load
   Npm.load( ->
@@ -53,7 +51,7 @@ module.exports = (preference, callback) ->
         availableVersion = key
         break
 
-
+      Semver = require "semver"
       if !Semver.gte currentVersion, availableVersion
 
         skippedVersion = Norma.getSettings.get "version"
@@ -76,7 +74,7 @@ module.exports = (preference, callback) ->
         # use inquier method for updating Norma here
 
         Norma.log message
-
+        Inquirer = require "inquirer"
         Inquirer.prompt([
           {
             type: "list"
