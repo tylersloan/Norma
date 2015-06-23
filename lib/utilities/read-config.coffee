@@ -88,9 +88,6 @@ config = (cwd) ->
 
     data = _process(data)
 
-    if save
-      _configs[fileLoc] = data
-
     return data
 
 
