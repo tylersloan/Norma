@@ -14,6 +14,18 @@
       "src": "images/**/*",
       "dest": "out/images",
       "@extend": "copy"
+    },
+    "mocha": {
+      "src": "images/**/*",
+      "dest": "out/images"
     }
+  },
+  "test": {
+    "before": "mkdir ./complexTest",
+    "main": [
+      "./testing-scripts/second-index.js",
+      "./testing-scripts/index.js"
+    ],
+    "after": "touch ./complexTest/index.js"
   }
 }
