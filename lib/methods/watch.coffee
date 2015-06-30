@@ -8,7 +8,9 @@ Norma = require "./../norma"
 
 watching = []
 module.exports = (tasks, cwd) ->
+
   Watch = require "./../utilities/watch"
+
 
   cwd or= process.cwd()
 
@@ -107,14 +109,11 @@ module.exports = (tasks, cwd) ->
   # START ------------------------------------------------------------------
 
   if Norma.verbose
-    msg =
-      message: "Watching files..."
-      color: "grey"
-
-    Norma.emit "message", msg
+    Norma.log "Watching files..."
 
 
   Norma.emit "watch-start"
+
 
   for task of Norma.tasks
     if !config.tasks[task] or !Norma.tasks[task].ext
@@ -140,6 +139,7 @@ module.exports.stop = ->
     watched.end()
 
   Norma.prompt.pause()
+
 
   return
 

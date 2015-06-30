@@ -21,7 +21,7 @@ module.exports = (env) ->
 
 
   # we only notify for updates if we are in a long running process (watch)
-  Norma.on("watch-started", ->
+  Norma.on("watch-start", ->
 
     # AUTOUPDATE --------------------------------------------------------------
 

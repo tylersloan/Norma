@@ -5,11 +5,12 @@ _ = require "underscore"
 Q = require "kew"
 
 
-module.exports = (cwd) ->
 
+module.exports = (cwd) ->
   Norma = require "./../norma"
   PkgeLookup = require "./package-lookup"
   AutoDiscover = require "./auto-discover"
+
 
   loadedPackages = Q.defer()
 
