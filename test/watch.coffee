@@ -8,8 +8,9 @@ describe "Watch", ->
 
   fixtures = Path.resolve "./test/fixtures"
 
+
   it "should change Norma.watchStarted to true", ->
-    @.timeout 100000
+    # @.timeout 10000
     Norma.watchStarted = false
 
     Norma.watch([], fixtures)
@@ -22,10 +23,10 @@ describe "Watch", ->
 
   it "should respond to changes in a file", (done) ->
 
+    @.timeout 100000
+
     oldprocess = process.cwd()
     process.chdir fixtures
-
-    @.timeout 100000
 
     outFile = Path.join fixtures, "out", "test.js"
     inFile = Path.join fixtures, "lib", "test.js"
@@ -40,15 +41,14 @@ describe "Watch", ->
 
     setTimeout ->
       Fs.writeFileSync inFile, contents
-    , 1000
+    , 500
 
-    # Fs.writeFileSync inFile, contents
+    Fs.writeFileSync inFile, contents
 
     Norma.on "file-change", (event) ->
 
       if Path.resolve(event.path) is Path.resolve(inFile)
         setTimeout ->
-          # Fs.writeFileSync inFile, contents
 
           newContents = Fs.readFileSync outFile, encoding: "utf8"
           newContents.should.equal contents.toString()
@@ -58,4 +58,4 @@ describe "Watch", ->
           Norma.watch.stop()
 
           done()
-        , 1000
+        , 500

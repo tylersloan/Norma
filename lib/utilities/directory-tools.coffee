@@ -144,11 +144,6 @@ removeTree = (dirPath, keep) ->
 
 
 
-
-
-removeSync = (dir) ->
-  Rimraf.sync dir
-
 remove = (dir, callback) ->
   (if callback then Rimraf(dir, callback) else Rimraf(dir, ->
   ))
@@ -156,7 +151,7 @@ remove = (dir, callback) ->
 
 module.exports =
   remove: remove
-  removeSync: removeSync
+  removeSync: Rimraf.sync
   mapTree: mapTree
   mkdir: mkdir
   copyTree: copyTree

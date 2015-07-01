@@ -58,6 +58,7 @@ getFile = (cwd) ->
   return _norma
 
 
+
 config = (cwd) ->
 
   cwd or= process.cwd()
@@ -68,9 +69,7 @@ config = (cwd) ->
   # Find file based on cwd argument
   fileLoc = getFile cwd
 
-
-
-  parse = (data) ->
+  parse = (data, save) ->
 
     if data is `undefined`
 
@@ -89,10 +88,7 @@ config = (cwd) ->
 
     data = _process(data)
 
-
     return data
-
-
 
 
   ###
@@ -103,6 +99,7 @@ config = (cwd) ->
   ###
 
   if Fs.existsSync fileLoc
+
     try
       file = CSON.parseFile fileLoc
     catch err
@@ -115,7 +112,7 @@ config = (cwd) ->
   else return false
 
 
-  return parse(file)
+  return parse(file, true)
 
 
 

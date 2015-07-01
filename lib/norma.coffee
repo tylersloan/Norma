@@ -3,16 +3,12 @@ Orchestrator  = require "orchestrator"
 Inherits      = require "inherits"
 Path          = require "path"
 Home          = require "user-home"
-Util          = require "util"
 _             = require "underscore"
 Fs            = require "fs"
 Vfs           = require "vinyl-fs"
-Flags         = require("minimist")( process.argv.slice(2) )
 
 
 MkDir = require("./utilities/directory-tools").mkdir
-# ManageDependencies = require "./utilities/manage-dependencies"
-# RegisterPackages = require "./utilities/register-packages"
 
 
 # PROTOTYPE ---------------------------------------------------------
@@ -29,15 +25,6 @@ Norma = ->
   if !Fs.existsSync homePath
     MkDir homePath
 
-  # self.setOptions = (options) ->
-
-  # Private variables
-  # self._ = _.defaults(
-  #   options or {},
-  #   cwd: process.cwd()
-  #   userHome: homePath
-  #   prefix: "Ø "
-  # )
   self._ =
     cwd: process.cwd()
     userHome: homePath
@@ -45,7 +32,7 @@ Norma = ->
     version: require(Path.join __dirname, "../package.json").version
     packageDirs: {}
 
-  self.args = Flags._
+  self.args = []
 
   self.packages = []
 
@@ -65,7 +52,6 @@ Norma = ->
 
 ###
 Inherits Norma, Orchestrator
-
 
 ###
 
@@ -117,13 +103,6 @@ Norma::subscribe = Norma::on
 
 ###
 
-
-
-# DEPRECATED
-Norma::events =
-  on: Util.deprecate Norma::on, "use Norma.on instead"
-  emit: Util.deprecate Norma::emit, "use Norma.emit instead"
-  listeners: Util.deprecate Norma::listeners, "use Norma.listeners instead"
 
 
 # Shamelessly borrowed from gulp

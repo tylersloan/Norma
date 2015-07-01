@@ -2,8 +2,6 @@ Path = require "path"
 Fs = require "fs"
 Exec = require('child_process').exec
 
-Norma = require "./../norma"
-
 ###
 
   I really like the idea of spawing processes but in
@@ -16,6 +14,8 @@ Norma = require "./../norma"
 
 ###
 module.exports = (action, cwd, cb) ->
+
+  Norma = require "./../norma"
 
   file = Fs.existsSync(
     Path.join(cwd, action)
@@ -37,7 +37,7 @@ module.exports = (action, cwd, cb) ->
     )
 
     child.stdout.setEncoding("utf8")
-    child.stdout.on "data", (data) ->
+    log = (data) ->
       str = data.toString()
       lines = str.split(/(\r?\n)/g)
 
@@ -56,21 +56,5 @@ module.exports = (action, cwd, cb) ->
 
       return
 
-    child.stderr.on "data", (data) ->
-      str = data.toString()
-      lines = str.split(/(\r?\n)/g)
-
-      i = 0
-      while i < lines.length
-        if !lines[i].match "\n"
-          message = lines[i].split("] ")
-
-          if message.length > 1
-            message.splice(0, 1)
-
-          message = message.join(" ")
-
-          Norma.emit "message", message
-        i++
-
-      return
+    child.stdout.on "data", log
+    child.stderr.on "data", log

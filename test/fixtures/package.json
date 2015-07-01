@@ -1,8 +1,7 @@
 {
   "name": "test-project",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "node ./testing-scripts/index.js"
   },
@@ -10,6 +9,5 @@
   "license": "MIT",
   "dependencies": {
     "norma-copy": "^0.4.2"
-  },
-  "devDependencies": {}
+  }
 }

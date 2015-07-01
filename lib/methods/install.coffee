@@ -1,16 +1,16 @@
+
+
 Path = require "path"
-Exec = require("child_process").exec
-Ghdownload = require "github-download"
 Fs = require "fs"
 Q = require "kew"
 _ = require "underscore"
 
-Norma = require "./../norma"
-ExecCommand = require "./../utilities/execute-command"
-MkDir = require("./../utilities/directory-tools").mkdir
-RemoveSync = require("./../utilities/directory-tools").removeSync
-
 module.exports = (tasks, cwd, scaffold) ->
+
+  Norma = require "./../norma"
+  ExecCommand = require "./../utilities/execute-command"
+  MkDir = require("./../utilities/directory-tools").mkdir
+  RemoveSync = require("./../utilities/directory-tools").removeSync
 
   installStatus = Q.defer()
 
@@ -82,7 +82,7 @@ module.exports = (tasks, cwd, scaffold) ->
     if Fs.existsSync scaffoldLocation
       RemoveSync scaffoldLocation
 
-
+    Ghdownload = require "github-download"
     # Download from github
     Ghdownload(
       tasks[0]

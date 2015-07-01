@@ -4,14 +4,13 @@ Fs = require "fs"
 Chalk = require "chalk"
 _ = require "underscore"
 
-
 Norma = require "./../norma"
-PkgeLookup = require "./../utilities/package-lookup"
-Prompt = require "./../utilities/prompt"
-Watch = require "./../utilities/watch"
 
 watching = []
 module.exports = (tasks, cwd) ->
+
+  Watch = require "./../utilities/watch"
+
 
   cwd or= process.cwd()
 
@@ -110,14 +109,11 @@ module.exports = (tasks, cwd) ->
   # START ------------------------------------------------------------------
 
   if Norma.verbose
-    msg =
-      message: "Watching files..."
-      color: "grey"
-
-    Norma.emit "message", msg
+    Norma.log "Watching files..."
 
 
   Norma.emit "watch-start"
+
 
   for task of Norma.tasks
     if !config.tasks[task] or !Norma.tasks[task].ext
@@ -136,12 +132,14 @@ module.exports = (tasks, cwd) ->
     return
 
 
+
 module.exports.stop = ->
 
   for watched in watching
     watched.end()
 
   Norma.prompt.pause()
+
 
   return
 

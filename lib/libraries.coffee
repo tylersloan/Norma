@@ -1,3 +1,5 @@
+
+
 Path          = require "path"
 Util          = require "util"
 _             = require "underscore"
@@ -17,6 +19,8 @@ module.exports = (Norma) ->
     @method prompt
     @api public
 
+    .05 s added to load
+
   ###
   Norma.prompt = require "./utilities/prompt"
 
@@ -30,6 +34,8 @@ module.exports = (Norma) ->
     @method log
     @event "message", "log"
     @api public
+
+    .019 s added to load
 
   ###
   Norma.log = require "./events/message"
@@ -48,10 +54,11 @@ module.exports = (Norma) ->
     @event "error"
     @api public
 
+    .013 s added to load
+
   ###
   Norma.error = require "./events/error"
   Norma.on "error", Norma.error
-
 
   ###
 
@@ -62,9 +69,10 @@ module.exports = (Norma) ->
     @method close
     @api public
 
+    .014 s added to load
+
   ###
   Norma.close = require "./events/close"
-
 
 
   ###
@@ -76,9 +84,10 @@ module.exports = (Norma) ->
     @method close
     @api public
 
+    .006 s added to load
+
   ###
   Norma.restart = require "./events/restart"
-
 
 
   ###
@@ -89,6 +98,8 @@ module.exports = (Norma) ->
 
     @method getSettings
     @api public
+
+    .083 s added to load
 
   ###
   Norma.getSettings = require "./utilities/read-settings"
@@ -102,6 +113,8 @@ module.exports = (Norma) ->
 
     @method getSettings
     @api public
+
+    .023 s added to load
 
   ###
   Norma.config = require "./utilities/read-config"
@@ -117,6 +130,8 @@ module.exports = (Norma) ->
     @method execute
     @api public
 
+    .020 s added
+
   ###
   Norma.execute = require "./utilities/orchestration"
 
@@ -130,9 +145,10 @@ module.exports = (Norma) ->
     @method ready
     @api public
 
+    .055 s added
+
   ###
   Norma.ready = require "./utilities/manage-dependencies"
-
 
 
   ###
@@ -143,6 +159,8 @@ module.exports = (Norma) ->
 
     @method getPackages
     @api public
+
+    .080 s added
 
   ###
   Norma.getPackages = require "./utilities/register-packages"
@@ -156,22 +174,25 @@ module.exports = (Norma) ->
     A mapping of arguments (--flags), env properties (dev vs production)
     and settings from the user
 
+    .024 s added
+
   ###
   require("./utilities/bind-modes")(Norma)
-
 
   ###
 
     method binding for all options in /methods
 
   ###
-  do ->
-    methodDir = Path.resolve __dirname, "./methods/"
-    methods = MapTree methodDir
+  methodDir = Path.join __dirname, "./methods/"
+  methods = MapTree methodDir
 
-    for method in methods.children
-      name = Path.basename(method.name, Path.extname(method.name))
 
-      Norma[name] = require(method.path) if method.path
+  for method in methods.children by -1
+    if not method.path
+      continue
+
+    name = Path.basename(method.name, Path.extname(method.name))
+    Norma[name] = require("./#{Path.relative(__dirname, method.path)}")
 
   Norma.i = Norma.install

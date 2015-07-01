@@ -2,7 +2,6 @@
 Fs    = require "fs"
 Path = require "path"
 Nconf = require "nconf"
-Bcrypt = require "bcrypt"
 Crypto = require "crypto"
 CSON = require "cson"
 
@@ -101,7 +100,8 @@ initialize = ->
 privateFile = Path.join Norma._.userHome, ".private"
 
 setSalt = (obj) ->
-  obj.salt = Bcrypt.genSaltSync(10)
+
+  obj.salt = require("bcrypt").genSaltSync(10)
 
   try
     Fs.writeFileSync(
@@ -136,8 +136,6 @@ getSalt = ->
 
   return setSalt({})
 
-
-
 decrypt = (salt, value) ->
 
   decipher = Crypto.createDecipher "aes-256-cbc", salt
@@ -146,8 +144,6 @@ decrypt = (salt, value) ->
   decrypted += decipher.final "utf8"
 
   return decrypted
-
-
 
 encrypt = (salt, value) ->
 
@@ -159,6 +155,7 @@ encrypt = (salt, value) ->
 
   obj["norma-hashed"] = encrypted
   return obj
+
 
 
 

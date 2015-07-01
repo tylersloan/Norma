@@ -2,12 +2,17 @@
 ## v.Future
 
 * First class support for gulp plugins. The idea behind this is to allow devs to `write` packages using gulp plugins directly in the Norma file. Then Norma will fetch the packages, and dynamically build a norma packages based on the configuration.
-
+* Atom.io companion package (run norma from atom with status updates)
+* VIM companion package (run norma from atom with status updates)
+* Project linking and building
 
 ## v.Next
 
-* Overall speed improvments thanks to benchmarking and tweaking
+* Overall speed improvements thanks to benchmarking and tweaking
 * The ability to group tasks into task sets similar to how guard can group tasks.
+* Env variables
+* caching of packages
+
 
 
 ## 1.6.2

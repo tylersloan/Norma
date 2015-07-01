@@ -9,21 +9,30 @@ Chalk = require "chalk"
 Path = require "path"
 Fs = require "fs"
 Q = require "kew"
+Flags = require("minimist")( process.argv.slice(2) )
+
 
 Norma = require "../lib/norma"
 AutoUpdate = require "./auto-update"
 
 
 module.exports = (env) ->
+  Norma.args = Flags._
 
 
-  # AUTOUPDATE --------------------------------------------------------------
+  # we only notify for updates if we are in a long running process (watch)
+  Norma.on("watch-start", ->
 
-  update = Norma.getSettings.get "autoupdate"
+    # AUTOUPDATE --------------------------------------------------------------
 
-  # This should only run locally
-  if !Norma.production or !process.env.CI or update is "false"
-    AutoUpdate update
+    update = Norma.getSettings.get "autoupdate"
+
+    # # This should only run locally
+    if !Norma.production or !process.env.CI or update is "false"
+      AutoUpdate update
+
+  )
+
 
   # UTILITY -----------------------------------------------------------------
 
