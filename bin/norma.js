@@ -5,15 +5,16 @@ var Liftoff = require("liftoff");
 var Flags = require("minimist")(process.argv.slice(2));
 var Domain = require("domain").create();
 
-
 var Norma = require("../lib/index")
 var Launch = require("./launcher")
+var Completion = require("../lib/utilities/completion")
 
 // Set process status
 Norma._.bin = true
 
 var cli = new Liftoff({
-  name: "norma"
+  name: "norma",
+  completions: Completion
 });
 
 // STOP ----------------------------------------------------------------
@@ -38,6 +39,7 @@ Domain.run(function(){
   cli.launch({
     cwd: Flags.cwd,
     verbose: Flags.verbose,
+    completion: Flags.completion,
     extensions: require('interpret').jsVariants
   }, Launch);
 

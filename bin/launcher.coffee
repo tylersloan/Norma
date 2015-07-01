@@ -5,19 +5,42 @@
 ###
 
 Flags = require("minimist")( process.argv.slice(2) )
-Chalk = require "chalk"
-Path = require "path"
-Fs = require "fs"
-Q = require "kew"
-Flags = require("minimist")( process.argv.slice(2) )
-
-
-Norma = require "../lib/norma"
-AutoUpdate = require "./auto-update"
 
 
 module.exports = (env) ->
+
+
+  Norma = require "../lib/norma"
+  AutoUpdate = require "./auto-update"
+
+
   Norma.args = Flags._
+
+
+  # UTILITY -----------------------------------------------------------------
+
+  # Check for version flag and report version
+  if Flags.version or Flags.v
+
+    versionString = "norma CLI version: #{Chalk.cyan(Norma._.version)}"
+
+    Norma.log versionString
+
+    # exit
+    Norma.close()
+
+  if Flags["tasks-simple"]
+    
+    require("./../lib/logging/completion")()
+
+    Norma.close()
+
+
+
+  Chalk = require "chalk"
+  Path = require "path"
+  Fs = require "fs"
+  Q = require "kew"
 
 
   # we only notify for updates if we are in a long running process (watch)
@@ -34,17 +57,7 @@ module.exports = (env) ->
   )
 
 
-  # UTILITY -----------------------------------------------------------------
 
-  # Check for version flag and report version
-  if Flags.version or Flags.v
-
-    versionString = "norma CLI version: #{Chalk.cyan(Norma._.version)}"
-
-    Norma.log versionString
-
-    # exit
-    Norma.close()
 
 
 
