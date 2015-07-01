@@ -11,7 +11,6 @@ module.exports = (cwd) ->
   PkgeLookup = require "./package-lookup"
   AutoDiscover = require "./auto-discover"
 
-
   loadedPackages = Q.defer()
 
   cwd or= process.cwd()

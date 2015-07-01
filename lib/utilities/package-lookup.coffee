@@ -14,6 +14,7 @@ module.exports = (cwd, targetCwd) ->
   cwd or= process.cwd()
   normaConfig = Norma.config(cwd)
 
+
   packageList = new Array
   packages = new Array
 
@@ -51,7 +52,6 @@ module.exports = (cwd, targetCwd) ->
         Norma.emit "error", err
 
     return
-
 
 
 
@@ -120,6 +120,84 @@ module.exports = (cwd, targetCwd) ->
 
   replaceString = /^norma(-|\.)/
 
+  joinedPackages = {}
+
+  ###
+
+    to load a task from cache we need to know a few things
+
+    1. what tasks do we need to load
+      - this is found by looking at config files
+    2. if there is a set version
+      - if there is version added in package.json
+    3. else load the latest version
+
+  ###
+  cacheDir = Path.join Norma._.userHome, "packages"
+  cached = MapTree cacheDir
+  Semver = require "semver"
+  for cachedPkge in cached.children
+
+    # short variable assignment
+    n = normaConfig
+    name = cachedPkge.name.replace("norma-", "")
+
+    if not n
+      break
+
+    # found in the tasks or test object
+    if (n.tasks and n.tasks[name]) or (n.test and n.test[name])
+
+      # lookup latest
+      versions = cachedPkge.children?.map( (pkge) ->
+        return pkge.name
+      )
+      versions.sort Semver.compare
+
+      installHighest = ->
+        highestVersion = versions[0]
+
+        for version in cachedPkge.children
+          if version.name is highestVersion
+            highestVersion = version
+            break
+
+        if highestVersion.path
+          Norma.packages.push cachedPkge.name
+          Norma.packages = _.uniq Norma.packages
+          mapPkge highestVersion.path, cachedPkge.name
+
+
+      if not Fs.existsSync(config)
+        installHighest()
+      else
+        # Using the require method keeps the same in memory, instead we use
+        # a synchronous fileread of the JSON.
+        configFile = Fs.readFileSync config, encoding: "utf8"
+        configFile = JSON.parse(configFile)
+        for _scope in scope
+          if not configFile[_scope]?[cachedPkge.name]
+            installHighest()
+            break
+
+          specifiedVersion = configFile[_scope][cachedPkge.name]
+          validVersion = Semver.maxSatisfying versions, specifiedVersion
+
+          if validVersion
+            for version in cachedPkge.children
+              if version.name is validVersion
+                validVersion = version
+                break
+
+            if validVersion.path
+              Norma.packages.push cachedPkge.name
+              Norma.packages = _.uniq Norma.packages
+              mapPkge validVersion.path, cachedPkge.name
+
+            break
+
+
+
 
   if Fs.existsSync(config) and Fs.existsSync(node_modules)
 
@@ -147,16 +225,19 @@ module.exports = (cwd, targetCwd) ->
 
     Multimatch(names, pattern).forEach (name) ->
 
-      localInstall = Path.resolve node_modules, "#{name}"
+      if Norma.packages.indexOf(name) > -1
+        return
 
-      if not Fs.existsSync localInstall
+      requirePath = Path.resolve node_modules, name
+
+      if not Fs.existsSync requirePath
         return
 
       Norma.packages.push name
       Norma.packages = _.uniq Norma.packages
 
       _obj = {}
-      _obj[name] = Path.resolve(node_modules, name)
+      _obj[name] = Path.resolve(requirePath)
 
       packageList.push _obj
 
@@ -167,6 +248,9 @@ module.exports = (cwd, targetCwd) ->
     for pkge in packageList
       key = Object.keys(pkge)[0]
       mapPkge pkge[key], key
+
+
+
 
 
   packages = _.uniq packages
