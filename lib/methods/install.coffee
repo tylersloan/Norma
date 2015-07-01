@@ -9,6 +9,7 @@ Norma = require "./../norma"
 ExecCommand = require "./../utilities/execute-command"
 MkDir = require("./../utilities/directory-tools").mkdir
 RemoveSync = require("./../utilities/directory-tools").removeSync
+Cache = require "./../utilities/cache"
 
 module.exports = (tasks, cwd, scaffold) ->
 
@@ -159,9 +160,7 @@ module.exports = (tasks, cwd, scaffold) ->
       cwd
     ,
       ->
-
-        if typeof cb is "function"
-          cb null
+        Cache(list, cb)
 
     )
 
@@ -183,7 +182,14 @@ module.exports = (tasks, cwd, scaffold) ->
     ,
       ->
 
-        cb null
+        ###
+
+          copy installed packages to global cache
+
+        ###
+        Cache(list, cb)
+
+        # cb null
 
     )
 

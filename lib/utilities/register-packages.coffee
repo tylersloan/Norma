@@ -11,7 +11,6 @@ AutoDiscover = require "./auto-discover"
 
 module.exports = (cwd) ->
 
-
   loadedPackages = Q.defer()
 
   cwd or= process.cwd()

@@ -4,11 +4,11 @@ Semver = require "semver"
 Q = require "kew"
 _ = require "underscore"
 # Exec = require("child_process").exec
-Spawn = require "./promise-spawn"
-
 
 Norma = require "./../norma"
 MapTree = require("./directory-tools").mapTree
+Spawn = require "./promise-spawn"
+Cache = require "./cache"
 
 module.exports = (tasks, cwd, flush) ->
 
@@ -17,12 +17,7 @@ module.exports = (tasks, cwd, flush) ->
 
   if !cwd then cwd = process.cwd()
 
-  update = Norma.getSettings.get("autoUpdate")
-
-  if update is "false" or update is false
-    loaded.resolve("ok")
-    return loaded
-
+  cacheDir = Path.join Norma._.userHome, "packages"
   node_modules = Path.resolve cwd, "node_modules"
   config = Path.resolve cwd, "package.json"
 
@@ -32,6 +27,7 @@ module.exports = (tasks, cwd, flush) ->
 
 
   installed = MapTree node_modules, true
+  cached = MapTree cacheDir
 
   scope = [
     "dependencies"
@@ -139,7 +135,7 @@ module.exports = (tasks, cwd, flush) ->
 
 
   installs = []
-
+  list = []
   for addedName of added
 
     update = (name, message) ->
@@ -149,10 +145,8 @@ module.exports = (tasks, cwd, flush) ->
       obj = {}
 
       obj[name] = Spawn("npm", ["i", name], cwd)
-
+      list.push name.split("@")[0]
       # Exec("npm i #{name}", {cwd: cwd}, obj[name].makeNodeResolver())
-
-
       installs.push obj[name]
 
 
@@ -170,16 +164,35 @@ module.exports = (tasks, cwd, flush) ->
         update "#{addedName}@#{added[addedName]}", message
 
     else
-      message =
-        name: addedName
-        message: "Installing #{addedName}@#{added[addedName]}..."
+      isCached = false
+      for cachedPkge in cached.children
+        if not added[cachedPkge.name]
+          continue
 
-      update "#{addedName}@#{added[addedName]}", message
+        # looking at the right cached package
+        versions = cachedPkge.children?.map( (pkge) ->
+          return pkge.name
+        )
+
+        validVersion = Semver.maxSatisfying versions, added[addedName]
+        if validVersion
+          isCached = true
+
+      if not isCached
+        message =
+          name: addedName
+          message: "Installing #{addedName}@#{added[addedName]}..."
+
+        update "#{addedName}@#{added[addedName]}", message
 
 
   Q.all(installs)
     .then( ->
-      loaded.resolve("ok")
+      if list.length
+        Cache list.join(" "), ->
+          loaded.resolve("ok")
+      else
+        loaded.resolve("ok")
     )
 
   return loaded
