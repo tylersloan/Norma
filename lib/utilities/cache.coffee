@@ -28,13 +28,15 @@ module.exports = (list, callback) ->
 
     pkgePath = Path.join(localModules, pkge)
 
-    if Fs.existsSync( pkgePath )
-
-    else if Fs.existsSync( Path.join(globalModules, pkge) )
+    if Fs.existsSync( Path.join(globalModules, pkge) )
       pkgePath = Path.join(globalModules, pkge)
 
+    packageJSON = Path.join(pkgePath, "package.json")
 
-    version = require(Path.join(pkgePath, "package.json")).version
+    if not Fs.existsSync packageJSON
+      continue
+
+    version = require(packageJSON).version
     versionPath = Path.join(cacheDir, pkge, version)
 
     # ensure package dir
