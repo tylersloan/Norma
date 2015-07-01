@@ -1,16 +1,18 @@
 Fs = require "fs"
 Path = require "path"
-Chalk = require "chalk"
+
 Q = require "kew"
 _ = require "underscore"
 
-Norma = require "./../norma"
-ReadConfig = require "./../utilities/read-config"
-ExecCommand = require "./../utilities/execute-command"
-RemoveTree = require('./../utilities/directory-tools').removeTree
 
 
 module.exports = (tasks, cwd, scaffold) ->
+
+  Norma = require "./../norma"
+
+  ExecCommand = require "./../utilities/execute-command"
+  RemoveTree = require('./../utilities/directory-tools').removeTree
+
 
   removeStatus = Q.defer()
 

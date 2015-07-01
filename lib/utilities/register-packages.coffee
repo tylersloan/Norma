@@ -4,12 +4,12 @@ Fs = require "fs"
 _ = require "underscore"
 Q = require "kew"
 
-Norma = require "./../norma"
-PkgeLookup = require "./package-lookup"
-AutoDiscover = require "./auto-discover"
 
 
 module.exports = (cwd) ->
+  Norma = require "./../norma"
+  PkgeLookup = require "./package-lookup"
+  AutoDiscover = require "./auto-discover"
 
   loadedPackages = Q.defer()
 
@@ -18,7 +18,10 @@ module.exports = (cwd) ->
   # Get global, local, and settings packages already installed
   rootTasks = PkgeLookup Path.resolve(Norma._.userHome)
   projectTasks = PkgeLookup cwd
-  settingsTasks = PkgeLookup Path.join(cwd, ".norma")
+
+  settingsTasks = []
+  if Fs.existsSync Path.join(cwd, ".norma")
+    settingsTasks = PkgeLookup Path.join(cwd, ".norma")
 
 
   combinedTasks = settingsTasks.concat projectTasks, rootTasks

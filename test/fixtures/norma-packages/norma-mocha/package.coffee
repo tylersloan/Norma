@@ -1,6 +1,5 @@
 Path        = require "path"
 Norma       = require "../../../../lib/index"
-Clipboard   = require "gulp-clipboard"
 
 
 
@@ -52,7 +51,6 @@ module.exports = (config, name) ->
     Norma.src([
       src + ".#{extType}"
     ])
-      .pipe Clipboard()
       .pipe Norma.dest(dest)
 
     cb null

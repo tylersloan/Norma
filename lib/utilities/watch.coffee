@@ -1,6 +1,5 @@
 
 Chokidar = require "chokidar"
-Anymatch = require "anymatch"
 EventEmitter = require("events").EventEmitter
 
 # comptability with existing gulp 3.0 events
@@ -66,16 +65,16 @@ module.exports = (glob, opts, cb) ->
 
   watcher.on "error", out.emit.bind(out, "error")
 
-  out.add = (glob, cb) ->
-
-    if cb
-      filteredCbs.push({
-        filter: Anymatch(glob)
-        cb: cb
-      })
-
-    watcher.add glob
-    return watcher
+  # out.add = (glob, cb) ->
+  #
+  #   if cb
+  #     filteredCbs.push({
+  #       filter: Anymatch(glob)
+  #       cb: cb
+  #     })
+  #
+  #   watcher.add glob
+  #   return watcher
 
   out.end = ->
     watcher.close()

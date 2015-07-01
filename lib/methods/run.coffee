@@ -63,6 +63,7 @@ module.exports = (tasks, cwd) ->
         e.level = "crash"
         Norma.emit "error", e
 
+
     # if _task._isPromise
     #   _task.then( ->
     #     Norma.close()
@@ -71,8 +72,10 @@ module.exports = (tasks, cwd) ->
   # lookup packages if necessary
   if noPackageTasks.indexOf(_tasks[0]) is -1
 
+
     Norma.getPackages(cwd)
       .then( (tasks) ->
+
         start tasks
       )
 

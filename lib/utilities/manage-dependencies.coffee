@@ -1,16 +1,22 @@
 Path = require "path"
 Fs = require "fs"
-Semver = require "semver"
+
 Q = require "kew"
 _ = require "underscore"
-# Exec = require("child_process").exec
 
-Norma = require "./../norma"
-MapTree = require("./directory-tools").mapTree
-Spawn = require "./promise-spawn"
-Cache = require "./cache"
+
+
 
 module.exports = (tasks, cwd, flush) ->
+
+  Semver = require "semver"
+
+
+
+  Norma = require "./../norma"
+  Spawn = require "./promise-spawn"
+  MapTree = require("./directory-tools").mapTree
+  Cache = require "./cache"
 
   # create the deferred
   loaded = Q.defer()

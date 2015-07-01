@@ -1,13 +1,13 @@
 Path = require "path"
 Fs = require "fs"
-Multimatch = require "multimatch"
 
-Norma = require "./../norma"
-ExecCommand = require "./../utilities/execute-command"
 
 module.exports = (tasks, cwd) ->
+  Norma = require "./../norma"
+  Multimatch = require "multimatch"
+  ExecCommand = require "./../utilities/execute-command"
 
-  # User tried to run `norma add` without argument
+  # User tried to run `norma update` without argument
   if !tasks.length
 
     msg =

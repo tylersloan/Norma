@@ -20,9 +20,8 @@ describe "Packages", ->
 
     defaultPackageData =
       name: "test-project"
-      version: "0.0.0"
+      version: "0.1.0"
       description: ""
-      main: "index.js"
       scripts:
         test: "node ./testing-scripts/index.js"
       author: ""
@@ -36,25 +35,25 @@ describe "Packages", ->
 
     done()
 
+
   describe "install process", ->
+
     it "should have no installed modules", ->
       pkgeJson = Fs.readFileSync fixturesJson, encoding: "utf8"
 
       pkgeJson.should.not.contain.any.keys["dependencies"]
 
 
-    it "should download needed packages", ->
+    it "should download needed packages", (done) ->
 
       # set massive timeout incase npmjs or github are slow
       @.timeout 100000
-      Norma.getPackages(fixtures)
-        .then( (packages) ->
 
-          pkgeJson = Fs.readFileSync fixturesJson, encoding: "utf8"
+      Norma.getPackages(fixtures).then( (packages) ->
+        packages.should.contain.any.keys["norma-copy"]
+        done()
+      )
 
-          packages.should
-            .contain.any.keys["norma-copy"]
-        )
 
 
     it "should have installed modules", ->
@@ -62,7 +61,7 @@ describe "Packages", ->
 
       pkgeJson.should.contain.any.keys["dependencies"]
 
-
+  
     it "should be stored in Norma.packages", ->
 
       Norma.packages.should.include "norma-copy"
