@@ -1,10 +1,11 @@
 
-Flags = require("minimist")( process.argv.slice(2) )
-
-Norma = require "./../norma"
 
 
-module.exports = (Norma) ->
+
+module.exports = ->
+  Flags = require("minimist")( process.argv.slice(2) )
+
+  Norma = require "./../norma"
 
   # Mode utilities
   link = (string, key) ->

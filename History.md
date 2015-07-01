@@ -13,6 +13,28 @@
 * Env variables
 
 
+## 1.6.5
+* environment variables can now be registered in norma config files and they will be populated on the process environment. These will be merged in the typical order for Norma (e.g. global < local < settings)
+
+```coffeescript
+
+name: "norma-projects"
+
+tasks:
+  javascript:
+    src: "_source/pre/**/*"
+    dest: "_source/tmp"
+  build:
+    "@extend": "javascript"
+    src: "_source/build.min"
+    dest: ""
+    order: "post"
+
+env:
+  NODE_ENV: "production"
+  VELOCITY: 0
+
+```
 
 ## 1.6.4
 * caching of packages for faster start times on new projects

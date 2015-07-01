@@ -166,6 +166,15 @@ module.exports = (Norma) ->
   Norma.getPackages = require "./utilities/register-packages"
 
 
+  ###
+
+    Env binding
+
+    Merges config based env and populates the process.env
+
+  ###
+  require("./utilities/add-env-vars")()
+
 
   ###
 
@@ -177,7 +186,7 @@ module.exports = (Norma) ->
     .024 s added
 
   ###
-  require("./utilities/bind-modes")(Norma)
+  require("./utilities/bind-modes")()
 
   ###
 
