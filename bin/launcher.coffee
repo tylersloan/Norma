@@ -12,6 +12,7 @@ module.exports = (env) ->
 
   Norma = require "../lib/norma"
   AutoUpdate = require "./auto-update"
+  Chalk = require "chalk"
 
 
   Norma.args = Flags._
@@ -30,14 +31,14 @@ module.exports = (env) ->
     Norma.close()
 
   if Flags["tasks-simple"]
-    
+
     require("./../lib/logging/completion")()
 
     Norma.close()
 
 
 
-  Chalk = require "chalk"
+
   Path = require "path"
   Fs = require "fs"
   Q = require "kew"
