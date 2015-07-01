@@ -1,0 +1,10 @@
+#!/usr/bin/env fish
+
+# Usage:
+#
+# To enable fish <tab> completion for norma, add the following line to
+# your ~/.config/fish/config.fish file:
+#
+# norma --completion=fish | source
+
+complete -c norma -a "(norma --tasks-simple)" -f
