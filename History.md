@@ -11,9 +11,13 @@
 * Overall speed improvements thanks to benchmarking and tweaking
 * The ability to group tasks into task sets similar to how guard can group tasks.
 * Env variables
+
+
+## 1.6.4
 * caching of packages
 
-
+## 1.6.3
+* 54% reduction of load times for base libraries
 
 ## 1.6.2
 
