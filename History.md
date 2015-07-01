@@ -13,8 +13,9 @@
 * Env variables
 
 
+
 ## 1.6.4
-* caching of packages
+* caching of packages for faster start times on new projects
 
 ## 1.6.3
 * 54% reduction of load times for base libraries
