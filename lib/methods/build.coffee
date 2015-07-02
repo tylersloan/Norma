@@ -87,7 +87,6 @@ module.exports = (tasks, cwd) ->
 
 
   # GENERATE-LIST --------------------------------------------------------
-
   if !tasks.length
 
     try
@@ -103,7 +102,6 @@ module.exports = (tasks, cwd) ->
 
     # USER-DEFINED  ------------------------------------------------------
     isGroup = false
-    # console.log tasks, Norma.tasks
 
     groupTasks = []
     for task, options of config.tasks

@@ -298,7 +298,7 @@ describe "Test", ->
               readFile().should.equal contents.toString()
 
               done()
-            , 500
+            , 100
           )
           .fail( (err) ->
             done()
@@ -407,9 +407,9 @@ describe "Test", ->
     _config = Norma.config()
 
     _config.test =
-      "mocha test":
+      "mocha-test":
         "@extend": "mocha"
-      "mocha second test":
+      "mocha-second-test":
         "@extend": "mocha"
         "src": "lib/**/*",
         "dest": "./out"
@@ -442,7 +442,7 @@ describe "Test", ->
               readFile().should.equal contents.toString()
 
               done()
-            , 100
+            , 500
           )
           .fail( (err) ->
             done()

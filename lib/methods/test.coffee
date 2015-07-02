@@ -27,6 +27,12 @@ module.exports = (tasks, cwd) ->
   Norma.emit "message", msg
 
   config = Norma.config cwd
+  localConfig = Norma.config(Path.join(cwd, ".norma"))
+
+  # map tasks
+  config.tasks = _.extend config.tasks, localConfig.tasks
+  # map test
+  config.test = _.extend config.test, localConfig.test
 
 
   if not config.test

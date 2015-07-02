@@ -6,8 +6,5 @@
     "test": "node ./testing-scripts/index.js"
   },
   "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "norma-copy": "^0.4.2"
-  }
+  "license": "MIT"
 }
