@@ -87,7 +87,6 @@ module.exports = (tasks, cwd) ->
 
 
   # GENERATE-LIST --------------------------------------------------------
-
   if !tasks.length
 
     try
@@ -102,9 +101,25 @@ module.exports = (tasks, cwd) ->
 
 
     # USER-DEFINED  ------------------------------------------------------
+    isGroup = false
+
+    groupTasks = []
+    for task, options of config.tasks
+
+      if not options.group
+        continue
+
+      if typeof options.group is "string"
+        options.group = [options.group]
+
+      intersection = _.intersection tasks, options.group
+
+      if intersection.length
+        groupTasks.push task
 
     for task in tasks
-      if !Norma.tasks[task]
+      if not Norma.tasks[task] and not groupTasks.length
+
         msg =
           level: "crash"
           message: "#{task} is not a known package"
@@ -113,7 +128,7 @@ module.exports = (tasks, cwd) ->
 
         return
 
-      if !Norma.tasks[task].fn
+      if !Norma.tasks[task]?.fn and not groupTasks.length
         msg =
           level: "crash"
           message: "#{task} has no function to build"
@@ -122,7 +137,7 @@ module.exports = (tasks, cwd) ->
 
         return
 
-    build tasks
+    build GenerateTaskList(config, Norma.tasks, tasks.concat(groupTasks))
 
 
   return buildStatus

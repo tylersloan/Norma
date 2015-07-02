@@ -2,17 +2,20 @@ _ = require "underscore"
 
 # TASKLIST --------------------------------------------------------------
 
-module.exports = (config, tasks, cb) ->
+module.exports = (config, tasks, filter) ->
 
   if _.isEmpty tasks
     return []
+
+  filter or= []
 
   saveTask = (location, task) ->
 
     if location.indexOf(task) is -1
       location.push task
 
-
+  if config.test
+    config.tasks = _.extend config.tasks, config.test
   ###
 
     @note
@@ -44,9 +47,12 @@ module.exports = (config, tasks, cb) ->
 
   for task of tasks
 
-    if !config.tasks[task]
+    if not config.tasks[task]
       continue
 
+
+    # if filter.length and filter.indexOf(task) is -1
+    #   continue
 
     if tasks[task].order or config.tasks[task].order
 
