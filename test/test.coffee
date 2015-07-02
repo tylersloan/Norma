@@ -298,7 +298,7 @@ describe "Test", ->
               readFile().should.equal contents.toString()
 
               done()
-            , 100
+            , 500
           )
           .fail( (err) ->
             done()
