@@ -101,7 +101,6 @@ module.exports = (tasks, cwd) ->
 
 
     # USER-DEFINED  ------------------------------------------------------
-    isGroup = false
 
     groupTasks = []
     for task, options of config.tasks

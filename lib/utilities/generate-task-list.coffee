@@ -51,8 +51,8 @@ module.exports = (config, tasks, filter) ->
       continue
 
 
-    # if filter.length and filter.indexOf(task) is -1
-    #   continue
+    if filter.length and filter.indexOf(task) is -1
+      continue
 
     if tasks[task].order or config.tasks[task].order
 
