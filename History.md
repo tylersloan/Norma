@@ -9,7 +9,6 @@
 ## v.Next
 
 * Overall speed improvements thanks to benchmarking and tweaking
-* The ability to group tasks into task sets similar to how guard can group tasks.
 
 ## 1.7.0
 * Norma can now have grouped tasks! Tasks can be part of as many groups as you want them to be and pull from global, local, and settings Norma files. Setting up a group is as easy as adding a `group` key to a task. (this may require updating whitelist on some packages!)
