@@ -11,6 +11,60 @@
 * Overall speed improvements thanks to benchmarking and tweaking
 * The ability to group tasks into task sets similar to how guard can group tasks.
 
+## 1.7.0
+* Norma can now have grouped tasks! Tasks can be part of as many groups as you want them to be and pull from global, local, and settings Norma files. Setting up a group is as easy as adding a `group` key to a task. (this may require updating whitelist on some packages!)
+
+To setup a group take an existing Norma file like so:
+```coffeescript
+name: "sample"
+
+tasks:
+  javascript:
+    src: "raw/**/*"
+    dest: "out"
+  markup:
+    src: "raw/**/*"
+    dest: "out"
+  copy:
+    src: "raw/**/*"
+    dest: "out"
+
+```
+
+then add your group names to the package definition:
+
+```coffeescript
+
+name: "sample"
+
+tasks:
+  javascript:
+    group: "scripts"
+    src: "raw/**/*"
+    dest: "out"
+  markup:
+    group: "templates"
+    src: "raw/**/*"
+    dest: "out"
+  copy:
+    # copy task is run in both groups
+    group: [
+      "templates"
+      "scripts"
+    ]
+    src: "raw/**/*"
+    dest: "out"
+
+```
+
+Now you can build or watch specified groups using the norma CLI.
+
+For a build `norma build scripts` or `norma build scripts templates` or even `norma build scripts markup`
+
+For a watch `norma watch scripts` or `norma watch scripts templates` or even `norma watch scripts markup`
+
+
+
 ## 1.6.6
 * simple auto completion for common shells added to Norma.
 

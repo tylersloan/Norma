@@ -11,23 +11,21 @@ module.exports = (tasks, cwd) ->
 
   Watch = require "./../utilities/watch"
 
-
   cwd or= process.cwd()
 
   # VARIABLES --------------------------------------------------------------
 
   config = Norma.config(cwd)
+  localConfig = Norma.config(Path.join(cwd, ".norma"))
+
+  # map tasks
+  config.tasks = _.extend config.tasks, localConfig.tasks
+  # map test
+  config.test = _.extend config.test, localConfig.test
 
 
   # Store watch started in Norma to span files
   Norma.watchStarted = true
-
-  runnableTasks = new Array
-
-  for task of Norma.tasks
-    runnableTasks.push(task) if Norma.tasks[task].ext?
-
-  Norma.prompt._.autocomplete runnableTasks
 
   runTask = (task, cb) ->
     Norma.execute task, ->
@@ -37,8 +35,6 @@ module.exports = (tasks, cwd) ->
 
 
   ignoreChange = {}
-
-
   Norma.ignore = (file, length) ->
     ignoreChange[file] = length
 
@@ -114,12 +110,38 @@ module.exports = (tasks, cwd) ->
 
   Norma.emit "watch-start"
 
+  runnableTasks = []
 
-  for task of Norma.tasks
-    if !config.tasks[task] or !Norma.tasks[task].ext
+  groupTasks = []
+  for task, options of config.tasks
+
+    if not options.group
       continue
 
-    createWatch(task)
+    if typeof options.group is "string"
+      options.group = [options.group]
+
+    intersection = _.intersection tasks, options.group
+
+    if intersection.length
+      groupTasks.push task
+
+  for task of Norma.tasks
+    if not Norma.tasks[task].ext
+      continue
+
+    if not tasks.length
+      runnableTasks.push(task)
+
+    else if tasks.indexOf(task) > -1
+      runnableTasks.push(task)
+
+  runnableTasks = runnableTasks.concat groupTasks
+
+  Norma.prompt._.autocomplete runnableTasks
+
+  createWatch(task) for task in runnableTasks
+
 
   Norma.prompt()
 
