@@ -25,7 +25,7 @@ class Watcher
     if self.child
       return
 
-    self.child = Fork(Path.join(__dirname, "watch-worker"), [], {silent: true})
+    self.child = Fork(Path.join(__dirname, "watch-worker"))
 
     self.child.send({
       path: self.glob
@@ -38,6 +38,7 @@ class Watcher
     )
 
     self.child.on("error", (error) ->
+      console.log "erroring with error", error
       self.events.emit "error", error
     )
 
@@ -51,7 +52,8 @@ class Watcher
 
       self.events.emit "watcher-dead", self.child.pid, exit, signal
       self.child = null
-      self._startChild()
+      console.log "exiting with a code of #{exit}"
+      # self._startChild()
 
     )
 
@@ -62,9 +64,17 @@ class Watcher
       self.closing = true
 
       if cb
-        self.child.on("exit", cb)
+        self.child.on("exit", (exit, signal) ->
+          if exit > 0
+            cb exit
+            return
 
-      self.child.kill()
+          cb null
+        )
+
+      console.log "killing process"
+      setImmediate ->
+        self.child.kill()
 
       return
 
