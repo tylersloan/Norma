@@ -1,6 +1,6 @@
 machine:
   node:
-    version: 0.12.5
+    version: 0.10.34
 
 ### NPM Deploy
 deployment:
