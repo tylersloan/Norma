@@ -168,6 +168,7 @@ module.exports = (tasks, cwd) ->
 module.exports.stop = ->
 
   for watched in watching
+
     watched.end()
 
   Norma.prompt.pause()
