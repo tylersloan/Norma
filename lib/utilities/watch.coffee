@@ -50,7 +50,8 @@ class Watcher
 
       self.events.emit "watcher-dead", self.child.pid, exit, signal
       self.child = null
-      self._startChild()
+      console.log exit, signal, "create new watcher"
+      # self._startChild()
 
     )
 
