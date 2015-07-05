@@ -74,7 +74,7 @@ module.exports = (tasks, cwd) ->
       3. ability to bind event watching functions
 
     ###
-
+    console.log taskName
     obj[taskName] = Watch([
       "#{src}.#{exts}"
     ], ->
@@ -123,6 +123,7 @@ module.exports = (tasks, cwd) ->
   runnableTasks = []
 
   groupTasks = []
+
   for task, options of config.tasks
 
     if not options.group
@@ -138,6 +139,9 @@ module.exports = (tasks, cwd) ->
 
   for task of Norma.tasks
     if not Norma.tasks[task].ext
+      continue
+
+    if not config.tasks[task]
       continue
 
     if not tasks.length
