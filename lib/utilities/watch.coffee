@@ -38,7 +38,7 @@ class Watcher
     )
 
     self.child.on("error", (error) ->
-      Norma.emit "error", error
+      self.events.emit "error", error
     )
 
 
