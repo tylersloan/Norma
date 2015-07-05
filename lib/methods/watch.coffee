@@ -74,7 +74,7 @@ module.exports = (tasks, cwd) ->
       3. ability to bind event watching functions
 
     ###
-    console.log taskName
+
     obj[taskName] = Watch([
       "#{src}.#{exts}"
     ], ->
