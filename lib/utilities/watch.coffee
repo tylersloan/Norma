@@ -25,7 +25,7 @@ class Watcher
     if self.child
       return
 
-    self.child = Fork(Path.join(__dirname, "watch-worker"))
+    self.child = Fork(Path.join(__dirname, "watch-worker"), [], {silent: true})
 
     self.child.send({
       path: self.glob
@@ -51,7 +51,6 @@ class Watcher
 
       self.events.emit "watcher-dead", self.child.pid, exit, signal
       self.child = null
-      console.log exit, signal, "create new watcher"
       self._startChild()
 
     )
