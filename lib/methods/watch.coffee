@@ -80,7 +80,7 @@ module.exports = (tasks, cwd) ->
     ], ->
       if Norma.debug
         msg =
-          message: "#{task}: ready"
+          message: "#{task.toUpperCase()}: ready"
 
         Norma.emit "message", msg
     )
