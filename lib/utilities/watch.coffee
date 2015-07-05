@@ -47,11 +47,12 @@ class Watcher
       if self.closing
         self.closing = false
         self.closed = true
+        return
 
       self.events.emit "watcher-dead", self.child.pid, exit, signal
       self.child = null
       console.log exit, signal, "create new watcher"
-      # self._startChild()
+      self._startChild()
 
     )
 
@@ -61,8 +62,8 @@ class Watcher
     if self.child
       self.closing = true
 
-    if cb
-      self.child.on("exit", cb)
+      if cb
+        self.child.on("exit", cb)
 
       self.child.kill()
 
