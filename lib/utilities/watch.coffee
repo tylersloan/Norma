@@ -1,89 +1,89 @@
 
-Chokidar = require "chokidar"
 EventEmitter = require("events").EventEmitter
-
-# comptability with existing gulp 3.0 events
-mapEvents = (event) ->
-  switch event
-    when "add" then return "added"
-    when "unlink" then return "deleted"
-    when "change" then return "changed"
+Fork = require("child_process").fork
+Path = require "path"
 
 
-module.exports = (glob, opts, cb) ->
+class Watcher
 
-  out = new EventEmitter()
+  constructor: (glob, opts, cb) ->
+
+    self = @
+    self.glob = glob
+    self.opts = opts
+    self.cb = cb
+
+    self.events = new EventEmitter()
+
+    self._startChild()
+
+
+  _startChild: ->
+
+    self = @
+
+    if self.child
+      return
+
+    self.child = Fork(Path.join(__dirname, "watch-worker"))
+
+    self.child.send({
+      path: self.glob
+      opts: self.opts
+      cb: self.cb
+    })
+
+    self.child.on("message", (message) ->
+      self.events.emit.apply(self.events, message)
+    )
+
+    self.child.on("error", (error) ->
+      Norma.emit "error", error
+    )
+
+
+    # restart on exit
+    self.child.on("exit", (exit, signal) ->
+      if self.closing
+        self.closing = false
+        self.closed = true
+
+      self.events.emit "watcher-dead", self.child.pid, exit, signal
+      self.child = null
+      self._startChild()
+
+    )
+
+  end: (cb) ->
+    self = @
+
+    if self.child
+      self.closing = true
+
+    if cb
+      self.child.on("exit", cb)
+
+      self.child.kill()
+
+      return
+
+    if cb then cb null
+
+
+
+
+module.exports = (path, opts, cb) ->
 
   if typeof opts is "function"
     cb = opts
     opts = {}
 
-  opts or= {}
+  watcher = new Watcher(path, opts, cb)
 
-  if typeof opts.ignoreInitial isnt "boolean"
-    opts.ignoreInitial = true
+  watcher.events.on("all", (event, path, stats) ->
+    console.log event
+  )
 
-  watcher = Chokidar.watch glob, opts
+  watcher.events.on "ready", cb
 
-  nomatch = true
-  filteredCbs = []
-
-  # all
-  watcher.on "all", (event, path, stats) ->
-
-    event = mapEvents event
-
-    if not event or not path
-      return
-
-    nomatch = false
-    outEvent =
-      type: event
-      path: path
-
-    if stats
-      outEvent.stats = stats
-
-
-    out.emit "change", outEvent
-
-    filteredCbs.forEach (pair) ->
-
-      if pair.filter(path)
-        pair.cb()
-
-
-    cb and cb()
-
-
-  # ready
-  watcher.on "ready", ->
-    if nomatch
-      out.emit "nomatch"
-
-    out.emit "ready"
-
-  watcher.on "error", out.emit.bind(out, "error")
-
-  # out.add = (glob, cb) ->
-  #
-  #   if cb
-  #     filteredCbs.push({
-  #       filter: Anymatch(glob)
-  #       cb: cb
-  #     })
-  #
-  #   watcher.add glob
-  #   return watcher
-
-  out.end = ->
-    watcher.close()
-    out.emit("end")
-    return watcher
-
-  out.remove = watcher.unwatch.bind watcher
-  out._watcher = watcher
-
-
-
-  return out
+  return watcher
