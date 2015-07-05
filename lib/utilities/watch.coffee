@@ -38,7 +38,6 @@ class Watcher
     )
 
     self.child.on("error", (error) ->
-      console.log "erroring with error", error
       self.events.emit "error", error
     )
 
@@ -52,8 +51,8 @@ class Watcher
 
       self.events.emit "watcher-dead", self.child.pid, exit, signal
       self.child = null
-      console.log "exiting with a code of #{exit}"
-      # self._startChild()
+
+      self._startChild()
 
     )
 
@@ -72,7 +71,6 @@ class Watcher
           cb null
         )
 
-      console.log "killing process"
       setImmediate ->
         self.child.kill()
 
@@ -90,10 +88,6 @@ module.exports = (path, opts, cb) ->
     opts = {}
 
   watcher = new Watcher(path, opts, cb)
-
-  watcher.events.on("all", (event, path, stats) ->
-    console.log event
-  )
 
   watcher.events.on "ready", cb
 
