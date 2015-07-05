@@ -65,13 +65,27 @@ module.exports = (tasks, cwd) ->
 
     obj = {}
 
+    ###
+
+      Needs of watch API:
+
+      1. ability to close watcher
+      2. ability to pass in src
+      3. ability to bind event watching functions
+
+    ###
+    console.log taskName
     obj[taskName] = Watch([
       "#{src}.#{exts}"
-      # "!node_modules/**/*"
-      # "!.git/**/*"
-    ])
+    ], ->
+      if Norma.debug
+        msg =
+          message: "#{task.toUpperCase()}: ready"
 
-    obj[taskName].on("change", (event) ->
+        Norma.emit "message", msg
+    )
+
+    obj[taskName].events.on("change", (event) ->
 
       if ignoreChange[event.path] > 0
         ignoreChange[event.path]--
@@ -94,11 +108,7 @@ module.exports = (tasks, cwd) ->
 
     watching.push obj[taskName]
 
-    if Norma.debug
-      msg =
-        message: "#{task}: ready"
 
-      Norma.emit "message", msg
 
 
 
@@ -113,6 +123,7 @@ module.exports = (tasks, cwd) ->
   runnableTasks = []
 
   groupTasks = []
+
   for task, options of config.tasks
 
     if not options.group
@@ -128,6 +139,9 @@ module.exports = (tasks, cwd) ->
 
   for task of Norma.tasks
     if not Norma.tasks[task].ext
+      continue
+
+    if not config.tasks[task]
       continue
 
     if not tasks.length
@@ -158,6 +172,7 @@ module.exports = (tasks, cwd) ->
 module.exports.stop = ->
 
   for watched in watching
+
     watched.end()
 
   Norma.prompt.pause()
