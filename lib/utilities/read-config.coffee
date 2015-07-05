@@ -99,6 +99,10 @@ config = (cwd) ->
   ###
 
   if Fs.existsSync fileLoc
+    stats = Fs.lstatSync fileLoc
+
+    if stats.isDirectory()
+      return false
 
     try
       file = CSON.parseFile fileLoc
