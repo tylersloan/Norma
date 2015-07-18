@@ -15,13 +15,13 @@ module.exports = (cwd) ->
 
   cwd or= process.cwd()
 
-  # Get global, local, and settings packages already installed
-  rootTasks = PkgeLookup Path.resolve(Norma._.userHome)
   projectTasks = PkgeLookup cwd
-
   settingsTasks = []
   if Fs.existsSync Path.join(cwd, ".norma")
     settingsTasks = PkgeLookup Path.join(cwd, ".norma")
+
+  # Get global, local, and settings packages already installed
+  rootTasks = PkgeLookup Path.resolve(Norma._.userHome)
 
 
   combinedTasks = settingsTasks.concat projectTasks, rootTasks

@@ -33,7 +33,6 @@ module.exports = (cwd, targetCwd) ->
       # store load path for future calls via extension
       if !Norma._.packageDirs[name]
         Norma._.packageDirs[name] = pkgeCwd
-
       try
         # load package
         task = require pkgeCwd
@@ -122,6 +121,60 @@ module.exports = (cwd, targetCwd) ->
 
   joinedPackages = {}
 
+
+
+  if Fs.existsSync(config) and Fs.existsSync(node_modules)
+
+
+    # Using the require method keeps the same in memory, instead we use
+    # a synchronous fileread of the JSON.
+    config = Fs.readFileSync config, encoding: "utf8"
+
+
+    try
+      config = JSON.parse(config)
+    catch err
+      err.level = "crash"
+
+      Norma.emit "error", err
+
+
+    names = scope.reduce(
+      (result, prop) ->
+
+        result.concat Object.keys(config[prop] or {})
+      []
+    )
+
+
+    Multimatch(names, pattern).forEach (name) ->
+
+      if Norma.packages.indexOf(name) > -1
+        return
+
+      requirePath = Path.resolve node_modules, name
+
+      if not Fs.existsSync requirePath
+        return
+
+      Norma.packages.push name
+      Norma.packages = _.uniq Norma.packages
+
+      _obj = {}
+      _obj[name] = Path.resolve(requirePath)
+
+      packageList.push _obj
+
+
+      return
+
+
+    for pkge in packageList
+      key = Object.keys(pkge)[0]
+      mapPkge pkge[key], key
+
+
+
   ###
 
     to load a task from cache we need to know a few things
@@ -136,11 +189,15 @@ module.exports = (cwd, targetCwd) ->
   cacheDir = Path.join Norma._.userHome, "packages"
   cached = MapTree cacheDir
   Semver = require "semver"
+
   for cachedPkge in cached.children
 
     # short variable assignment
     n = normaConfig
     name = cachedPkge.name.replace("norma-", "")
+
+    if Norma.packages.indexOf(cachedPkge.name) > -1
+      continue
 
     if not n
       break
@@ -195,61 +252,6 @@ module.exports = (cwd, targetCwd) ->
               mapPkge validVersion.path, cachedPkge.name
 
             break
-
-
-
-
-  if Fs.existsSync(config) and Fs.existsSync(node_modules)
-
-
-    # Using the require method keeps the same in memory, instead we use
-    # a synchronous fileread of the JSON.
-    config = Fs.readFileSync config, encoding: "utf8"
-
-
-    try
-      config = JSON.parse(config)
-    catch err
-      err.level = "crash"
-
-      Norma.emit "error", err
-
-
-    names = scope.reduce(
-      (result, prop) ->
-
-        result.concat Object.keys(config[prop] or {})
-      []
-    )
-
-
-    Multimatch(names, pattern).forEach (name) ->
-
-      if Norma.packages.indexOf(name) > -1
-        return
-
-      requirePath = Path.resolve node_modules, name
-
-      if not Fs.existsSync requirePath
-        return
-
-      Norma.packages.push name
-      Norma.packages = _.uniq Norma.packages
-
-      _obj = {}
-      _obj[name] = Path.resolve(requirePath)
-
-      packageList.push _obj
-
-
-      return
-
-
-    for pkge in packageList
-      key = Object.keys(pkge)[0]
-      mapPkge pkge[key], key
-
-
 
 
 
