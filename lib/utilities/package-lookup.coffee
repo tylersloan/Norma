@@ -31,7 +31,7 @@ module.exports = (cwd, targetCwd) ->
     if (n.tasks and n.tasks[name]) or (n.test and n.test[name])
 
       # don't load dev packages in production
-      if n.tasks[name].dev and Norma.production
+      if n.tasks[name]?.dev and Norma.production
         return
 
 
