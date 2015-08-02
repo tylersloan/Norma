@@ -62,7 +62,7 @@ module.exports = (cwd, packages, promise) ->
 
     if packages[key] is undefined
 
-      if process.env.CI or process.env.production
+      if process.env.CI or Norma.production
         if dev or _obj[key].dev
           return
 
