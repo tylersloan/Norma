@@ -18,6 +18,8 @@ module.exports = (list, callback) ->
 
 
   packages = list.split(" ")
+  # Need to only cache norma- packages
+  # TODO
   Norma.log "caching #{list} for future use"
 
   globalModules = Path.join Norma._.userHome, "node_modules"

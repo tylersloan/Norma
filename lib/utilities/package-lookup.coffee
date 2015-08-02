@@ -30,6 +30,11 @@ module.exports = (cwd, targetCwd) ->
     # found in the tasks object
     if (n.tasks and n.tasks[name]) or (n.test and n.test[name])
 
+      # don't load dev packages in production
+      if n.tasks[name].dev and Norma.production
+        return
+
+
       # store load path for future calls via extension
       if !Norma._.packageDirs[name]
         Norma._.packageDirs[name] = pkgeCwd
